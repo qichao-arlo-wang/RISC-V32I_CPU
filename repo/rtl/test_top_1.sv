@@ -1,12 +1,14 @@
-module top #(
+// this module is a separate top layer for the first part
+// for testing purposes
+module test_top_1 #(
     DATA_WIDTH = 32
 ) (
     input   logic clk,
     input   logic rst,
-    output  logic [DATA_WIDTH-1:0] a0    
+    input   logic PCsrc,
+    input   logic ImmOp,
+    output  logic [DATA_WIDTH-1:0] PC    
 );
-
-    assign a0 = 32'd5;
 
     // internal signal
     logic [DATA_WIDTH-1:0] PC, inc_PC, PC_src, ImmOp, branch_PC;
