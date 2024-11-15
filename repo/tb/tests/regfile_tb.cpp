@@ -3,35 +3,44 @@
 #include "Vregister_file.h"
 #include "gtest/gtest.h"
 
-extern Vregister_file *top;
-extern VerilatedVcdC *tfp;
-extern unsigned int ticks = 0;
+// register file has 4 bits address and each input is 32 bits wide
 
 class RegfileTestbench : public ::testing::Test
 {
 protected:
+    Vregister_fule *reg_file;
+    VerilatedVcdC *tfp;
     vluint64_t main_time;
+    unsigned int ticks;
 
     void SetUp() override
     {   
-        top = new Vregister_file;
+        Verilated::traceEverOn(true);
+        reg_file = new Vregister_file;
+        tfo - new VerilatedVcdC;
+        reg_file->trace(tfp, 99)
+        tfp->open("regfile_waveform.vcd")
         initializeInputs();
         main_time = 0;
+        ticks = 0;
     }
 
     void TearDown() override
     {
-        removeTestEnv();
+        reg_file->final();
+        tfp->close();
+        delete reg_file;
+        delete tfp;
     }
 
     void initializeInputs() 
     {
-        top->clk = 0;
-        top->we = 0;
-        top->rs1 = 0;
-        top->rs2 = 0;
-        top->rd = 0;
-        top->wd = 0;
+        reg_file->clk = 0;
+        reg_file->we = 0;
+        reg_file->rs1 = 0;
+        reg_file->rs2 = 0;
+        reg_file->rd = 0;
+        reg_file->wd = 0;
     }
 
 
@@ -39,9 +48,9 @@ protected:
     {
         for (int clk = 0; clk < 2; clk++)
         {
-            top->eval();
+            reg_file->eval();
             tfp->dump(2 * ticks + clk);
-            top->clk = !top->clk;
+            reg_file->clk = !reg_file->clk;
         }
         ticks ++;
 
@@ -50,14 +59,11 @@ protected:
             exit(0);
         }
     }
-    
-    void removeTestEnv() override {
-        delete reg
-    }
 
     void toggleClock() {
-        top->clk = !top->clk;
-        top->eval();
+        reg_file->clk = !reg_file->clk;
+        reg_file->eval();
+        tfp->dump(main_time);
         main_time ++;
     }   
 };
@@ -65,23 +71,23 @@ protected:
 TEST_F(RegfileTestbench, WriteAndReadBack)
 {
     //Write data to register from 1 to 32
-    for (int i = 0; i < 0xFFFFFFFF; i++){
-        top->we = 1;
-        top->wd = i;
-        top->rd = i % (16);
+    for (int i = 0; i < 16; i++){
+        reg_file->we = 1;
+        reg_file->wd = i;
+        reg_file->rd = i % (16);
         toggleClock();
         toggleClock();
         
-        top->we = 0;
+        reg_file->we = 0;
         toggleClock();
         toggleClock();
     }
 
-    for (int i = 0; i < 0xFFFFFFFF; i = i+2){
-        top->rs1 = i;
-        top->rs2 = i+1;
-        out1 = top->rd1;
-        out2 = top->rd2;
+    for (int i = 0; i < 16; i = i+2){
+        reg_file->rs1 = i;
+        reg_file->rs2 = i+1;
+        unit32_t out1 = reg_file->rd1;
+        uint32_t out2 = reg_file->rd2;
 
         EXPECT_EQ(out1, i % 16) << "Register " << i << "value mismatch!";
         EXPECT_EQ(out2, (i+1) % 16) << "Register" << i+1 << "value.mismatch!";
