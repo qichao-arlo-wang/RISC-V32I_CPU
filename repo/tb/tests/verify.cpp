@@ -1,17 +1,18 @@
-#include "testbench.h"
-#include <cstdlib>
+#include "base_testbench.h"
 
-#define CYCLES 10000
-
+Vdut *top;
+VerilatedVcdC *tfp;
 unsigned int ticks = 0;
 
-class CpuTestbench : public Testbench
+class MuxTestbench : public BaseTestbench
 {
 protected:
     void initializeInputs() override
     {
-        top->clk = 1;
-        top->rst = 0;
+        top->sel = 0;
+        top->in0 = 0;
+        top->in1 = 0;
+        // output: out
     }
 };
 

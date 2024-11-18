@@ -6,7 +6,7 @@ module register_file (
     input logic [31:0] wd,
     output logic [31:0] rd1, rd2
 );
-    logic [31:0] reg_file [0:31];
+    logic [31:0] reg_file [0:15];
 
     assign rd1 = reg_file[rs1];
     assign rd2 = reg_file[rs2];

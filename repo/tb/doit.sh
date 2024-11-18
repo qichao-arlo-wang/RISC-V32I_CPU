@@ -4,18 +4,18 @@
 # Usage: ./doit.sh <file1.cpp> <file2.cpp>
 
 # Constants
-# SCRIPT_DIR="/root/Documents/Group-9-RISC-V/repo/tb"
+SCRIPT_DIR="/root/Documents/Group-9-RISC-V/repo"
 # TEST_FOLDER="/root/Documents/Group-9-RISC-V/repo/tb/tests"
 # RTL_FOLDER="/root/Documents/Group-9-RISC-V/repo/rtl"
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
-TEST_FOLDER=$(realpath "$SCRIPT_DIR/tests")
-RTL_FOLDER=$(realpath "$SCRIPT_DIR/../rtl")
+# SCRIPT_DIR=$(dirname "$(realpath "$0")")
+TEST_FOLDER=$(realpath "$SCRIPT_DIR/tb/tests")
+RTL_FOLDER=$(realpath "$SCRIPT_DIR/rtl")
 GREEN=$(tput setaf 2)
 RED=$(tput setaf 1)
 RESET=$(tput sgr0)
-echo "SCRIPT_DIR: $SCRIPT_DIR"
-echo "TEST_FOLDER: $TEST_FOLDER"
-echo "RTL_FOLDER: $RTL_FOLDER"
+# echo "SCRIPT_DIR: $SCRIPT_DIR"
+# echo "TEST_FOLDER: $TEST_FOLDER"
+# echo "RTL_FOLDER: $RTL_FOLDER"
 # Variables
 passes=0
 fails=0
@@ -32,7 +32,7 @@ fi
 # Cleanup
 rm -rf obj_dir
 
-cd $SCRIPT_DIR
+cd $TEST_FOLDER
 
 # Iterate through files
 for file in "${files[@]}"; do
@@ -54,7 +54,7 @@ for file in "${files[@]}"; do
 
     # Build C++ project with automatically generated Makefile
     make -j -C obj_dir/ -f Vdut.mk
-    
+
     # Run executable simulation file
     ./obj_dir/Vdut
     
