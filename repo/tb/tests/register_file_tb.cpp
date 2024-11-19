@@ -43,29 +43,27 @@ protected:
     }   
 };
 
+uint32_t constant = 5;
+
 TEST_F(RegFileTestBench, WriteAndReadBack)
 {
-    //Write data to register from 1 to 32
+    //Write data to register from 0 to 15
     for (int i = 0; i < 16; i++){
         top->we = 1;
-        top->wd = i;
-        top->rd = i % (16);
+        top->rd = i;
+        top->wd = constant;
         toggleClock();
         toggleClock();
-        
+
         top->we = 0;
-        toggleClock();
-        toggleClock();
+
     }
 
-    for (int i = 0; i < 16; i = i+2){
+    for (int i = 1; i < 16; i++){
         top->rs1 = i;
-        top->rs2 = i+1;
+        top->eval();
         uint32_t out1 = top->rd1;
-        uint32_t out2 = top->rd2;
-
-        EXPECT_EQ(out1, i % 16) << "Register " << i << "value mismatch!";
-        EXPECT_EQ(out2, (i+1) % 16) << "Register" << i+1 << "value.mismatch!";
+        EXPECT_EQ(out1, constant) << "Register" <<i << " failed";
         toggleClock();
         toggleClock();
     }

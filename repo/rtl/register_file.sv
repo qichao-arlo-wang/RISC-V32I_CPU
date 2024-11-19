@@ -1,8 +1,8 @@
 module register_file (
     input logic clk, 
     input logic we,
-    input logic [4:0] rs1, rs2,
-    input logic [4:0] rd,
+    input logic [3:0] rs1, rs2,
+    input logic [3:0] rd,
     input logic [31:0] wd,
     output logic [31:0] rd1, rd2
 );
