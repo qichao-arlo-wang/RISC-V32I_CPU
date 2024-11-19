@@ -8,6 +8,7 @@ module top #(
 
 assign a0 = 32'd5;
 
+
 /// /// BLOCK 1: Program counter and related adders /// ///
 // internal signals
 logic [DATA_WIDTH-1:0] PC, inc_PC, PC_src, ImmOp, branch_PC;
@@ -47,10 +48,9 @@ PC_Reg pc_reg(
 );
 
 
-
 /// /// BLOCK 2: The Register File, ALU and the related MUX /// ///
 // Instruction & fields
-logic [31:0] instruction;
+logic [DATA_WIDTH-1:0] instruction;
 logic [6:0] opcode = instruction[6:0];
 logic [2:0] funct3 = instruction[14:12];
 logic funct7_5 = instruction[30];
@@ -62,14 +62,14 @@ logic [2:0] ALUControl;
 logic Zero;
 
 // Immediate
-logic [31:0] immediate;
+logic [DATA_WIDTH-1:0] immediate;
 
 // Register data 
-logic [31:0] reg_data1, reg_data2, alu_in2, alu_out;
+logic [DATA_WIDTH-1:0] reg_data1, reg_data2, alu_in2, alu_out;
 
 // Instantiate Instruction Memory
 Instruction_Memory imem (
-    .addr(pc),
+    .addr(PC),
     .instruction(instruction)
 );
 
@@ -81,11 +81,12 @@ Control_Unit ctrl (
     .Zero(Zero),
     .RegWrite(RegWrite),
     .MemWrite(MemWrite),
-    .ImmSrc(ImmSrc),
-    .ALUsrc(ALUsrc),
     .Branch(Branch),
     .ResultSrc(ResultSrc),
     .ALUControl(ALUControl),
+
+    .ALUsrc(ALUsrc),
+    .ImmSrc(ImmSrc),
     .PCsrc(PCsrc)
 );
 
@@ -110,7 +111,6 @@ end
 
 assign next_pc = (PCsrc) ? pc + (immediate << 1) : pc + 4;
 */
-
 
 
 /// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// ///
