@@ -1,8 +1,8 @@
 module register_file (
     input logic clk, 
     input logic we,
-    input logic [4:0] rs1, rs2, //read register address
-    input logic [4:0] rd, //write register address
+    input logic [3:0] rs1, rs2, //read register address
+    input logic [3:0] rd, //write register address
     input logic [31:0] wd, //write data
     output logic [31:0] rd1, rd2 // read data output
 );
