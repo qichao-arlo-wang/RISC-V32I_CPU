@@ -1,15 +1,16 @@
 module top #(
     DATA_WIDTH = 32
 ) (
-    input   logic clk,
-    input   logic rst,
-    output  logic [DATA_WIDTH-1:0] a0    
+    input   logic clk,                  // clock signal
+    input   logic rst,                  // reset signal
+    output  logic [DATA_WIDTH-1:0] a0   // register a0 output
 );
 
-    assign a0 = 32'd5;
+assign a0 = 32'd5;
 
-    // internal signal
-    logic [DATA_WIDTH-1:0] PC, inc_PC, PC_src, ImmOp, branch_PC;
+/// /// BLOCK 1: Program counter and related adders /// ///
+// internal signals
+logic [DATA_WIDTH-1:0] PC, inc_PC, PC_src, ImmOp, branch_PC;
 
 // adder used to add PC and ImmOp
 adder branch_pc_adder(
@@ -44,5 +45,76 @@ PC_Reg pc_reg(
     
     .PC      (PC)
 );
+
+
+
+/// /// BLOCK 2: The Register File, ALU and the related MUX /// ///
+// Instruction & fields
+logic [31:0] instruction;
+logic [6:0] opcode = instruction[6:0];
+logic [2:0] funct3 = instruction[14:12];
+logic funct7_5 = instruction[30];
+
+// Control signals
+logic RegWrite, MemWrite, ALUsrc, Branch, ResultSrc;
+logic [1:0] ImmSrc;
+logic [2:0] ALUControl;
+logic Zero;
+
+// Immediate
+logic [31:0] immediate;
+
+// Register data 
+logic [31:0] reg_data1, reg_data2, alu_in2, alu_out;
+
+// Instantiate Instruction Memory
+Instruction_Memory imem (
+    .addr(pc),
+    .instruction(instruction)
+);
+
+// Instantiate Control Unit
+Control_Unit ctrl (
+    .opcode(opcode),
+    .funct3(funct3),
+    .funct7_5(funct7_5),
+    .Zero(Zero),
+    .RegWrite(RegWrite),
+    .MemWrite(MemWrite),
+    .ImmSrc(ImmSrc),
+    .ALUsrc(ALUsrc),
+    .Branch(Branch),
+    .ResultSrc(ResultSrc),
+    .ALUControl(ALUControl),
+    .PCsrc(PCsrc)
+);
+
+// Instantiate Sign-Extension Unit
+Sign_Extension_Unit sext (
+    .instruction(instruction),
+    .ImmSrc(ImmSrc),
+    .immediate(immediate)
+);
+
+// Output a0 register content
+assign a0 = reg_data1; // Register a0 mapped to reg_data1
+
+/*
+// PC update logic
+always_ff @(posedge clk or posedge rst) begin
+    if (rst)
+        pc <= 32'b0;
+    else
+        pc <= next_pc;
+end
+
+assign next_pc = (PCsrc) ? pc + (immediate << 1) : pc + 4;
+*/
+
+
+
+/// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// ///
+
+
 
 endmodule
