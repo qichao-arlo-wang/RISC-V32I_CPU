@@ -57,7 +57,7 @@ logic [2:0] funct3 = instruction[14:12];
 logic funct7_5 = instruction[30];
 
 // Control signals
-logic reg_write, mem_write, alu_src, branch, result_src;
+logic reg_wr_en, mem_wr_en, alu_src, branch, result_src;
 logic [1:0] imm_src;
 logic [2:0] alu_control;
 logic zero;
@@ -80,8 +80,8 @@ control_unit ctrl (
     .funct3(funct3),
     .funct7_5(funct7_5),
     .zero(zero),
-    .reg_write(reg_write),
-    .mem_write(mem_write),
+    .reg_wr_en(reg_wr_en),
+    .mem_wr_en(mem_wr_en),
     .branch(branch),
     .result_src(result_src),
     .alu_control(alu_control),

@@ -1,5 +1,5 @@
 module register_file #(
-    parameter REG_COUNT = 16,
+    parameter REG_COUNT = 32,
     parameter REG_WIDTH = 32
 ) (
     input logic clk, 
@@ -27,8 +27,8 @@ module register_file #(
         reg_file[0] <= 32'b0; // ensure register 0 always holds the value 0
     end
 
-    // read data from the register file on the rising edge of the clock
-    always_ff @(posedge clk) begin
+    // Asynchronous read operation
+    always_comb begin
         rd1 <= reg_file[rs1];
         rd2 <= reg_file[rs2];
     end

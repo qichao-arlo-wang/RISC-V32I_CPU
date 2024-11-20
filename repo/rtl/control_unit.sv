@@ -3,8 +3,8 @@ module control_unit (
     input logic [2:0] funct3,
     input logic funct7_5,
     input logic zero,
-    output logic reg_write,
-    output logic mem_write,
+    output logic reg_wr_en,
+    output logic mem_wr_en,
     output logic [1:0] imm_src,
     output logic alu_src,
     output logic branch,
@@ -18,8 +18,8 @@ module control_unit (
     // Instantiate Main Decoder
     main_decoder main_dec (
         .opcode(opcode),
-        .reg_write(reg_write),
-        .mem_write(mem_write),
+        .reg_wr_en(reg_wr_en),
+        .mem_wr_en(mem_wr_en),
         .imm_src(imm_src),
         .alu_src(alu_src),
         .branch(branch),
