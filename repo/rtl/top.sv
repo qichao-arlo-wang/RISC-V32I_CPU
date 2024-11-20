@@ -11,7 +11,8 @@ assign a0 = 32'd5;
 
 /// /// BLOCK 1: Program counter and related adders /// ///
 // internal signals
-logic [DATA_WIDTH-1:0] pc, inc_pc, pc_src, imm_op, branch_pc;
+logic [DATA_WIDTH-1:0] pc, inc_pc, imm_op, branch_pc, next_pc;
+logic pc_src;
 
 // adder used to add PC and ImmOp
 adder branch_pc_adder(
@@ -123,7 +124,7 @@ logic [DATA_WIDTH-1:0] alu_a, alu_b, alu_result;
 logic [3:0] alu_ctrl;
 // logic zero;   declared in block 2
 
-register_file reg_file (
+register_file reg_file_inst (
     .clk(clk),
     .we(we),
     .rs1(rs1),
