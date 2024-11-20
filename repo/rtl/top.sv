@@ -6,9 +6,6 @@ module top #(
     output  logic [DATA_WIDTH-1:0] a0   // register a0 output
 );
 
-assign a0 = 32'd5;
-
-
 /// /// BLOCK 1: Program counter and related adders /// ///
 // internal signals
 logic [DATA_WIDTH-1:0] pc, inc_pc, imm_op, branch_pc, next_pc;
@@ -66,7 +63,9 @@ logic zero;
 logic [DATA_WIDTH-1:0] immediate;
 
 // Register data 
-logic [DATA_WIDTH-1:0] reg_data1, reg_data2, alu_in2, alu_out;
+logic [4:0] rs1 = instruction[19:15]; // rs1: instruction[19:15]
+logic [4:0] rs2 = instruction[24:20]; // rs2: instruction[24:20]
+logic [4:0] rd  = instruction[11:7];  // rd: instruction[11:7]
 
 // Instantiate Instruction Memory
 instruction_memory imem (
@@ -94,12 +93,10 @@ control_unit ctrl (
 // Instantiate Sign-Extension Unit
 sign_exten sext (
     .instruction(instruction),
+
     .imm_src(imm_src),
     .immediate(immediate)
 );
-
-// Output a0 register content
-assign a0 = reg_data1; // Register a0 mapped to reg_data1
 
 /*
 // PC update logic
@@ -116,54 +113,56 @@ assign next_pc = (PCsrc) ? pc + (immediate << 1) : pc + 4;
 
 /// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// ///
 //Register_file signals
-logic we;
-logic [4:0] rs1, rs2, rd;
-logic [DATA_WIDTH-1:0] wd, rd1, rd2;
+logic we3;
+
+logic [DATA_WIDTH-1:0] wd3, rd1, rd2;
 //ALU signals
-logic [DATA_WIDTH-1:0] alu_a, alu_b, alu_result;
+logic [DATA_WIDTH-1:0] alu_op1, alu_op2, alu_out;
 logic [3:0] alu_ctrl;
-// logic zero;   declared in block 2
+logic eq;
 
 register_file reg_file_inst (
     .clk(clk),
-    .we(we),
-    .rs1(rs1),
-    .rs2(rs2),
-    .rd(rd),
-    .wd(wd),
+    .ad1(rs1),
+    .ad2(rs2),
+    .ad3(rd),
+    .wd3(wd3),
+    .we3(we3),
+
     .rd1(rd1),
-    .rd2(rd2)
+    .rd2(rd2),
+    .a0(a0)
 );
 
 alu alu_inst(
-    .a(alu_a),
-    .b(alu_b),
+    .alu_op1(alu_op1),
+    .alu_op2(alu_op2),
     .alu_ctrl(alu_ctrl),
-    .result(alu_result),
-    .zero(zero)
+    .alu_out(alu_out),
+    .eq(eq)
 );
 
-mux#(.DATA_WIDTH(DATA_WIDTH)) mux_inst(
-    .in0(rd1),
-    .in1(alu_result),
-    .sel(sel),
-    .out(wd)
+mux alu_mux_inst(
+    .in0(rd2),
+    .in1(imm_op),
+    .sel(alu_src),
+    .out(alu_op2)
 );
 
-initial begin
-    we =1;
-    rs1 = 5'd1;
-    rs2 = 5'd2;
-    rd = 5'd3;
-    sel = 0;
-    alu_ctrl = 4'b0000;
-    #10
-    sel = 1;
-end
+// initial begin
+//     we3 =1;
+//     ad1 = 5'd1;
+//     ad2 = 5'd2;
+//     ad3 = 5'd3;
+//     sel = 0;
+//     alu_ctrl = 4'b0000;
+//     #10
+//     alu_src = 1;
+// end
 
-assign alu_a = rd1;
-assign alu_b = rd2;
-assign a0 = wd;
+assign alu_op1 = rd1;
+assign alu_op2 = rd2;
+assign a0 = wd3;
 
 
 endmodule
