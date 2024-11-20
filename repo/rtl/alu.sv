@@ -15,6 +15,6 @@ module alu (
             4'b0110: result = a >> b[4:0];
             default: result = 0;
         endcase 
-        zero = (results == 0);
+        zero = (result == 0);
     end
 endmodule

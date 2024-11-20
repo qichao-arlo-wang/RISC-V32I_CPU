@@ -68,7 +68,7 @@ logic [DATA_WIDTH-1:0] immediate;
 logic [DATA_WIDTH-1:0] reg_data1, reg_data2, alu_in2, alu_out;
 
 // Instantiate Instruction Memory
-Instruction_Memory imem (
+instruction_memory imem (
     .addr(PC),
     .instruction(instruction)
 );
@@ -91,7 +91,7 @@ Control_Unit ctrl (
 );
 
 // Instantiate Sign-Extension Unit
-Sign_Extension_Unit sext (
+Sign_Extension sext (
     .instruction(instruction),
     .ImmSrc(ImmSrc),
     .immediate(immediate)
@@ -131,7 +131,7 @@ register_file reg_file (
     .rd(rd),
     .wd(wd),
     .rd1(rd1),
-    .rd2(rd2),
+    .rd2(rd2)
 );
 
 alu alu_inst(

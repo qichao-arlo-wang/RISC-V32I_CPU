@@ -1,4 +1,4 @@
-module Sign_Extension_Unit (
+module sign_exten (
     input logic [31:0] instruction,  // instruction
     output logic [31:0] immediate    // extended immediate
 );
