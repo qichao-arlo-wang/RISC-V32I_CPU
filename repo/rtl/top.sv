@@ -91,8 +91,8 @@ Control_Unit ctrl (
 );
 
 // Instantiate Sign-Extension Unit
-Sign_Extension sext (
-    .instruction(instruction),
+Sign_Exten sext (
+    .instruction_memory(instruction),
     .ImmSrc(ImmSrc),
     .immediate(immediate)
 );
