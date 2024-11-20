@@ -24,7 +24,7 @@ adder branch_pc_adder(
 // adder used to +4
 adder inc_pc_adder(
     .in1 (inc_PC),
-    .in2 (32'd4)),
+    .in2 (32'd4),
 
     .out (PC)
 );
