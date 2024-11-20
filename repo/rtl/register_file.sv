@@ -29,9 +29,9 @@ module register_file #(
         reg_file[0] <= 32'b0; // ensure register 0 always holds the value 0
     end
 
-    // Asynchronous read operation
+    // Asynchronous read operation(use = rather than <=)
     always_comb begin
-        rd1 <= reg_file[rd1];
-        rd2 <= reg_file[rd2];
+        rd1 = reg_file[ad1];
+        rd2 = reg_file[ad2];
     end
 endmodule
