@@ -1,6 +1,8 @@
 module sign_exten (
-    input logic [31:0] instruction,  // instruction
+    input logic [31:0] instruction, //instruction memory
+    input logic [1:0] imm_src,  // instruction
     output logic [31:0] immediate    // extended immediate
+
 );
 
     always_comb begin

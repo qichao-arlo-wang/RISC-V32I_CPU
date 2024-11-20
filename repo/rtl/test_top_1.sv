@@ -5,35 +5,35 @@ module test_top_1 #(
 ) (
     input   logic clk,
     input   logic rst,
-    input   logic PCsrc,
-    input   logic ImmOp,
-    output  logic [DATA_WIDTH-1:0] PC    
+    input   logic pc_src,
+    input   logic imm_op,
+    output  logic [DATA_WIDTH-1:0] pc    
 );
 
     // internal signal
-    logic [DATA_WIDTH-1:0] PC, inc_PC, PC_src, ImmOp, branch_PC;
+    logic [DATA_WIDTH-1:0] pc, inc_pc, pc_src, imm_op, branch_pc;
 
 // adder used to add PC and ImmOp
 adder branch_pc_adder(
-    .in1 (PC),
-    .in2 (ImmOp),
+    .in1 (pc),
+    .in2 (imm_op),
     
-    .out (branch_PC)
+    .out (branch_pc)
 );
 
 // adder used to +4
 adder inc_pc_adder(
-    .in1 (inc_PC),
-    .in2 (32'd4)),
+    .in1 (inc_pc),
+    .in2 (32'd4),
 
-    .out (PC)
+    .out (pc)
 );
 
-// mux used to select between branch_PC and inc_PC 
+// mux used to select between branch_pc and inc_pc 
 mux pc_mux(
-    .in0(inc_PC),
-    .in1(branch_PC),
-    .sel(PC_src),
+    .in0(inc_pc),
+    .in1(branch_pc),
+    .sel(pc_src),
 
     .out(next_PC)
 );
@@ -42,9 +42,9 @@ mux pc_mux(
 PC_Reg pc_reg(
     .clk     (clk),
     .rst     (rst),
-    .next_PC (next_PC),
+    .next_PC (next_pc),
     
-    .PC      (PC)
+    .PC      (pc)
 );
 
 endmodule

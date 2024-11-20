@@ -1,4 +1,4 @@
-module Instruction_Memory (
+module instruction_memory (
     input logic [31:0] addr,          // Address (Program Counter)
     output logic [31:0] instruction   // Fetched instruction
 );

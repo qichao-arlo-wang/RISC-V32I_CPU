@@ -11,40 +11,40 @@ assign a0 = 32'd5;
 
 /// /// BLOCK 1: Program counter and related adders /// ///
 // internal signals
-logic [DATA_WIDTH-1:0] PC, inc_PC, PC_src, ImmOp, branch_PC;
+logic [DATA_WIDTH-1:0] pc, inc_pc, pc_src, imm_op, branch_pc;
 
 // adder used to add PC and ImmOp
 adder branch_pc_adder(
-    .in1 (PC),
-    .in2 (ImmOp),
+    .in1 (pc),
+    .in2 (imm_op),
     
-    .out (branch_PC)
+    .out (branch_pc)
 );
 
 // adder used to +4
 adder inc_pc_adder(
-    .in1 (inc_PC),
+    .in1 (inc_pc),
     .in2 (32'd4),
 
-    .out (PC)
+    .out (pc)
 );
 
-// mux used to select between branch_PC and inc_PC 
+// mux used to select between branch_pc and inc_pc
 mux pc_mux(
-    .in0(inc_PC),
-    .in1(branch_PC),
-    .sel(PC_src),
+    .in0(inc_pc),
+    .in1(branch_pc),
+    .sel(pc_src),
 
-    .out(next_PC)
+    .out(next_pc)
 );
 
 // program counter
-PC_Reg pc_reg(
+pc_reg pc_reg(
     .clk     (clk),
     .rst     (rst),
-    .next_PC (next_PC),
+    .next_pc (next_pc),
     
-    .PC      (PC)
+    .pc      (pc)
 );
 
 
@@ -56,10 +56,10 @@ logic [2:0] funct3 = instruction[14:12];
 logic funct7_5 = instruction[30];
 
 // Control signals
-logic RegWrite, MemWrite, ALUsrc, Branch, ResultSrc;
-logic [1:0] ImmSrc;
-logic [2:0] ALUControl;
-logic Zero;
+logic reg_write, mem_write, alu_src, branch, result_src;
+logic [1:0] imm_src;
+logic [2:0] alu_control;
+logic zero;
 
 // Immediate
 logic [DATA_WIDTH-1:0] immediate;
@@ -69,31 +69,31 @@ logic [DATA_WIDTH-1:0] reg_data1, reg_data2, alu_in2, alu_out;
 
 // Instantiate Instruction Memory
 instruction_memory imem (
-    .addr(PC),
+    .addr(pc),
     .instruction(instruction)
 );
 
 // Instantiate Control Unit
-Control_Unit ctrl (
+control_unit ctrl (
     .opcode(opcode),
     .funct3(funct3),
     .funct7_5(funct7_5),
-    .Zero(Zero),
-    .RegWrite(RegWrite),
-    .MemWrite(MemWrite),
-    .Branch(Branch),
-    .ResultSrc(ResultSrc),
-    .ALUControl(ALUControl),
+    .zero(zero),
+    .reg_write(reg_write),
+    .mem_write(mem_write),
+    .branch(branch),
+    .result_src(result_src),
+    .alu_control(alu_control),
 
-    .ALUsrc(ALUsrc),
-    .ImmSrc(ImmSrc),
-    .PCsrc(PCsrc)
+    .alu_src(alu_src),
+    .imm_src(imm_src),
+    .pc_src(pc_src)
 );
 
 // Instantiate Sign-Extension Unit
-Sign_Exten sext (
-    .instruction_memory(instruction),
-    .ImmSrc(ImmSrc),
+sign_exten sext (
+    .instruction(instruction),
+    .imm_src(imm_src),
     .immediate(immediate)
 );
 
@@ -121,7 +121,7 @@ logic [DATA_WIDTH-1:0] wd, rd1, rd2;
 //ALU signals
 logic [DATA_WIDTH-1:0] alu_a, alu_b, alu_result;
 logic [3:0] alu_ctrl;
-logic zero;
+// logic zero;   declared in block 2
 
 register_file reg_file (
     .clk(clk),

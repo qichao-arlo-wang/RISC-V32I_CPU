@@ -1,16 +1,16 @@
-module PC_Reg (
+module pc_reg (
     input  logic        clk,        // Clock
     input  logic        rst,        // Reset
-    input  logic [31:0] next_PC,    // Next PC value
-    output logic [31:0] PC          // Current PC value
+    input  logic [31:0] next_pc,    // Next pc value
+    output logic [31:0] pc          // Current pc value
 );
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
-            PC <= 32'b0;            // Reset PC to 0
+            pc <= 32'b0;            // Reset pc to 0
         end
         else begin
-            PC <= next_PC;          // Update PC with next_PC
+            pc <= next_pc;          // Update pc with next_pc
         end
     end
 

@@ -24,13 +24,13 @@ module top (
     logic [31:0] reg_data1, reg_data2, alu_in2, alu_out;
 
     // Instantiate Instruction Memory
-    Instruction_Memory imem (
+    instruction_memory imem (
         .addr(pc),
         .instruction(instruction)
     );
 
     // Instantiate Control Unit
-    Control_Unit ctrl (
+    control_unit ctrl (
         .opcode(opcode),
         .funct3(funct3),
         .funct7_5(funct7_5),
@@ -46,7 +46,7 @@ module top (
     );
 
     // Instantiate Sign-Extension Unit
-    Sign_Extension_Unit sext (
+    sign_exten sext (
         .instruction(instruction),
         .ImmSrc(ImmSrc),
         .immediate(immediate)

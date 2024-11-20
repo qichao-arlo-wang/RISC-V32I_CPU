@@ -5,6 +5,7 @@
 
 # Constants
 SCRIPT_DIR="/root/Documents/Group-9-RISC-V/repo"
+# SCRIPT_DIR="/Users/arlo/Documents/Imperial/Group-9-RISC-V/repo"
 # TEST_FOLDER="/root/Documents/Group-9-RISC-V/repo/tb/tests"
 # RTL_FOLDER="/root/Documents/Group-9-RISC-V/repo/rtl"
 # SCRIPT_DIR=$(dirname "$(realpath "$0")")
@@ -51,6 +52,7 @@ for file in "${files[@]}"; do
                 --prefix "Vdut" \
                 -o Vdut \
                 -LDFLAGS "-lgtest -lgtest_main -lpthread" \
+                # -I/opt/homebrew/Cellar/googletest/1.15.2/include
 
     # Build C++ project with automatically generated Makefile
     make -j -C obj_dir/ -f Vdut.mk
