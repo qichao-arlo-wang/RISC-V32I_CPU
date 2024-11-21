@@ -47,6 +47,8 @@ pc_reg pc_reg(
 
 
 /// /// BLOCK 2: The Register File, ALU and the related MUX /// ///
+// Instruction & fields
+logic [DATA_WIDTH-1:0] instr;
 
 // Control signals
 logic RegWrite, ALUsrc, MemWrite, ResSrc;
@@ -79,12 +81,12 @@ control_unit ctrl (
     .result_src(ResSrc)
 );
 
+
 // Instantiate Sign-Extension Unit
 sign_exten sext (
-    .instruction(instr),
-
-    .imm_src(ImmSrc),
-    .immediate(ImmOp)
+    .partial_instruction(instr[31:7]),
+    .imm_src(imm_src),
+    .imm_op(imm_op)
 );
 
 /*
