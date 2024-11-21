@@ -96,7 +96,7 @@ always_ff @(posedge clk or posedge rst) begin
         pc <= next_pc;
 end
 
-assign next_pc = (PCsrc) ? pc + (immediate << 1) : pc + 4;
+assign next_pc = (PCsrc) ? pc + (imm_op << 1) : pc + 4;
 */
 
 
@@ -136,16 +136,13 @@ mux alu_mux_inst(
     .out(ALUop2)
 );
 
-// initial begin
-//     we3 =1;
-//     ad1 = 5'd1;
-//     ad2 = 5'd2;
-//     ad3 = 5'd3;
-//     sel = 0;
-//     alu_ctrl = 4'b0000;
-//     #10
-//     alu_src = 1;
-// end
-
+initial begin
+    we3 =1;
+    rs1 = 5'd1;
+    rs2 = 5'd2;
+    rd = 5'd3;
+    alu_ctrl = 4'b0000;
+    alu_src = 1;
+end
 
 endmodule

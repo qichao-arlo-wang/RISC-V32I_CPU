@@ -17,7 +17,7 @@ module control_unit #(
     logic funct7_5 = instruction[30];
     logic [1:0] alu_op;
     logic branch;
-
+    
     // Instantiate Main Decoder
     main_decoder main_dec (
         .opcode(opcode),
