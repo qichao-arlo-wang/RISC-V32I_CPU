@@ -1,19 +1,22 @@
-module control_unit (
-    input logic [6:0] opcode,
-    input logic [2:0] funct3,
-    input logic funct7_5,
+module control_unit #(
+    parameter DATA_WIDTH = 32
+)(
+    input [DATA_WIDTH-1:0] instruction,
     input logic zero,
     output logic reg_wr_en,
     output logic mem_wr_en,
     output logic [1:0] imm_src,
     output logic alu_src,
-    output logic branch,
     output logic result_src,
     output logic [2:0] alu_control,
     output logic pc_src
 );
 
+    logic [6:0] opcode = instruction[6:0];
+    logic [2:0] funct3 = instruction[14:12];
+    logic funct7_5 = instruction[30];
     logic [1:0] alu_op;
+    logic branch;
 
     // Instantiate Main Decoder
     main_decoder main_dec (

@@ -8,7 +8,7 @@ module instruction_memory (
 
     // Initialize mem
     initial begin
-        $readmemh("instructions.hex", mem); 
+        $readmemh("program.hex", mem); 
     end
 
     // Fetch instruction

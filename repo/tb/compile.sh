@@ -3,7 +3,7 @@
 # Usage: ./compile.sh <file.s>
 
 # Default vars
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
+SCRIPT_DIR="/root/Documents/Group-9-RISC-V/repo"
 output_file="../rtl/program.hex"
 
 # Handle terminal arguments
