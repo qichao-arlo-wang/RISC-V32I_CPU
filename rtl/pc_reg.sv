@@ -1,7 +1,7 @@
-module clocked_register (
-    input  logic         clk,
-    input  logic [31:0]  pc_next,
-    output logic [31:0]  pc
+module pc_reg (
+    input  logic        clk,        // Clock
+    input  logic [31:0] next_pc,    // Next pc value
+    output logic [31:0] pc          // Current pc value
 );
 
     always_ff @(posedge clk) begin
