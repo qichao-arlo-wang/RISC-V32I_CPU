@@ -49,6 +49,7 @@ pc_reg pc_reg(
 /// /// BLOCK 2: The Register File, ALU and the related MUX /// ///
 // Instruction & fields
 logic [DATA_WIDTH-1:0] instruction;
+logic [24:0] instruction31_7 = instruction[31:7];
 logic [6:0] opcode = instruction[6:0];
 logic [2:0] funct3 = instruction[14:12];
 logic funct7_5 = instruction[30];
@@ -88,8 +89,7 @@ control_unit ctrl (
 
 // Instantiate Sign-Extension Unit
 sign_exten sext (
-    .instruction(instruction),
-
+    .partial_instruction(instruction31_7),
     .imm_src(imm_src),
     .imm_op(imm_op)
 );

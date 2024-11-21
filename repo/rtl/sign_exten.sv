@@ -1,20 +1,25 @@
-module sign_exten (
-    input logic [31:0] instruction, //instruction memory
-    input logic [1:0] imm_src,  // instruction
-    output logic [31:0] imm_op    // extended imm_op
 
+module sign_exten (
+    input logic [24:0] partial_instruction, //  bits from 31 to 7
+    input logic [1:0] imm_src,             
+    output logic [31:0] imm_op             
 );
 
+    
     always_comb begin
-        case (instruction[6:0])
-            7'b0000011, 7'b0010011: // I
-                imm_op = {{20{instruction[31]}}, instruction[31:20]};
-            7'b0100011: // S
-                imm_op = {{20{instruction[31]}}, instruction[31:25], instruction[11:7]};
-            7'b1100011: // B
-                imm_op = {{19{instruction[31]}}, instruction[31], instruction[7], instruction[30:25], instruction[11:8], 1'b0};
-            default:
-                imm_op = 32'd0; 
+        case (imm_src)  // Use imm_src to determine the type of extension
+            2'b00:       // I-type 
+                imm_op = {{20{partial_instruction[24]}}, partial_instruction[24:13]};  // Bits 31:20 of original instruction is now 24:13
+
+            2'b01:       // S-type
+                imm_op = {{20{partial_instruction[24]}}, partial_instruction[24:18], partial_instruction[4:0]};  // Bits 31:25 and 11:7 of original instruction
+
+            2'b10:       // B-type
+                imm_op = {{19{partial_instruction[24]}}, partial_instruction[24], partial_instruction[0], partial_instruction[23:18], partial_instruction[4:1], 1'b0};  // Form branch offset
+
+            default:     // Default 
+                imm_op = 32'd0;  // Output zero 
         endcase
     end
 endmodule
+
