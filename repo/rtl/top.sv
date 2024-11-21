@@ -122,8 +122,8 @@ register_file reg_file_inst (
     .ad1(rs1),
     .ad2(rs2),
     .ad3(rd),
-    .wd3(wd3),
     .we3(we3),
+    .wd3(wd3),
 
     .rd1(rd1),
     .rd2(rd2),
@@ -134,6 +134,7 @@ alu alu_inst(
     .alu_op1(alu_op1),
     .alu_op2(alu_op2),
     .alu_ctrl(alu_ctrl),
+
     .alu_out(alu_out),
     .eq(eq)
 );
@@ -145,19 +146,14 @@ mux alu_mux_inst(
     .out(alu_op2)
 );
 
-// initial begin
-//     we3 =1;
-//     ad1 = 5'd1;
-//     ad2 = 5'd2;
-//     ad3 = 5'd3;
-//     sel = 0;
-//     alu_ctrl = 4'b0000;
-//     alu_src = 1;
-// end
+initial begin
+    we3 =1;
+    rs1 = 5'd1;
+    rs2 = 5'd2;
+    rd = 5'd3;
+    alu_ctrl = 4'b0000;
+    alu_src = 1;
+end
 
-assign alu_op1 = rd1;
-assign alu_op2 = rd2;
 assign a0 = wd3;
-
-
 endmodule
