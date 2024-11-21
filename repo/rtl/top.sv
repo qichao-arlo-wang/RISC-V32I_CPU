@@ -21,10 +21,10 @@ adder branch_pc_adder(
 
 // adder used to +4
 adder inc_pc_adder(
-    .in1 (inc_pc),
+    .in1 (pc), 
     .in2 (32'd4),
 
-    .out (pc)
+    .out (inc_pc)
 );
 
 // mux used to select between branch_pc and inc_pc
