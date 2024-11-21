@@ -7,14 +7,14 @@ module control_unit (
     output logic mem_wr_en,
     output logic [1:0] imm_src,
     output logic alu_src,
-    output logic branch,
     output logic result_src,
     output logic [2:0] alu_control,
     output logic pc_src
 );
 
     logic [1:0] alu_op;
-
+    logic branch;
+    
     // Instantiate Main Decoder
     main_decoder main_dec (
         .opcode(opcode),

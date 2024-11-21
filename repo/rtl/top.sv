@@ -54,13 +54,10 @@ logic [2:0] funct3 = instruction[14:12];
 logic funct7_5 = instruction[30];
 
 // Control signals
-logic reg_wr_en, mem_wr_en, alu_src, branch, result_src;
+logic reg_wr_en, mem_wr_en, alu_src, result_src;
 logic [1:0] imm_src;
 logic [2:0] alu_control;
 logic zero;
-
-// Immediate
-logic [DATA_WIDTH-1:0] immediate;
 
 // Register data 
 logic [4:0] rs1 = instruction[19:15]; // rs1: instruction[19:15]
@@ -79,15 +76,14 @@ control_unit ctrl (
     .funct3(funct3),
     .funct7_5(funct7_5),
     .zero(zero),
-    .reg_wr_en(reg_wr_en),
-    .mem_wr_en(mem_wr_en),
-    .branch(branch),
-    .result_src(result_src),
-    .alu_control(alu_control),
 
+    .pc_src(pc_src),
+    .result_src(result_src),
+    .mem_wr_en(mem_wr_en),
+    .alu_control(alu_control),
     .alu_src(alu_src),
     .imm_src(imm_src),
-    .pc_src(pc_src)
+    .reg_wr_en(reg_wr_en)
 );
 
 // Instantiate Sign-Extension Unit
@@ -95,7 +91,7 @@ sign_exten sext (
     .instruction(instruction),
 
     .imm_src(imm_src),
-    .immediate(immediate)
+    .imm_op(imm_op)
 );
 
 /*
@@ -107,7 +103,7 @@ always_ff @(posedge clk or posedge rst) begin
         pc <= next_pc;
 end
 
-assign next_pc = (PCsrc) ? pc + (immediate << 1) : pc + 4;
+assign next_pc = (PCsrc) ? pc + (imm_op << 1) : pc + 4;
 */
 
 
@@ -156,7 +152,6 @@ mux alu_mux_inst(
 //     ad3 = 5'd3;
 //     sel = 0;
 //     alu_ctrl = 4'b0000;
-//     #10
 //     alu_src = 1;
 // end
 
