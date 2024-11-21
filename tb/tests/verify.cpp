@@ -9,9 +9,9 @@ class MuxTestbench : public BaseTestbench
 protected:
     void initializeInputs() override
     {
-        top->sel = 0;
-        top->in0 = 0;
-        top->in1 = 0;
+        // top->sel = 0;
+        // top->in0 = 0;
+        // top->in1 = 0;
         // output: out
     }
 };
