@@ -1,6 +1,6 @@
-module instruction_memory (
+module instr_mem (
     input logic [31:0] addr,          // Address (Program Counter)
-    output logic [31:0] instruction   // Fetched instruction
+    output logic [31:0] instr   // Fetched instruction
 );
 
     // Memory array 
@@ -11,6 +11,6 @@ module instruction_memory (
         $readmemh("instructions.hex", mem); 
     end
 
-    // Fetch instruction
-    assign instruction = mem[addr >> 2]; 
+    // Fetch instr
+    assign instr = mem[addr >> 2]; 
 endmodule

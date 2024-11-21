@@ -2,78 +2,71 @@ module top #(
     parameter DATA_WIDTH = 32
 ) (
     input   logic clk,                  // clock signal
-    input   logic rst,                  // reset signal
-    output  logic [DATA_WIDTH-1:0] a0   // register a0 output
+
 );
 
-/// /// BLOCK 1: Program counter and related adders /// ///
-// internal signals
-logic [DATA_WIDTH-1:0] pc, inc_pc, imm_op, branch_pc, next_pc;
-logic pc_src;
-
-// adder used to add PC and ImmOp
-adder branch_pc_adder(
-    .in1 (pc),
-    .in2 (imm_op),
-    
-    .out (branch_pc)
-);
+/// /// BLOCK 1: instruction memory, pc_plus4_adder, pc_reg and pc_mux /// ///
+logic [DATA_WIDTH-1:0] pc, pc_plus_4, pc_target, pc_next; // block 1 internal signals
+logic pc_src; // block 2 control signal
+logic [DATA_WIDTH-1:0] instr; // block 2 instruction signal
 
 // adder used to +4
-adder inc_pc_adder(
+adder pc_plus4_adder(
     .in1 (pc), 
     .in2 (32'd4),
-
-    .out (inc_pc)
+    .out (pc_plus_4)
 );
 
-// mux used to select between branch_pc and inc_pc
+// mux used to select between pc_target and pc_plus_4
 mux pc_mux(
-    .in0(inc_pc),
-    .in1(branch_pc),
+    .in0(pc_plus_4),
+    .in1(pc_target),
     .sel(pc_src),
-
-    .out(next_pc)
+    .out(pc_next)
 );
-
-// program counter
-pc_reg pc_reg(
-    .clk     (clk),
-    .rst     (rst),
-    .next_pc (next_pc),
-    
-    .pc      (pc)
-);
-
-
-/// /// BLOCK 2: The Register File, ALU and the related MUX /// ///
-// Instruction & fields
-logic [DATA_WIDTH-1:0] instruction;
-logic [24:0] instruction31_7 = instruction[31:7];
-logic [6:0] opcode = instruction[6:0];
-logic [2:0] funct3 = instruction[14:12];
-logic funct7_5 = instruction[30];
-
-// Control signals
-logic reg_wr_en, mem_wr_en, alu_src, result_src;
-logic [1:0] imm_src;
-logic [2:0] alu_control;
-logic zero;
-
-// Register data 
-logic [4:0] rs1 = instruction[19:15]; // rs1: instruction[19:15]
-logic [4:0] rs2 = instruction[24:20]; // rs2: instruction[24:20]
-logic [4:0] rd  = instruction[11:7];  // rd: instruction[11:7]
 
 // Instantiate Instruction Memory
-instruction_memory imem (
+instr_mem instr_mem_inst (
     .addr(pc),
-    .instruction(instruction)
+    .instr(instr)
 );
+
+pc_reg pc_reg_inst (
+    .clk(clk),
+    .pc_next(pc_next),
+    .pc(pc)
+);
+
+
+
+/// /// BLOCK 2: Register file, control unit, and extend /// ///
+
+// // // control signals
+// instr signal has been declared in block 1
+logic [24:0] instr_31_7 = instr[31:7];
+logic [6:0] op = instr[6:0];
+logic [2:0] funct3 = instr[14:12];
+logic funct7_5 = instr[30];
+logic zero;
+// !!! !!! signal pc_src has been declared in block 1 !!! !!!
+logic reg_wr_en, mem_wr_en, alu_src, result_src;
+logic [1:0] imm_src;
+logic [3:0] alu_control;
+
+
+// // // Register signal
+logic [4:0] a1 = instr[19:15]; // a1: instr[19:15]
+logic [4:0] a2 = instr[24:20]; // a2: instr[24:20]
+logic [4:0] a3  = instr[11:7];  // a3: instr[11:7]
+logic [DATA_WIDTH-1:0] rd1, rd2;
+logic [DATA_WIDTH-1:0] result;
+
+// // // extend block signal
+logic [DATA_WIDTH-1:0] imm_ext;
 
 // Instantiate Control Unit
 control_unit ctrl (
-    .opcode(opcode),
+    .op(op),
     .funct3(funct3),
     .funct7_5(funct7_5),
     .zero(zero),
@@ -89,9 +82,20 @@ control_unit ctrl (
 
 // Instantiate Sign-Extension Unit
 sign_exten sext (
-    .partial_instruction(instruction31_7),
+    .instr_31_7(instr_31_7),
     .imm_src(imm_src),
-    .imm_op(imm_op)
+    .imm_ext(imm_ext)
+);
+
+register_file reg_file_inst (
+    .clk(clk),
+    .a1(a1),
+    .a2(a2),
+    .a3(a3),
+    .wd3(result),
+    .we3(reg_wr_en),
+    .rd1(rd1),
+    .rd2(rd2),
 );
 
 /*
@@ -100,59 +104,64 @@ always_ff @(posedge clk or posedge rst) begin
     if (rst)
         pc <= 32'b0;
     else
-        pc <= next_pc;
+        pc <= pc_next;
 end
 
-assign next_pc = (PCsrc) ? pc + (imm_op << 1) : pc + 4;
+assign pc_next = (PCsrc) ? pc + (imm_op << 1) : pc + 4;
 */
 
 
-/// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// ///
-//Register_file signals
-logic we3;
 
-logic [DATA_WIDTH-1:0] wd3, rd1, rd2;
-//ALU signals
-logic [DATA_WIDTH-1:0] alu_op1, alu_op2, alu_out;
-logic [3:0] alu_ctrl;
+/// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// ///
+
+// !!! !!! pc_target has been declared in block 1 !!! !!!
+
+// // ALU signals
+logic [DATA_WIDTH-1:0] src_a, src_b, alu_result;
 logic eq;
 
-register_file reg_file_inst (
-    .clk(clk),
-    .ad1(rs1),
-    .ad2(rs2),
-    .ad3(rd),
-    .wd3(wd3),
-    .we3(we3),
+// // data memory siganls 
+logic [DATA_WIDTH-1:0] read_data, write_data;
+// logic [DATA_WIDTH-1:0] result;  declared in block 2
 
-    .rd1(rd1),
-    .rd2(rd2),
-    .a0(a0)
-);
-
+// ALU unit
 alu alu_inst(
-    .alu_op1(alu_op1),
-    .alu_op2(alu_op2),
-    .alu_ctrl(alu_ctrl),
-    .alu_out(alu_out),
-    .eq(eq)
+    .src_a(src_a),
+    .src_b(src_b),
+    .alu_control(alu_control),
+    .alu_result(alu_result),
+    .zero(zero)
 );
 
-mux alu_mux_inst(
+// mux used between register file and alu unit
+mux reg_alu_mux(
     .in0(rd2),
-    .in1(imm_op),
+    .in1(imm_ext),
     .sel(alu_src),
-    .out(alu_op2)
+    .out(src_b)
 );
 
-initial begin
-    we3 =1;
-    rs1 = 5'd1;
-    rs2 = 5'd2;
-    rd = 5'd3;
-    alu_ctrl = 4'b0000;
-    alu_src = 1;
-end
+// mux used for data memory
+mux data_mem_mux(
+    .in0(alu_result),
+    .in1(read_data),
+    .sel(result_src),
+    .out(result) 
+);
 
-assign a0 = wd3;
+// adder used to add pc and imm_ext
+adder alu_adder(
+    .in1(pc),
+    .in2(imm_ext),
+    .out(pc_target)
+);
+
+data_mem data_mem_inst(
+    .clk(clk),
+    .a(alu_result),
+    .wd(write_data),
+    .we(mem_wr_en),
+    .rd(read_data)
+)
+
 endmodule
