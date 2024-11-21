@@ -1,4 +1,4 @@
-module top #(
+module data_mem #(
     parameter DATA_WIDTH = 32,
     parameter ADDR_WIDTH = 10
 ) (
