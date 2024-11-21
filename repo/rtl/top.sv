@@ -155,6 +155,4 @@ initial begin
 end
 
 assign a0 = wd3;
-
-
 endmodule
