@@ -8,7 +8,7 @@ module instr_mem (
 
     // Initialize mem
     initial begin
-        $readmemh("instructions.hex", mem); 
+        $readmemh("program.hex", mem); 
     end
 
     // Fetch instr
