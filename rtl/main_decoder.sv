@@ -21,7 +21,7 @@ module main_decoder (
 
         // opcode decoding
         case (opcode)
-            // L-type op = 3
+            // I-type op = 3 load instructions
             7'b0000011: begin
                 reg_wr_en = 1;
                 mem_wr_en = 0;
@@ -29,6 +29,15 @@ module main_decoder (
                 alu_src = 1;
                 result_src = 1;
                 alu_op = 2'b00;
+            end
+
+            // I-type op = 3 Arithematic Instruction with immediate 
+            7'b0010011: begin
+                reg_wr_en = 1;
+                mem_wr_en = 0;
+                imm_src = 2'b00;
+                alu_src = 1;
+                alu_op = 2'b10;
             end
 
             // S-type, op = 35
