@@ -18,6 +18,6 @@ module alu (
             default: alu_result = 32'd0;    //  default 0
         endcase 
         // set the zero flag based on alu result
-        zero = (alue_result == 32'd0);
+        zero = (alu_result == 32'd0);
     end
 endmodule
