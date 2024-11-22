@@ -9,7 +9,7 @@ module alu_decoder (
         case (alu_op)
             2'b00: alu_control = 3'b000; // Add for lw/sw
             2'b01: alu_control = 3'b001; // Subtract for branch
-            2'b10: begin // R-type operations
+            2'b10: begin // I&R-type operations
                 case ({funct3, funct7_5})
                     4'b0000: alu_control = 3'b000; // ADD
                     4'b0001: alu_control = 3'b001; // SUB
