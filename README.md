@@ -1,21 +1,13 @@
-# Group-9-RISC-V
+# Group-9-RISC-V Team Project
 
-## temperory README file
+## RISC-V RV32I Processor (Part 1)
   
-### Arlo: Block 1 & repo
-- adder.sv
-- pc_reg.sv
-- test_top_1.sv
+![part 1 task allocation](/images/part1_structure.jpg)
 
-### Zitong: Block 2
-- alu.sv
-- alu_decoder.sv
-- register_file.sv
+- Arlo: blue part
+- Zecheng: green part
+- Zitong: pink part
+- Enxing: testing
 
-### Zecheng: Block 3
-- control_unit.sv
-- instruction_memory.sv
-- sign_exten.sv
-- top_control.sv
+## Stretch Goal 1: Pipelined RV32I Design
 
-### Enxing: Testing & verification
