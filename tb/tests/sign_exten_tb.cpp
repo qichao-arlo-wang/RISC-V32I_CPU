@@ -2,38 +2,41 @@
 
 Vdut *top;
 
-class MuxTestbench : public BaseTestbench
+class SignExtenTestbench : public BaseTestbench
 {
 protected:
     void initializeInputs() override
     {
-        top->sel = 0;
-        top->in0 = 0;
-        top->in1 = 0;
-        // output: out
+        top->instr_31_7 = 0;
+        top->imm_src = 0;
     }
 };
 
-TEST_F(MuxTestbench, Mux0WorksTest)
+TEST_F(SignExtenTestbench, I_TYPE_POS)
 {
-    top->sel = 0;
-    top->in0 = 1;
-    top->in1 = 0;
-
+    top->instr = 0b0010101101110100000110000;
+    top->imm_src = 0;
     top->eval();
 
-    EXPECT_EQ(top->out, 1);
+    top->imm_ext = 2781;
 }
 
-TEST_F(MuxTestbench, Mux1WorksTest)
+TEST_F(SignExtenTestbench, I_TYPE_NEG)
 {
-    top->sel = 1;
-    top->in0 = 0;
-    top->in1 = 1;
-
+    top->instr = 0b1110101101110100000110000;
+    top->imm_src = 0;
     top->eval();
 
-    EXPECT_EQ(top->out, 1);
+   top->imm_ext = -1315; //4294967150
+}
+
+TEST_F(SignExtenTestbench, S_TYPE)
+{
+    top->instr = 0b0100011011110011011001110;
+    top->imm_src = 1;
+    top->eval();
+
+   top->imm_ext = -146;
 }
 
 int main(int argc, char **argv)
