@@ -1,4 +1,3 @@
-
 module sign_exten (
     input logic [24:0] instr_31_7, //  bits from 31 to 7
     input logic [1:0] imm_src,             
@@ -22,4 +21,3 @@ module sign_exten (
         endcase
     end
 endmodule
-
