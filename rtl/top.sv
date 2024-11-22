@@ -2,7 +2,6 @@ module top #(
     parameter DATA_WIDTH = 32
 ) (
     input   logic clk,                  // clock signal
-
 );
 
 /// /// BLOCK 1: instruction memory, pc_plus4_adder, pc_reg and pc_mux /// ///
@@ -97,19 +96,6 @@ register_file reg_file_inst (
     .rd1(rd1),
     .rd2(rd2),
 );
-
-/*
-// PC update logic
-always_ff @(posedge clk or posedge rst) begin
-    if (rst)
-        pc <= 32'b0;
-    else
-        pc <= pc_next;
-end
-
-assign pc_next = (PCsrc) ? pc + (imm_op << 1) : pc + 4;
-*/
-
 
 
 /// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// ///
