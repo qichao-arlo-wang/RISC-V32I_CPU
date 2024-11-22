@@ -15,7 +15,10 @@ module sign_exten (
 
             2'b10:       // B-type
                 imm_ext = {{19{instr_31_7[24]}}, instr_31_7[24], instr_31_7[0], instr_31_7[23:18], instr_31_7[4:1], 1'b0};  // Form branch offset
-
+            
+            2'b11:       // U-type 
+                imm_ext = {instr_31_7[24:5], 12b'0};  // Bits 31:12 of imm + 12 bit 0 for U type instruction
+            
             default:     // Default 
                 imm_ext = 32'd0;  // Output zero 
         endcase

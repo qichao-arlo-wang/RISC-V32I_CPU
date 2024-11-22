@@ -119,6 +119,22 @@ alu alu_inst(
     .zero(zero)
 );
 
+//MUX for src_a (ALU first operand)
+mux alu_src_a_mux(
+    .in0(rd1),  //from reg_file (default operand)
+    .in1(pc),    //from pc 
+    .sel(alu_src_a_sel), //new control signal for src_a selection
+    .out(src_a)
+);
+
+// MUX for src_b (ALU second operand)
+mux alu_src_b_mux(
+    .in0(rd2),                 // From register file
+    .in1(imm_ext),             // Immediate value
+    .sel(alu_src),             // ALU source control signal
+    .out(src_b)
+);
+
 // mux used between register file and alu unit
 mux reg_alu_mux(
     .in0(rd2),
