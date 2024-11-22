@@ -3,7 +3,6 @@ module data_mem #(
     parameter ADDR_WIDTH = 10
 ) (
     input  logic                   clk,
-    input  logic                   rst,
     input  logic                   we,
     input  logic [ADDR_WIDTH-1:0]  a,
     input  logic [DATA_WIDTH-1:0]  wd,
@@ -21,16 +20,12 @@ module data_mem #(
     end
 
     //memory read and write operations
-    always_ff @(posedge clk or posedge rst) begin //add reset signals to initialise the rd output
-        if (rst) begin
-            rd <= '0; // reset rd output
+    always_ff @(posedge clk) begin
+        if (we) begin
+            data_mem[a] <= wd;
+            rd <= wd; //read after write : rd reflects rewly written value
         end else begin
-            if (we) begin
-                data_mem[a] <= wd;
-                rd <= wd; //read after write : rd reflects rewly written value
-            end else begin
-                rd <= data_mem[a];
-            end
+            rd <= data_mem[a];
         end
     end
 
