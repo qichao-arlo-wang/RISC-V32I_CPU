@@ -3,16 +3,18 @@ module data_mem #(
     parameter ADDR_WIDTH = 10
 ) (
     input  logic                   clk,
-    input  logic                   we,
-    input  logic [ADDR_WIDTH-1:0]  a,
-    input  logic [DATA_WIDTH-1:0]  wd,
-    output logic [DATA_WIDTH-1:0]  rd
+    input  logic [ADDR_WIDTH-1:0]  a,  // mem address
+    input  logic                   we, // mem write enable
+    input  logic [DATA_WIDTH-1:0]  wd, // mem write data
+
+    output logic [DATA_WIDTH-1:0]  rd  // mem read data
 );
 
     //  memory array - size determined by ADDR_WIDTH 
     logic [DATA_WIDTH-1:0] data_mem [0:(1 << ADDR_WIDTH)-1]; 
 
-    //initialise memory array to a known state (this is optional!! for simulation purposes!!!)
+    // initialise memory array to a known state 
+    // // // for simulation purposes only // // //
     initial begin
         for (int i = 0; i < (1 << ADDR_WIDTH); i++) begin
             data_mem[i] = '0;
