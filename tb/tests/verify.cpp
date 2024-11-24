@@ -1,29 +1,43 @@
 #include "base_testbench.h"
+#include <filesystem>
 
 Vdut *top;
 VerilatedVcdC *tfp;
-unsigned int ticks = 0;
+unsigned int tick = 0;
+unsigned int CYCLES = 256;
+int i;
 
-class MuxTestbench : public BaseTestbench
+class CpuTestbench : public BaseTestbench
 {
 protected:
     void initializeInputs() override
     {
-        // top->sel = 0;
-        // top->in0 = 0;
-        // top->in1 = 0;
-        // output: out
+        top->clk = 0;
+        top->rst = 0;
+        top->a0 = 0;
     }
 };
+
+void runSimulation(int cycles)
+{
+    for (tick = 0; tick < 2; tick++) {
+        tfp->dump (2*i+tick);  // unit is in ps!!!
+        top->clk = !top->clk;
+        top->eval ();
+    }
+}
 
 TEST_F(CpuTestbench, BaseProgramTest)
 {
     bool success = false;
+    system("pwd");
+    std::filesystem::current_path("../");
+    system("pwd");
     system("./compile.sh asm/program.S");
 
-    for (int i = 0; i < CYCLES; i++)
+    for (i = 0; i < CYCLES; i++)
     {
-        runSimulation(1);
+        runSimulation(2);
         if (top->a0 == 254)
         {
             SUCCEED();
