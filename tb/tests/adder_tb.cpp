@@ -9,49 +9,49 @@ class AdderTestbench : public BaseTestbench
 protected:
     void initializeInputs() override
     {
-        top->in1 = 0;
-        top->in2 = 0;
+        top->in1_i = 0;
+        top->in2_i = 0;
     }
 };
 
 // adder simple works test
 TEST_F(AdderTestbench, AdderWorksTest)
 {
-    top->in1 = 5;
-    top->in2 = 10;
+    top->in1_i = 5;
+    top->in2_i = 10;
 
     top->eval();
 
-    EXPECT_EQ(top->out, 15);
+    EXPECT_EQ(top->out_o, 15);
 }
 
 // adder zero test
 TEST_F(AdderTestbench, AdderZeroTest)
 {
-    top->in1 = 0;
-    top->in2 = 0;
+    top->in1_i = 0;
+    top->in2_i = 0;
 
     top->eval();
 
-    EXPECT_EQ(top->out, 0);
+    EXPECT_EQ(top->out_o, 0);
 }
 
 // adder negative test
 TEST_F(AdderTestbench, AdderNegativeTest)
 {
-    top->in1 = -5;
-    top->in2 = -10;
+    top->in1_i = -5;
+    top->in2_i = -10;
 
     top->eval();
 
-    EXPECT_EQ(top->out, -15);
+    EXPECT_EQ(top->out_o, -15);
 }
 
 // adder max int test
 TEST_F(AdderTestbench, AdderMaxIntTest)
 {
-    top->in1 = INT_MAX;
-    top->in2 = 1;
+    top->in1_i = INT_MAX;
+    top->in2_i = 1;
 
     top->eval();
     // Use int64_t to safely handle the addition without overflow
@@ -65,8 +65,8 @@ TEST_F(AdderTestbench, AdderMaxIntTest)
 // adder min int test
 TEST_F(AdderTestbench, AdderMinIntTest)
 {
-    top->in1 = INT_MIN;
-    top->in2 = -1;
+    top->in1_i = INT_MIN;
+    top->in2_i = -1;
 
     top->eval();
 
