@@ -17,24 +17,24 @@ module control_unit (
     
     // Instantiate Main Decoder
     main_decoder main_dec (
-        .opcode(opcode),
-        .reg_wr_en(reg_wr_en),
-        .mem_wr_en(mem_wr_en),
-        .imm_src(imm_src),
-        .alu_src(alu_src),
-        .branch(branch),
-        .result_src(result_src),
-        .alu_op(alu_op)
+        .opcode_i(opcode_i),
+        .reg_wr_en_o(reg_wr_en_o),
+        .mem_wr_en_o(mem_wr_en_o),
+        .imm_src_o(imm_src_o),
+        .alu_src_o(alu_src_o),
+        .branch_o(branch),
+        .result_src_o(result_src_o),
+        .alu_op_o(alu_op)
     );
 
     // Instantiate ALU Decoder
     alu_decoder alu_dec (
-        .alu_op(alu_op),
-        .funct3(funct3),
-        .funct7_5(funct7_5),
-        .alu_control(alu_control)
+        .alu_op_i(alu_op),
+        .funct3_i(funct3_i),
+        .funct7_5_i(funct7_5_i),
+        .alu_control_o(alu_control_o)
     );
 
     // Branch decision
-    assign pc_src = branch & zero;
+    assign pc_src_o = branch & zero_i;
 endmodule

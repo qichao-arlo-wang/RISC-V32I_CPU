@@ -1,33 +1,57 @@
-module data_mem #(
-    parameter DATA_WIDTH = 32,
-    parameter ADDR_WIDTH = 10
-) (
-    input  logic                   clk,
-    input  logic [ADDR_WIDTH-1:0]  a,  // mem address
-    input  logic                   we, // mem write enable
-    input  logic [DATA_WIDTH-1:0]  wd, // mem write data
+module data_mem (
+    input  logic        clk,
+    input  logic [31:0] addr_i,    // mem address
+    input  logic        wr_en_i,   // mem write enable
+    input  logic [31:0] wr_data_i, // mem write data
+    input  logic [3:0]  byte_en_i, // byte enable
 
-    output logic [DATA_WIDTH-1:0]  rd  // mem read data
+    output logic [31:0] rd_data_o  // mem read data
 );
 
-    //  memory array - size determined by ADDR_WIDTH 
-    logic [DATA_WIDTH-1:0] data_mem [0:(1 << ADDR_WIDTH)-1]; 
+    localparam int ADDR_MAX = 4095;
+    // 1024 x 8-bit memory
+    logic [7:0] mem [0:ADDR_MAX];
 
-    // initialise memory array to a known state 
-    // // // for simulation purposes only // // //
-    initial begin
-        for (int i = 0; i < (1 << ADDR_WIDTH); i++) begin
-            data_mem[i] = '0;
+    // Mask for 4-byte alignment
+    localparam int WORD_ALIGN_MASK = 32'hFFFFFFFC;
+
+    // Internal signal for address error detection
+    logic addr_error;
+
+    // Address alignment and range error detection
+    always_comb begin
+        // Default: no error
+        addr_error = 1'b0;
+
+        // Check for 4-byte alignment
+        if ((addr_i & ~WORD_ALIGN_MASK) != 0) begin
+            addr_error = 1'b1; // Address misalignment
+        end
+        
+        // Check if address is within valid range
+        else if (addr_i > ADDR_MAX - 3) begin
+            addr_error = 1'b1; // Address out of range
         end
     end
 
-    //memory read and write operations
+
+  // Write logic
     always_ff @(posedge clk) begin
-        if (we) begin
-            data_mem[a] <= wd;
-            rd <= wd; //read after write : rd reflects rewly written value
+        if (wr_en_i && !addr_error) begin
+            if (byte_en_i[0]) mem[addr_i]   <= wr_data_i[7:0];
+            if (byte_en_i[1]) mem[addr_i+1] <= wr_data_i[15:8];
+            if (byte_en_i[2]) mem[addr_i+2] <= wr_data_i[23:16];
+            if (byte_en_i[3]) mem[addr_i+3] <= wr_data_i[31:24];
+        end
+    end
+
+    
+    // Read logic
+    always_comb begin
+        if (addr_error) begin
+            rd_data_o = 32'hDEADBEEF; // Return error value if address is invalid
         end else begin
-            rd <= data_mem[a];
+            rd_data_o = {mem[addr_i], mem[addr_i+1], mem[addr_i+2], mem[addr_i+3]};
         end
     end
 
