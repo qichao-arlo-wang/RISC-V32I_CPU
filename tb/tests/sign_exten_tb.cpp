@@ -7,36 +7,36 @@ class SignExtenTestbench : public BaseTestbench
 protected:
     void initializeInputs() override
     {
-        top->instr_31_7 = 0;
-        top->imm_src = 0;
+        top->instr_31_7_i = 0;
+        top->imm_src_i = 0;
     }
 };
 
 TEST_F(SignExtenTestbench, I_TYPE_POS)
 {
-    top->instr = 0b0010101101110100000110000;
-    top->imm_src = 0;
+    top->instr_31_7_i = 0b0010101101110100000110000;
+    top->imm_src_i = 0;
     top->eval();
 
-    top->imm_ext = 2781;
+    top->imm_ext_o = 2781;
 }
 
 TEST_F(SignExtenTestbench, I_TYPE_NEG)
 {
-    top->instr = 0b1110101101110100000110000;
-    top->imm_src = 0;
+    top->instr_31_7_i = 0b1110101101110100000110000;
+    top->imm_src_i = 0;
     top->eval();
 
-   top->imm_ext = -1315; //4294967150
+   top->imm_ext_o = -1315; //4294967150
 }
 
 TEST_F(SignExtenTestbench, S_TYPE)
 {
-    top->instr = 0b0100011011110011011001110;
-    top->imm_src = 1;
+    top->instr_31_7_i = 0b0100011011110011011001110;
+    top->imm_src_i = 1;
     top->eval();
 
-   top->imm_ext = -146;
+   top->imm_ext_o = -146;
 }
 
 int main(int argc, char **argv)

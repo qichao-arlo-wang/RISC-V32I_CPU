@@ -11,7 +11,7 @@ protected:
     void initializeInputs() 
     {
         top->clk = 0;
-        top->pc_next = 0;
+        top->pc_next_i = 0;
     }
 
     void runSimulation()
@@ -39,16 +39,16 @@ protected:
 };
 
 TEST_F(PcRegTestBench, BaseTest1)
-{
+{   
     //Write data to register
-    top->pc_next = 10;
+    top->pc_next_i = 10;
     toggleClock();
     toggleClock();
     toggleClock();
     // toggleClock();
     top->eval();
 
-    EXPECT_EQ(top->pc, 10);
+    EXPECT_EQ(top->pc_o, 10);
 }
 
 // initialization test
@@ -58,50 +58,50 @@ TEST_F(PcRegTestBench, InitializationTest)
     toggleClock();
     top->eval();
 
-    EXPECT_EQ(top->pc, 0);
+    EXPECT_EQ(top->pc_o, 0);
 }
 
 // continuous update test
 TEST_F(PcRegTestBench, ContinuousUpdateTest)
 {
-    top->pc_next = 10;
+    top->pc_next_i = 10;
     toggleClock();
     toggleClock();
     toggleClock();
     top->eval();
-    EXPECT_EQ(top->pc, 10);
+    EXPECT_EQ(top->pc_o, 10);
 
-    top->pc_next = 20;
+    top->pc_next_i = 20;
     toggleClock();
     toggleClock();
     toggleClock();
     top->eval();
-    EXPECT_EQ(top->pc, 20);
+    EXPECT_EQ(top->pc_o, 20);
 
-    top->pc_next = 30;
+    top->pc_next_i = 30;
     toggleClock();
     toggleClock();
     toggleClock();
     top->eval();
-    EXPECT_EQ(top->pc, 30);
+    EXPECT_EQ(top->pc_o, 30);
 }
 
 // max value test
 TEST_F(PcRegTestBench, MaxValueTest)
 {
-    top->pc_next = 0xFFFFFFFF;
+    top->pc_next_i = 0xFFFFFFFF;
     toggleClock();
     toggleClock();
     toggleClock();
     top->eval();
-    EXPECT_EQ(top->pc, 0xFFFFFFFF);
+    EXPECT_EQ(top->pc_o, 0xFFFFFFFF);
 
-    top->pc_next = 0;
+    top->pc_next_i = 0;
     toggleClock();
     toggleClock();
     toggleClock();
     top->eval();
-    EXPECT_EQ(top->pc, 0);
+    EXPECT_EQ(top->pc_o, 0);
 }
 
 
