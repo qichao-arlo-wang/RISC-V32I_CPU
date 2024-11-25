@@ -6,11 +6,11 @@ module alu_decoder (
 );
 
     always_comb begin
-        case (alu_op)
+        case (alu_op_i)
             2'b00: alu_control_o = 3'b000; // Add for lw/sw
             2'b01: alu_control_o = 3'b001; // Subtract for branch
             2'b10: begin // I&R-type operations
-                case ({funct3, funct7_5})
+                case ({funct3_i, funct7_5_i})
                     4'b0000: alu_control_o = 3'b0000; // ADD
                     4'b0001: alu_control_o = 3'b0001; // SUB
                     4'b0010: alu_control_o = 3'b0101; // SLL
