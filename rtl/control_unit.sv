@@ -5,7 +5,7 @@ module control_unit (
     input logic zero,
     output logic reg_wr_en,
     output logic mem_wr_en,
-    output logic [1:0] imm_src,
+    output logic [2:0] imm_src,
     output logic alu_src,
     output logic result_src,
     output logic [2:0] alu_control,
