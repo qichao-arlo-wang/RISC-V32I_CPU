@@ -1,46 +1,40 @@
-/*
- *  Verifies the results of the mux, exits with a 0 on success.
- */
-
 #include "base_testbench.h"
 
 Vdut *top;
 VerilatedVcdC *tfp;
 unsigned int ticks = 0;
 
-class MuxTestbench : public BaseTestbench
+class DataMemTestbench : public BaseTestbench
 {
 protected:
     void initializeInputs() override
     {
-        top->sel_i = 0;
-        top->in0_i = 0;
-        top->in1_i = 0;
-        // output: out_o
+        top->clk = 0;
+        top->addr_i = 0;
+        top->wr_en_i = 0;
+        top->wr_data_i = 0;
+        top->byte_en_i = 0;
     }
 };
 
-TEST_F(MuxTestbench, Mux0WorksTest)
+// first normal test case
+TEST_F(DataMemTestbench, DataMemWorksTest1)
 {
-    top->sel_i = 0;
-    top->in0_i = 1;
-    top->in1_i = 0;
 
-    top->eval();
-
-    EXPECT_EQ(top->out_o, 1);
 }
 
-TEST_F(MuxTestbench, Mux1WorksTest)
+// second normal test case
+TEST_F(DataMemTestbench, DataMemWorksTest2)
 {
-    top->sel_i = 1;
-    top->in0_i = 0;
-    top->in1_i = 1;
 
-    top->eval();
-
-    EXPECT_EQ(top->out_o, 1);
 }
+
+// third normal test case
+TEST_F(DataMemTestbench, DataMemWorksTest3)
+{
+
+}
+
 
 int main(int argc, char **argv)
 {
