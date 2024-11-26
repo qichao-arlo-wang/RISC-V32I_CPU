@@ -12,10 +12,10 @@ module alu_decoder (
                 case (funct3_i)
                     3'b000: alu_control_o = 4'b0001; // BEQ SUB
                     3'b001: alu_control_o = 4'b0001; // BNE SUB
-                    3'b100: alu_control_o = 4'b0101; // BLT SLT *need to modify with ALU
-                    3'b101: alu_control_o = 4'b0101; // BGE SLT *need to modify with ALU
-                    3'b110: alu_control_o = 4'b0101; // BLT SLTU *need to modify with ALU
-                    3'b111: alu_control_o = 4'b0101; // BGE SLTU *need to modify with ALU
+                    3'b100: alu_control_o = 4'b0111; // BLT SLT 
+                    3'b101: alu_control_o = 4'b0111; // BGE SLT 
+                    3'b110: alu_control_o = 4'b1000; // BLT SLTU 
+                    3'b111: alu_control_o = 4'b1000; // BGE SLTU 
                     default: alu_control_o = 4'b0001; // Default Sub
                 endcase
             end
@@ -24,10 +24,10 @@ module alu_decoder (
                     4'b0000: alu_control_o = 4'b0000; // ADD
                     4'b0001: alu_control_o = 4'b0001; // SUB
                     4'b0010: alu_control_o = 4'b0101; // SLL
-                    4'b0100: alu_control_o = 4'b0101; // SLT *need to modify with ALU
-                    4'b0110: alu_control_o = 4'b0101; // SLT(U) *need to modify with ALU
+                    4'b0100: alu_control_o = 4'b0111; // SLT 
+                    4'b0110: alu_control_o = 4'b1000; // SLT(U)
                     4'b1010: alu_control_o = 4'b0110; // SRL
-                    4'b1011: alu_control_o = 4'b0101; // SRA
+                    4'b1011: alu_control_o = 4'b1001; // SRA
                     4'b1100: alu_control_o = 4'b0011; // OR
                     4'b1000: alu_control_o = 4'b0100; // XOR
                     4'b1110: alu_control_o = 4'b0010; // AND
