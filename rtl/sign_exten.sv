@@ -22,7 +22,7 @@ module sign_exten (
                 imm_ext_o = {{12{instr_31_7_i[24]}}, instr_31_7_i[12:5], instr_31_7_i[13], instr_31_7_i[23:14], 1'b0};
 
             3'b101:       // slli, srri, srai
-                imm_ext_o = {27{1'b0}, instr_31_7_i[17:13]};
+                imm_ext_o = {{27{1'b0}}, instr_31_7_i[17:13]};
             default:     // Default 
                 imm_ext_o = 32'd0;  // Output zero 
         endcase
