@@ -30,7 +30,6 @@ void runSimulation(int cycles)
 TEST_F(CpuTestbench, BaseProgramTest)
 {
     bool success = false;
-    system("pwd");
     std::filesystem::current_path("../");
     system("pwd");
     system("./compile.sh asm/program.S");
