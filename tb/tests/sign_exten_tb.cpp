@@ -27,7 +27,7 @@ TEST_F(SignExtenTestbench, I_TYPE_NEG)
     top->imm_src_i = 0;
     top->eval();
 
-    EXPECT_EQ(top->imm_ext_o, -1315);
+    EXPECT_EQ(top->imm_ext_o, -329);
 }
 
 TEST_F(SignExtenTestbench, S_TYPE)
@@ -53,15 +53,15 @@ TEST_F(SignExtenTestbench, U_TYPE){
     top->imm_src_i = 3;
     top->eval();
 
-    EXPECT_EQ(top->imm_ext_o, 27611168);
+    EXPECT_EQ(top->imm_ext_o, 3534229504);
 }
 
 TEST_F(SignExtenTestbench, B_TYPE){
-    top->instr_31_7_i = 0b0101001010101000000101010;
+    top->instr_31_7_i = 0b0101010011010111010100101;
     top->imm_src_i = 2;
     top->eval();
 
-    EXPECT_EQ(top->imm_ext_o, 645);
+    EXPECT_EQ(top->imm_ext_o, 3396);
 }
 
 TEST_F(SignExtenTestbench, B_TYPE_NEG){
@@ -69,7 +69,7 @@ TEST_F(SignExtenTestbench, B_TYPE_NEG){
     top->imm_src_i = 2;
     top->eval();
 
-    EXPECT_EQ(top->imm_ext_o, -4);
+    EXPECT_EQ(top->imm_ext_o, -128);
 }   
 
 TEST_F(SignExtenTestbench, J_TYPE){
@@ -77,7 +77,7 @@ TEST_F(SignExtenTestbench, J_TYPE){
     top->imm_src_i = 4;
     top->eval();
 
-    EXPECT_EQ(top->imm_ext_o, 177236);
+    EXPECT_EQ(top->imm_ext_o, 282028);
 }
 
 TEST_F(SignExtenTestbench, J_TYPE_NEG){
@@ -85,13 +85,13 @@ TEST_F(SignExtenTestbench, J_TYPE_NEG){
     top->imm_src_i = 4;
     top->eval();
 
-    EXPECT_EQ(top->imm_ext_o, -340);
+    EXPECT_EQ(top->imm_ext_o, -168);
 
 }
 
 TEST_F(SignExtenTestbench, DEFAULT){
     top->instr_31_7_i = 0b1111010110011111111100001;
-    top->imm_src_i = 5;
+    top->imm_src_i = 6;
     top->eval();
 
     EXPECT_EQ(top->imm_ext_o , 0);
