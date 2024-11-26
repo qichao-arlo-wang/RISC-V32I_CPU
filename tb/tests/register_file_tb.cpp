@@ -11,11 +11,11 @@ protected:
     void initializeInputs() 
     {
         top->clk = 0;
-        top->we3 = 0;
-        top->ad1 = 0;
-        top->ad2 = 0;
-        top->ad3 = 0;
-        top->wd3 = 0;
+        top->reg_wr_en_i = 0;
+        top->rd_addr1_i = 0;
+        top->rd_addr2_i = 0;
+        top->wr_addr_i = 0;
+        top->wr_data_i = 0;
     }
 
 
@@ -49,21 +49,21 @@ TEST_F(RegFileTestBench, WriteAndReadBack)
 {
     //Write data to register from 0 to 15
     for (int i = 0; i < 16; i++){
-        top->we3 = 1;
-        top->ad3 = i;
-        top->wd3 = constant;
+        top->reg_wr_en_i = 1;
+        top->wr_addr_i = i;
+        top->wr_data_i = constant;
         toggleClock();
         toggleClock();
 
-        top->we3 = 0;
+        top->reg_wr_en_i = 0;
 
     }
 
     for (int i = 1; i < 16; i++){
-        top->ad1 = i;
+        top->rd_addr1_i = i;
         top->eval();
-        uint32_t out1 = top->rd1;
-        EXPECT_EQ(out1, constant) << "Register" <<i << " failed";
+        uint32_t out1 = top->rd_data1_o;
+        EXPECT_EQ(out1, constant) << "Register" << i << " failed";
         toggleClock();
         toggleClock();
     }

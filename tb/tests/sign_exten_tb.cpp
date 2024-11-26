@@ -7,55 +7,109 @@ class SignExtenTestbench : public BaseTestbench
 protected:
     void initializeInputs() override
     {
-        top->instr_31_7 = 0;
-        top->imm_src = 0;
+        top->instr_31_7_i = 0;
+        top->imm_src_i = 0;
     }
 };
 
 TEST_F(SignExtenTestbench, I_TYPE_POS)
 {
-    top->instr = 0b0010101101110100000110000;
-    top->imm_src = 0;
+    top->instr_31_7_i = 0b0010101101110100000110000;
+    top->imm_src_i = 0;
     top->eval();
 
-    top->imm_ext = 2781;
+    EXPECT_EQ(top->imm_ext_o, 695);
 }
 
 TEST_F(SignExtenTestbench, I_TYPE_NEG)
 {
-    top->instr = 0b1110101101110100000110000;
-    top->imm_src = 0;
+    top->instr_31_7_i = 0b1110101101110100000110000;
+    top->imm_src_i = 0;
     top->eval();
 
-   top->imm_ext = -1315; //4294967150
+    EXPECT_EQ(top->imm_ext_o, -329);
 }
 
 TEST_F(SignExtenTestbench, S_TYPE)
 {
-    top->instr = 0b0100011011110011011001110;
-    top->imm_src = 1;
+    top->instr_31_7_i = 0b0100011011110011011001110;
+    top->imm_src_i = 1;
     top->eval();
 
-   top->imm_ext = -146;
+    EXPECT_EQ(top->imm_ext_o, 1134);
 }
 
+TEST_F(SignExtenTestbench, S_TYPE_NEG)
+{
+    top->instr_31_7_i = 0b1101001010101000000101010;
+    top->imm_src_i = 1;
+    top->eval();
+
+    EXPECT_EQ(top->imm_ext_o, -726);
+}
+
+TEST_F(SignExtenTestbench, U_TYPE){
+    top->instr_31_7_i = 0b1101001010101000000101010;
+    top->imm_src_i = 3;
+    top->eval();
+
+    EXPECT_EQ(top->imm_ext_o, 3534229504);
+}
+
+TEST_F(SignExtenTestbench, B_TYPE){
+    top->instr_31_7_i = 0b0101010011010111010100101;
+    top->imm_src_i = 2;
+    top->eval();
+
+    EXPECT_EQ(top->imm_ext_o, 3396);
+}
+
+TEST_F(SignExtenTestbench, B_TYPE_NEG){
+    top->instr_31_7_i = 0b1111100000100000011000001;
+    top->imm_src_i = 2;
+    top->eval();
+
+    EXPECT_EQ(top->imm_ext_o, -128);
+}   
+
+TEST_F(SignExtenTestbench, J_TYPE){
+    top->instr_31_7_i = 0b0101101011010100010000001;
+    top->imm_src_i = 4;
+    top->eval();
+
+    EXPECT_EQ(top->imm_ext_o, 282028);
+}
+
+TEST_F(SignExtenTestbench, J_TYPE_NEG){
+    top->instr_31_7_i = 0b1111010110011111111100001;
+    top->imm_src_i = 4;
+    top->eval();
+
+    EXPECT_EQ(top->imm_ext_o, -168);
+
+}
+
+TEST_F(SignExtenTestbench, DEFAULT){
+    top->instr_31_7_i = 0b1111010110011111111100001;
+    top->imm_src_i = 6;
+    top->eval();
+
+    EXPECT_EQ(top->imm_ext_o , 0);
+}
 int main(int argc, char **argv)
 {
     top = new Vdut;
-    tfp = new VerilatedVcdC;
 
-    Verilated::traceEverOn(true);
-    top->trace(tfp, 99);
-    tfp->open("waveform.vcd");
+    // Verilated::traceEverOn(true);
+    // top->trace(tfp, 99);
+    // tfp->open("waveform.vcd");
 
     testing::InitGoogleTest(&argc, argv);
     auto res = RUN_ALL_TESTS();
 
     top->final();
-    tfp->close();
 
     delete top;
-    delete tfp;
 
     return res;
 }

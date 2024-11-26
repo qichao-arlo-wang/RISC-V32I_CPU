@@ -3,11 +3,11 @@ module register_file #(
     parameter REG_WIDTH = 32
 ) (
     input logic clk, 
-    input logic we3,
-    input logic [$clog2(REG_COUNT)-1:0] a1, a2, a3, // READ (a1, a2) and write (a3) addresses
-    input logic [REG_WIDTH-1:0] wd3,
+    input logic reg_wr_en_i,
+    input logic [$clog2(REG_COUNT)-1:0] rd_addr1_i, rd_addr2_i, wr_addr_i, // READ (read_addr1_i, read_addr2_i) and write (write_addr_i) addresses
+    input logic [REG_WIDTH-1:0] wr_data_i,
 
-    output logic [REG_WIDTH-1:0] rd1, rd2, // read data output
+    output logic [REG_WIDTH-1:0] rd_data1_o, rd_data2_o // read data output
 );
     // declare register file
     logic [REG_WIDTH-1:0] reg_file [0:REG_COUNT-1];
@@ -20,17 +20,17 @@ module register_file #(
         end
     end
 
-    // write data into the resgister file on the rising edge of the clock
+    // write data into the register file on the rising edge of the clock
     always_ff @(posedge clk) begin
-        if (we3 && a3 != 0) begin
-            reg_file[a3] <= wd3;
+        if (reg_wr_en_i && wr_addr_i != 0) begin
+            reg_file[wr_addr_i] <= wr_data_i;
         end
         reg_file[0] <= 32'b0; // ensure register 0 always holds the value 0
     end
 
-    // Asynchronous read operation(use = rather than <=)
+    // Asynchronous read operation (use = rather than <=)
     always_comb begin
-        rd1 = reg_file[a1];
-        rd2 = reg_file[a2];
+        rd_data1_o = reg_file[rd_addr1_i];
+        rd_data2_o = reg_file[rd_addr2_i];
     end
 endmodule
