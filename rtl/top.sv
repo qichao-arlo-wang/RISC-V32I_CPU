@@ -54,10 +54,10 @@ logic [3:0] alu_control;
 
 
 // // // Register signal
-logic [4:0] a1 = instr[19:15]; // a1: instr[19:15]
-logic [4:0] a2 = instr[24:20]; // a2: instr[24:20]
-logic [4:0] a3  = instr[11:7];  // a3: instr[11:7]
-logic [DATA_WIDTH-1:0] rd1, rd2;
+logic [4:0] rd_addr1 = instr[19:15]; // rd_addr1: instr[19:15]
+logic [4:0] rd_addr2 = instr[24:20]; // rd_addr2: instr[24:20]
+logic [4:0] wr_addr  = instr[11:7];  // wr_addr: instr[11:7]
+logic [DATA_WIDTH-1:0] rd_data1, rd_data2;
 logic [DATA_WIDTH-1:0] result;
 
 // // // extend block signal
@@ -87,14 +87,14 @@ sign_exten sext (
 );
 
 register_file reg_file_inst (
-    .clk_i(clk),
-    .a1_i(a1),
-    .a2_i(a2),
-    .a3_i(a3),
-    .wd3_i(result),
-    .we3_i(reg_wr_en),
-    .rd1_o(rd1),
-    .rd2_o(rd2)
+    .clk(clk),
+    .rd_addr1_i(rd_addr1),
+    .rd_addr2_i(rd_addr2),
+    .wr_addr_i(wr_addr),
+    .wr_data_i(result),
+    .reg_wr_en_i(reg_wr_en),
+    .rd_data1_o(rd_data1),
+    .rd_data2_o(rd_data2)
 );
 
 

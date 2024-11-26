@@ -2,7 +2,7 @@
 
 ## RISC-V RV32I Processor (Part 1)
   
-![part 1 task allocation](/images/part1_structure.jpg)
+![part 1 task allocation](/images/overall_structure.jpg)
 
 - Arlo: blue part
 - Zecheng: green part
