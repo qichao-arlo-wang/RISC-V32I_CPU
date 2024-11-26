@@ -77,6 +77,38 @@ module main_decoder (
                 branch_o = 1;
                 alu_op_o = 2'b01;
             end
+
+            // J-type JAL
+            7'b1101111: begin
+                branch_o = 1;
+                imm_src_o = 3'b100;
+                alu_src_o = 1;
+                reg_wr_en_o = 1;
+                result_src_o = 1;
+            end
+
+            // J-type JALR
+            7'b1100111: begin
+                branch_o = 1;
+                imm_src_o = 3'b100;
+                alu_src_o = 1;
+                reg_wr_en_o = 1;
+                result_src_o = 1;
+            end
+
+            // U type LUI
+            7'b0110111: begin
+                alu_src_o = 1;
+                reg_wr_en_o = 1;
+                alu_op_o = 2'b11; // to only use src_b_i in the alu module
+            end
+
+            // U type AUIPC
+            7'b0110111: begin
+                alu_src_o = 1;
+                reg_wr_en_o = 1;
+                alu_op_o = 2'b11; // to only use src_b_i in the alu module
+            end
         endcase
     end
 endmodule
