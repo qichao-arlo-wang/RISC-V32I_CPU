@@ -88,23 +88,28 @@ TEST_F(SignExtenTestbench, J_TYPE_NEG){
     EXPECT_EQ(top->imm_ext_o, -340);
 
 }
+
+TEST_F(SignExtenTestbench, DEFAULT){
+    top->instr_31_7_i = 0b1111010110011111111100001;
+    top->imm_src_i = 5;
+    top->eval();
+
+    EXPECT_EQ(top->imm_ext_o , 0);
+}
 int main(int argc, char **argv)
 {
     top = new Vdut;
-    tfp = new VerilatedVcdC;
 
-    Verilated::traceEverOn(true);
-    top->trace(tfp, 99);
-    tfp->open("waveform.vcd");
+    // Verilated::traceEverOn(true);
+    // top->trace(tfp, 99);
+    // tfp->open("waveform.vcd");
 
     testing::InitGoogleTest(&argc, argv);
     auto res = RUN_ALL_TESTS();
 
     top->final();
-    tfp->close();
 
     delete top;
-    delete tfp;
 
     return res;
 }
