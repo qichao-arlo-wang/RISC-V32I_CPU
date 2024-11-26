@@ -7,6 +7,7 @@ module main_decoder (
     output logic branch_o,         // Branch control
     output logic result_src_o,     // Result source (ALU or memory)
     output logic [1:0] alu_op_o    // ALU Operation control
+    input logic [2:0] funct3_i,         // funct3 field from instruction
 );
 
     always_comb begin
