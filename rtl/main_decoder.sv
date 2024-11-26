@@ -1,5 +1,6 @@
 module main_decoder (
     input logic [6:0] opcode_i,    // Opcode from instruction
+    input logic [2:0] funct_3_i,   // funct3 field from instruction
     output logic reg_wr_en_o,      // Register Write Enable
     output logic mem_wr_en_o,      // Memory Write Enable
     output logic [2:0] imm_src_o,  // Immediate source control
@@ -10,8 +11,16 @@ module main_decoder (
 );
 
     always_comb begin
+        // Default values
+        reg_wr_en_o = 0;
+        mem_wr_en_o = 0;
+        imm_src_o = 3'b000;
+        alu_src_o = 0;
+        branch_o = 0;
+        result_src_o = 0;
+        alu_op_o = 2'b00;
 
-        // opcode decoding
+        // Opcode decoding
         case (opcode_i)
             // I-type op = 3 load instructions
             7'b0000011: begin
@@ -23,7 +32,7 @@ module main_decoder (
                 alu_op_o = 2'b00;
             end
 
-            // I-type op = 3 Arithmetic Instruction with immediate 
+            // I-type op = 3 Arithmetic Instructions with immediate 
             7'b0010011: begin
                 reg_wr_en_o = 1;
                 mem_wr_en_o = 0;
@@ -32,15 +41,11 @@ module main_decoder (
 
                 case (funct_3_i)
                     // SLLI
-                    3'b001: begin
-                        imm_src_o = 3'b101;
-                    end
+                    3'b001: imm_src_o = 3'b101;
                     // SRLI/SRAI
-                    3'b101: begin
-                        imm_src_o = 3'b101;
-                    end
-                    default:
-                        imm_src_o = 3'b000;
+                    3'b101: imm_src_o = 3'b101;
+                    default: imm_src_o = 3'b000;
+                endcase
             end
 
             // S-type, op = 35
@@ -92,14 +97,14 @@ module main_decoder (
             7'b0110111: begin
                 alu_src_o = 1;
                 reg_wr_en_o = 1;
-                alu_op_o = 2'b11; // to only use src_b_i in the alu module
+                alu_op_o = 2'b11; // Only use src_b_i in the ALU
             end
 
             // U type AUIPC
-            7'b0110111: begin
+            7'b0010111: begin
                 alu_src_o = 1;
                 reg_wr_en_o = 1;
-                alu_op_o = 2'b11; // to only use src_b_i in the alu module
+                alu_op_o = 2'b11; // Only use src_b_i in the ALU
             end
 
             default: begin
