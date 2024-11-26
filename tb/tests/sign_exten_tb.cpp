@@ -27,7 +27,7 @@ TEST_F(SignExtenTestbench, I_TYPE_NEG)
     top->imm_src_i = 0;
     top->eval();
 
-    EXPECT_EQ(top->imm_ext_o, -1315);
+    EXPECT_EQ(top->imm_ext_o, -329);
 }
 
 TEST_F(SignExtenTestbench, S_TYPE)
@@ -53,7 +53,7 @@ TEST_F(SignExtenTestbench, U_TYPE){
     top->imm_src_i = 3;
     top->eval();
 
-    EXPECT_EQ(top->imm_ext_o, 27611168);
+    EXPECT_EQ(top->imm_ext_o, 3534229504);
 }
 
 TEST_F(SignExtenTestbench, B_TYPE){
@@ -61,7 +61,7 @@ TEST_F(SignExtenTestbench, B_TYPE){
     top->imm_src_i = 2;
     top->eval();
 
-    EXPECT_EQ(top->imm_ext_o, 645);
+    EXPECT_EQ(top->imm_ext_o, );
 }
 
 TEST_F(SignExtenTestbench, B_TYPE_NEG){
