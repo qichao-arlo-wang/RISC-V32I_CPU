@@ -13,7 +13,8 @@ module main_decoder (
 
         // opcode decoding
         case (opcode_i)
-            // I-type op = 3 load instructions
+            // I-type op = 3 
+            // Load instructions
             7'b0000011: begin
                 reg_wr_en_o = 1;
                 mem_wr_en_o = 0;
@@ -23,7 +24,8 @@ module main_decoder (
                 alu_op_o = 2'b00;
             end
 
-            // I-type op = 3 Arithmetic Instruction with immediate 
+            // I-type op = 3 
+            // Arithmetic Instruction with immediate 
             7'b0010011: begin
                 reg_wr_en_o = 1;
                 mem_wr_en_o = 0;
@@ -41,9 +43,11 @@ module main_decoder (
                     end
                     default:
                         imm_src_o = 3'b000;
+                endcase
             end
 
             // S-type, op = 35
+            // Store instructions
             7'b0100011: begin
                 reg_wr_en_o = 0;
                 mem_wr_en_o = 1;
@@ -53,6 +57,7 @@ module main_decoder (
             end
 
             // R-type, op = 51
+            // Arithmetic instructions
             7'b0110011: begin
                 reg_wr_en_o = 1;
                 mem_wr_en_o = 0;
@@ -61,6 +66,7 @@ module main_decoder (
             end
 
             // B-type, op = 99
+            // Branch instructions
             7'b1100011: begin
                 reg_wr_en_o = 0;
                 mem_wr_en_o = 0;
@@ -70,7 +76,8 @@ module main_decoder (
                 alu_op_o = 2'b01;
             end
 
-            // J-type JAL
+            // J-type, op = 111
+            // JAL instruction
             7'b1101111: begin
                 branch_o = 1;
                 imm_src_o = 3'b100;
@@ -79,7 +86,8 @@ module main_decoder (
                 result_src_o = 1;
             end
 
-            // J-type JALR
+            // J-type op = 103
+            // JALR instruction
             7'b1100111: begin
                 branch_o = 1;
                 imm_src_o = 3'b100;
@@ -88,15 +96,17 @@ module main_decoder (
                 result_src_o = 1;
             end
 
-            // U type LUI
+            // U type op = 55
+            // LUI instruction
             7'b0110111: begin
                 alu_src_o = 1;
                 reg_wr_en_o = 1;
                 alu_op_o = 2'b11; // to only use src_b_i in the alu module
             end
 
-            // U type AUIPC
-            7'b0110111: begin
+            // U type op = 23
+            // AUIPC instruction
+            7'b0010111: begin
                 alu_src_o = 1;
                 reg_wr_en_o = 1;
                 alu_op_o = 2'b11; // to only use src_b_i in the alu module
