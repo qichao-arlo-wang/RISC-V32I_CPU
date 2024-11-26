@@ -14,8 +14,7 @@ module alu_decoder (
                     4'b0000: alu_control = 3'b000; // ADD
                     4'b0001: alu_control = 3'b001; // SUB
                     4'b0010: alu_control = 3'b101; // SLT
-                    4'b1010: alu_control = 3'b110; // SRT
-                    4'b1100: alu_control = 3'b011; // OR
+                    4'b1010: alu_control = 3'b110; // SRT                    4'b1100: alu_control = 3'b011; // OR
                     4'b1000: alu_control = 3'b100; // XOR
                     4'b1110: alu_control = 3'b010; // AND
                     default: alu_control = 3'b000; // Default ADD
