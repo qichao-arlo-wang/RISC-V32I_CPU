@@ -10,14 +10,6 @@ module main_decoder (
 );
 
     always_comb begin
-        // default values for all outputs
-        reg_wr_en_o = 0;
-        mem_wr_en_o = 0;
-        imm_src_o = 3'b000;
-        alu_src_o = 0;
-        branch_o = 0;
-        result_src_o = 0;
-        alu_op_o = 2'b00;
 
         // opcode decoding
         case (opcode_i)
@@ -108,6 +100,16 @@ module main_decoder (
                 alu_src_o = 1;
                 reg_wr_en_o = 1;
                 alu_op_o = 2'b11; // to only use src_b_i in the alu module
+            end
+
+            default: begin
+                reg_wr_en_o = 0;
+                mem_wr_en_o = 0;
+                imm_src_o = 3'b000;
+                alu_src_o = 0;
+                branch_o = 0;
+                result_src_o = 0;
+                alu_op_o = 2'b00;
             end
         endcase
     end
