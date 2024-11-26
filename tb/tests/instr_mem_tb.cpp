@@ -46,8 +46,8 @@ TEST_F(InstrMemTestbench, UnalignedMemAccessTest)
     top->addr_i = 2; // Unaligned address
     top->eval();
     
-    // Expect a default NOP instruction (0x00000013) to be returned
-    EXPECT_EQ(top->instr_o, 0x00000013);
+    // Expect a default instruction (0xDEADBEEF)
+    EXPECT_EQ(top->instr_o, 0xDEADBEEF);
 }
 
 // out-of-range memory access test case
@@ -57,8 +57,8 @@ TEST_F(InstrMemTestbench, OutOfRangeMemAccessTest)
     top->addr_i = 256 * 4; // MEM_SIZE = 256, so this is out of range
     top->eval();
     
-    // Expect the instruction to be the default NOP instruction (0x00000013)
-    EXPECT_EQ(top->instr_o, 0x00000013) << "Out-of-range memory access did not return the expected NOP instruction.";
+    // Expect the instruction to be 0xDEADBEEF
+    EXPECT_EQ(top->instr_o, 0xDEADBEEF) << "Out-of-range memory access did not return the expected instruction.";
 }
 
 int main(int argc, char **argv)

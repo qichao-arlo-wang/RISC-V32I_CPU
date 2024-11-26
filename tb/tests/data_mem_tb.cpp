@@ -20,7 +20,8 @@ protected:
 // first normal test case
 TEST_F(DataMemTestbench, DataMemWorksTest1)
 {
-
+    initializeInputs();
+    
 }
 
 // second normal test case

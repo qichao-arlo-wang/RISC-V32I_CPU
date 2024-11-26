@@ -7,30 +7,34 @@ module data_mem (
 
     output logic [31:0] rd_data_o  // mem read data
 );
-
-    localparam int ADDR_MAX = 4095;
+    
+    localparam int MEM_SIZE = 1024;
     // 1024 x 8-bit memory
-    logic [7:0] mem [0:ADDR_MAX];
+    logic [7:0] mem [0:MEM_SIZE*4-1];
 
-    // Mask for 4-byte alignment
-    localparam int WORD_ALIGN_MASK = 32'hFFFFFFFC;
+    initial begin
+        $display("Loading datamem.");
+        
+        // the default path when running the simulation is the tests directory
+        // Read memory file with byte-level storage
+        $readmemh("data_mem_test.hex", mem); 
+    end
 
-    // Internal signal for address error detection
-    logic addr_error;
+    // Internal signal for address error detection  
+    logic addr_error = 1'b0; // default no error
 
     // Address alignment and range error detection
     always_comb begin
-        // Default: no error
-        addr_error = 1'b0;
-
         // Check for 4-byte alignment
-        if ((addr_i & ~WORD_ALIGN_MASK) != 0) begin
+        if ((addr_i[1:0] != 2'b00) != 0) begin
             addr_error = 1'b1; // Address misalignment
+            $display("Warning: Unaligned address detected: %h.", addr_i);
         end
         
         // Check if address is within valid range
-        else if (addr_i > ADDR_MAX - 3) begin
+        else if (addr_i > MEM_SIZE - 3) begin
             addr_error = 1'b1; // Address out of range
+            $display("Warning: address not in the value range: %h.", addr_i);
         end
     end
 
@@ -45,8 +49,8 @@ module data_mem (
         end
     end
 
-    
     // Read logic
+    // Combine 4 bytes to form a 32-bit data
     always_comb begin
         if (addr_error) begin
             rd_data_o = 32'hDEADBEEF; // Return error value if address is invalid
