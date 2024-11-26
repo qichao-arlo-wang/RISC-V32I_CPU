@@ -8,7 +8,7 @@ module register_file #(
     input logic [REG_WIDTH-1:0] wd3,
 
     output logic [REG_WIDTH-1:0] rd1, rd2, // read data output
-    output logic [REG_WIDTH-1:0] a0
+    output logic [REG_WIDTH-1:0] a0 //what is this?
 );
     // declare register file
     logic [REG_WIDTH-1:0] reg_file [0:REG_COUNT-1];

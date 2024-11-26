@@ -10,15 +10,6 @@ module main_decoder (
 );
 
     always_comb begin
-        // default values for all outputs
-        reg_wr_en = 0;
-        mem_wr_en = 0;
-        imm_src = 2'b00;
-        alu_src = 0;
-        branch = 0;
-        result_src = 0;
-        alu_op = 2'b00;
-
         // opcode decoding
         case (opcode)
             // L-type op = 3
@@ -57,6 +48,15 @@ module main_decoder (
                 branch = 1;
                 alu_op = 2'b01;
             end
-        endcase
+            default: begin
+                reg_wr_en = 0;
+                mem_wr_en = 0;
+                imm_src = 2'b00;
+                alu_src = 0;
+                branch = 0;
+                result_src = 0;
+                alu_op = 2'b00; 
+            end
+        endcase      
     end
 endmodule

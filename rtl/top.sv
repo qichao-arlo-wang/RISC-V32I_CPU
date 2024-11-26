@@ -55,10 +55,12 @@ logic [2:0] funct3 = instruction[14:12];
 logic funct7_5 = instruction[30];
 
 // Control signals
-logic reg_wr_en, mem_wr_en, alu_src, result_src;
+logic alu_src;
+logic reg_wr_en = 0;
+logic mem_wr_en = 0;
+logic result_src = 0;
 logic [1:0] imm_src;
-logic [2:0] alu_control;
-logic zero;
+logic [2:0] alu_control = 0;
 
 // Register data 
 logic [4:0] rs1 = instruction[19:15]; // rs1: instruction[19:15]
@@ -76,7 +78,7 @@ control_unit ctrl (
     .opcode(opcode),
     .funct3(funct3),
     .funct7_5(funct7_5),
-    .zero(zero),
+    .zero(eq),
 
     .pc_src(pc_src),
     .result_src(result_src),
@@ -111,7 +113,7 @@ assign next_pc = (PCsrc) ? pc + (imm_op << 1) : pc + 4;
 //Register_file signals
 logic we3;
 
-logic [DATA_WIDTH-1:0] wd3, rd1, rd2;
+logic [DATA_WIDTH-1:0] rd2;
 //ALU signals
 logic [DATA_WIDTH-1:0] alu_op1, alu_op2, alu_out;
 logic [3:0] alu_ctrl;
@@ -122,10 +124,10 @@ register_file reg_file_inst (
     .ad1(rs1),
     .ad2(rs2),
     .ad3(rd),
-    .wd3(wd3),
+    .wd3(alu_out),
     .we3(we3),
 
-    .rd1(rd1),
+    .rd1(alu_op1),
     .rd2(rd2),
     .a0(a0)
 );
@@ -154,5 +156,4 @@ initial begin
     alu_src = 1;
 end
 
-assign a0 = wd3;
 endmodule
