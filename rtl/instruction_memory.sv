@@ -8,9 +8,16 @@ module instruction_memory (
 
     // Initialize mem
     initial begin
-        $readmemh("instructions.hex", mem); 
+        // load big-endian instructions from program.hex
+        $readmemh("program.hex", mem); 
+
+        //convert each instruction to little-endian
+        for (int i = 0; i < 256; i++) begin
+            mem[i] = {mem[i][7:0], mem[i][15:8], mem[i][23:16], mem[i][31:24]};
+        end
+
     end
 
     // Fetch instruction
-    assign instruction = mem[addr >> 2]; 
+    assign instruction = (addr >> 2) < 256 ? mem[addr >> 2] : 32'b0;
 endmodule

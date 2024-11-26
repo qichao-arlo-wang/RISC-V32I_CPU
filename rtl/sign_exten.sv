@@ -1,6 +1,8 @@
 
 module sign_exten (
+    /* verilator lint_off UNUSED */
     input logic [24:0] partial_instruction, //  bits from 31 to 7
+    /* verilator lint_on UNUSED */
     input logic [1:0] imm_src,             
     output logic [31:0] imm_op             
 );

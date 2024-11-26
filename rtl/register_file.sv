@@ -1,10 +1,11 @@
 module register_file #(
     parameter REG_COUNT = 32,
-    parameter REG_WIDTH = 32
+    parameter REG_WIDTH = 32,
+    parameter ADR_WIDTH = 5
 ) (
     input logic clk, 
     input logic we3,
-    input logic [$clog2(REG_COUNT)-1:0] ad1, ad2, ad3, // READ (ad1, ad2) and write (ad3) addresses
+    input logic [ADR_WIDTH-1:0] ad1, ad2, ad3, // READ (ad1, ad2) and write (ad3) addresses
     input logic [REG_WIDTH-1:0] wd3,
 
     output logic [REG_WIDTH-1:0] rd1, rd2, // read data output
@@ -21,7 +22,7 @@ module register_file #(
         end
     end
 
-    // write data into the resgister file on the rising edge of the clock
+    // write data into the register file on the rising edge of the clock
     always_ff @(posedge clk) begin
         if (we3 && ad3 != 0) begin
             reg_file[ad3] <= wd3;
@@ -33,5 +34,6 @@ module register_file #(
     always_comb begin
         rd1 = reg_file[ad1];
         rd2 = reg_file[ad2];
+        a0 = reg_file[11];
     end
 endmodule

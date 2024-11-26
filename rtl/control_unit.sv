@@ -8,7 +8,7 @@ module control_unit (
     output logic [1:0] imm_src,
     output logic alu_src,
     output logic result_src,
-    output logic [2:0] alu_control,
+    output logic [3:0] alu_control,
     output logic pc_src
 );
 
@@ -29,10 +29,10 @@ module control_unit (
 
     // Instantiate ALU Decoder
     alu_decoder alu_dec (
-        .alu_op(alu_op),
-        .funct3(funct3),
-        .funct7_5(funct7_5),
-        .alu_control(alu_control)
+        .alu_op_i(alu_op),
+        .funct3_i(funct3),
+        .funct7_5_i(funct7_5),
+        .alu_control_o(alu_control)
     );
 
     // Branch decision
