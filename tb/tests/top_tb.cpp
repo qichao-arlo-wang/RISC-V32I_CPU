@@ -57,7 +57,7 @@
 vluint64_t sim_time = 0;
 
 int main() {
-    Verilated::commandArgs(0, nullptr);
+    Verilated::commandArgs(0, (const char**)nullptr);
     Vtop* dut = new Vtop;
 
     // Reset sequence
@@ -68,11 +68,11 @@ int main() {
     dut->rst = 0;
 
     // Load registers for BNE test
-    // dut->top__DOT__reg_file_inst__DOT__regfile[1] = 5;   // rs1 = 5
-    // dut->top__DOT__reg_file_inst__DOT__regfile[2] = 10;  // rs2 = 10
+    // dut->top__DOT__reg_file_inst__DOT__reg_file[1] = 5;   // rs1 = 5
+    // dut->top__DOT__reg_file_inst__DOT__reg_file[2] = 10;  // rs2 = 10
     
     // Load BNE instruction (if rs1 != rs2, branch)
-    //dut->top__DOT__instruction_memory_inst__DOT__mem[0] = 0x0020c663; // bne x1, x2, 12
+    // dut->top__DOT__instruction_memory_inst__DOT__mem[0] = 0x0020c663; // 
 
     // Run simulation
     for (int i = 0; i < 20; i++) {

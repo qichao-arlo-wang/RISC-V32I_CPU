@@ -19,5 +19,5 @@ module instruction_memory (
 
 
     // Fetch instruction
-    assign instruction = (addr <= 1020) ? {mem[addr + 3], mem[addr + 2], mem[addr + 1], mem[addr]} : 32'b0;
+    assign instruction = (addr[1:0] == 2'b00 && addr <= 1020) ? {mem[addr + 3], mem[addr + 2], mem[addr + 1], mem[addr]} : 32'b0;
 endmodule
