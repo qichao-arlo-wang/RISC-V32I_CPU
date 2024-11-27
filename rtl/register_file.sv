@@ -9,7 +9,7 @@ module register_file #(
     input logic [REG_WIDTH-1:0] wd3,
 
     output logic [REG_WIDTH-1:0] rd1, rd2, // read data output
-    output logic [REG_WIDTH-1:0] a0 //what is this?
+    output logic [REG_WIDTH-1:0] a0 //register 10 value
 );
     // declare register file
     logic [REG_WIDTH-1:0] reg_file [0:REG_COUNT-1];
@@ -34,6 +34,6 @@ module register_file #(
     always_comb begin
         rd1 = reg_file[ad1];
         rd2 = reg_file[ad2];
-        a0 = reg_file[11];
+        a0 = reg_file[10];
     end
 endmodule

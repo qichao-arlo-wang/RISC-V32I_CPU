@@ -9,7 +9,7 @@ module instruction_memory (
     // Initialize mem
     initial begin
         // load big-endian instructions from program.hex
-        $readmemh("program.hex", mem); 
+        $readmemh("/root/Documents/Group-9-RISC-V/rtl/program.hex", mem); 
 
         //convert each instruction to little-endian
         for (int i = 0; i < 256; i++) begin

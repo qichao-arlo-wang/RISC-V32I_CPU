@@ -8,8 +8,12 @@ module top #(
 
 /// /// BLOCK 1: Program counter and related adders /// ///
 // internal signals
-logic [DATA_WIDTH-1:0] pc, inc_pc, imm_op, branch_pc, next_pc;
-logic pc_src;
+logic [DATA_WIDTH-1:0] pc = 0;
+logic [DATA_WIDTH-1:0] inc_pc = 0;
+logic [DATA_WIDTH-1:0] imm_op = 0;
+logic [DATA_WIDTH-1:0] branch_pc = 0;
+logic [DATA_WIDTH-1:0] next_pc = 0;
+logic pc_src = 0;
 
 // adder used to add PC and ImmOp
 adder branch_pc_adder(
@@ -48,7 +52,7 @@ pc_reg pc_reg(
 
 /// /// BLOCK 2: The Register File, ALU and the related MUX /// ///
 // Instruction & fields
-logic [DATA_WIDTH-1:0] instruction;
+logic [DATA_WIDTH-1:0] instruction = 0;
 /* verilator lint_off UNUSED */
 logic [24:0] instruction31_7 = instruction[31:7];
 /* verilator lint_on UNUSED */
@@ -58,12 +62,16 @@ logic [2:0] funct3 = instruction[14:12];
 logic funct7_5 = instruction[30];
 
 // Control signals
-logic alu_src, reg_wr_en;
+logic alu_src = 0;
+logic reg_wr_en = 0;
+
+/* verilator lint_off UNUSED */
 logic mem_wr_en = 0;
 logic result_src = 0;
+/* verilator lint_on UNUSED */
 
-logic [1:0] imm_src;
-logic [3:0] alu_control;
+logic [1:0] imm_src = 0;
+logic [3:0] alu_control = 0;
 
 // Register data 
 logic [4:0] rs1 = instruction[19:15]; // rs1: instruction[19:15]
@@ -103,10 +111,12 @@ sign_exten sext (
 /// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// ///
 //Register_file signals
 
-logic [DATA_WIDTH-1:0] rd2;
+logic [DATA_WIDTH-1:0] rd2 = 0;
 //ALU signals
-logic [DATA_WIDTH-1:0] alu_op1, alu_op2, alu_out;
-logic eq;
+logic [DATA_WIDTH-1:0] alu_op1 = 0;
+logic [DATA_WIDTH-1:0] alu_op2 = 0;
+logic [DATA_WIDTH-1:0] alu_out = 0;
+logic eq = 0;
 
 register_file reg_file_inst (
     .clk(clk),
@@ -128,11 +138,11 @@ mux alu_mux_inst(
 );
 
 alu alu_inst(
-    .alu_op1(alu_op1),
-    .alu_op2(alu_op2),
-    .alu_ctrl(alu_control),
-    .alu_out(alu_out),
-    .eq(eq)
+    .src_a(alu_op1),
+    .src_b(alu_op2),
+    .alu_control(alu_control),
+    .alu_result(alu_out),
+    .zero(eq)
 );
 
 // initial begin

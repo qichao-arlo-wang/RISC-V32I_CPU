@@ -5,7 +5,7 @@ module control_unit (
     input logic zero,                  // Zero flag
     output logic reg_wr_en,            // Register Write Enable
     output logic mem_wr_en,            // Memory Write Enable
-    output logic [2:0] imm_src,        // Immediate source control
+    output logic [1:0] imm_src,        // Immediate source control
     output logic alu_src,              // ALU source (register or immediate)
     output logic result_src,           // Result source (ALU or memory)
     output logic [3:0] alu_control,    // ALU Operation control (updated to 4 bits)
@@ -18,7 +18,6 @@ module control_unit (
     // Instantiate Main Decoder
     main_decoder main_dec (
         .opcode(opcode),             // Connect opcode
-        .funct_3(funct3),            // Connect funct3 to funct_3_i
         .reg_wr_en(reg_wr_en),       // Connect Register Write Enable
         .mem_wr_en(mem_wr_en),       // Connect Memory Write Enable
         .imm_src(imm_src),           // Connect Immediate source
