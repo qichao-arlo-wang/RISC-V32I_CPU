@@ -21,10 +21,8 @@ if [[ $# -eq 0 ]]; then
     files=(${TEST_FOLDER}/*.cpp)
 else
     # If arguments provided, use them as input files
-    files=()
-    for arg in "$@"; do
-        files+=("$(realpath "$arg")")
-    done
+    files=("$@")
+
 fi
 
 cd $TEST_FOLDER

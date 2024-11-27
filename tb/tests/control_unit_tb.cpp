@@ -1,22 +1,16 @@
-#include "Vcontrol_unit.h"  
+#include "base_testbench.h"
 #include "gtest/gtest.h"
-#include "verilated.h"
 
 // Test Fixture
-class ControlUnitTestBench : public ::testing::Test {
+class ControlUnitTestBench : public BaseTestbench {
 protected:
-    Vcontrol_unit *top;  // Pointer to the Verilated DUT model
-
-    void SetUp() override {
-        top = new Vcontrol_unit;
-        top->clk = 0; // Initialize the clock
-    }
-
-    void TearDown() override {
-        delete top;
+    void initializeInputs() override {
+        top->opcode = 0;
+        top->funct3= 0;
+        top->funct7_5 = 0;
+        top->zero = 0;
     }
 };
-
 
 // Test for R-type instruction
 TEST_F(ControlUnitTestBench, R_TYPE) {
@@ -24,12 +18,13 @@ TEST_F(ControlUnitTestBench, R_TYPE) {
     top->funct3 = 0b000;     // ADD operation
     top->funct7_5 = 0;       // No significance for ADD
     top->zero = 0;           // Zero flag not used for R-type
+
     top->eval();
 
-    EXPECT_EQ(top->reg_wr_en, 1); // Register write enabled
-    EXPECT_EQ(top->alu_src, 0);   // ALU uses register inputs
-    EXPECT_EQ(top->alu_control, 0); // ALU control for ADD
-    EXPECT_EQ(top->pc_src, 0);    // No branch
+    EXPECT_EQ(top->reg_wr_en, 1);     // Register write enabled
+    EXPECT_EQ(top->alu_src, 0);       // ALU uses register inputs
+    EXPECT_EQ(top->alu_control, 0);   // ALU control for ADD
+    EXPECT_EQ(top->pc_src, 0);        // No branch
 }
 
 // Test for Store instruction
@@ -38,6 +33,7 @@ TEST_F(ControlUnitTestBench, STORE_SW) {
     top->funct3 = 0b010;     // SW
     top->funct7_5 = 0;       // Not significant for SW
     top->zero = 0;
+
     top->eval();
 
     EXPECT_EQ(top->reg_wr_en, 0);     // No register write
@@ -50,6 +46,7 @@ TEST_F(ControlUnitTestBench, BRANCH_BEQ) {
     top->funct3 = 0b000;     // BEQ
     top->funct7_5 = 0;       // Not significant for BEQ
     top->zero = 1;           // Zero flag set (branch condition met)
+
     top->eval();
 
     EXPECT_EQ(top->pc_src, 1);       // Branch taken
@@ -61,6 +58,7 @@ TEST_F(ControlUnitTestBench, DEFAULT_CASE) {
     top->funct3 = 0;
     top->funct7_5 = 0;
     top->zero = 0;
+
     top->eval();
 
     EXPECT_EQ(top->reg_wr_en, 0);   // No register write
@@ -69,6 +67,8 @@ TEST_F(ControlUnitTestBench, DEFAULT_CASE) {
 }
 
 int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    Verilated::commandArgs(argc, argv);  // Initialize Verilator args
+    testing::InitGoogleTest(&argc, argv);
+    auto res = RUN_ALL_TESTS();
+    return res;
 }
