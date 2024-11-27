@@ -11,9 +11,9 @@ module alu_decoder (
             2'b01: begin // branch
                 case (funct3_i)
                     3'b000: alu_control_o = 4'b0001; // BEQ SUB
-                    3'b001: alu_control_o = 4'b0001; // BNE SUB
+                    3'b001: alu_control_o = 4'b1010; // BNE SUB set inverse zero needed
                     3'b100: alu_control_o = 4'b0111; // BLT SLT 
-                    3'b101: alu_control_o = 4'b0111; // BGE SLT 
+                    3'b101: alu_control_o = 4'b1011; // BGE SLT set inverse zero needed
                     3'b110: alu_control_o = 4'b1000; // BLT SLTU 
                     3'b111: alu_control_o = 4'b1000; // BGE SLTU 
                     default: alu_control_o = 4'b0001; // Default Sub
