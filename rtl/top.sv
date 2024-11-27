@@ -79,7 +79,8 @@ control_unit ctrl (
     .alu_src_o(alu_src),  
     .result_src_o(result_src),  
     .alu_control_o(alu_control),
-    .pc_src_o(pc_src)
+    .pc_src_o(pc_src),
+    .byte_en_o(mem_byte_en)
 );
 
 // Instantiate Sign-Extension Unit

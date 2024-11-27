@@ -11,6 +11,7 @@ module control_unit (
     output logic result_src_o,           // Result source (ALU or memory)
     output logic [3:0] alu_control_o,    // ALU Operation control (updated to 4 bits)
     output logic pc_src_o                // Program counter source (branch decision)
+    output logic [3:0] byte_en_o,        // Byte enable for memory access
 );
 
     logic [1:0] alu_op;                // ALU operation control signal
