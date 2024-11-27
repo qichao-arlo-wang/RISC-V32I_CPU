@@ -54,11 +54,11 @@ module alu (
             end
             4'b1011: begin 
                 alu_result_o = ($signed(src_a_i) < $signed(src_b_i))? 32'd1 : 32'd0;    // SLT for BGE
-                zero_o = (alu_result_o == 32'd0);    // Inverse Zero needed
+                zero_o = ~(alu_result_o == 32'd0);    // Inverse Zero needed
             end
             default: begin
                 alu_result_o = 32'd0;    // default 0
-                zero_o = (alu_result_o == 32'd0);    // same above
+                zero_o = ~(alu_result_o == 32'd0);    // same above
             end
         endcase 
     end
