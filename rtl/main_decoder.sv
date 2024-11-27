@@ -8,20 +8,11 @@ module main_decoder (
     output logic alu_src_o,        // ALU source (register or immediate)
     output logic branch_o,         // Branch control
     output logic result_src_o,     // Result source (ALU or memory)
-    output logic [1:0] alu_op_o    // ALU Operation control
-    
+    output logic [1:0] alu_op_o,   // ALU Operation control
+    output logic [3:0] byte_en_o   // Byte enable
 );
 
     always_comb begin
-        // Default values
-        reg_wr_en_o = 0;
-        mem_wr_en_o = 0;
-        imm_src_o = 3'b000;
-        alu_src_o = 0;
-        branch_o = 0;
-        result_src_o = 0;
-        alu_op_o = 2'b00;
-
         // Opcode decoding
         case (opcode_i)
             // I-type op = 3 
@@ -33,6 +24,24 @@ module main_decoder (
                 alu_src_o = 1;
                 result_src_o = 1;
                 alu_op_o = 2'b00;
+
+                case (funct3_i) //// lbu & lhu needs zero-extended haven't been implemented
+                    3'b000: begin
+                        byte_en_o = 4'b0001; // LB
+                    end
+                    3'b001: begin
+                        byte_en_o = 4'b0011; // LH
+                    end
+                    3'b010: begin
+                        byte_en_o = 4'b1111; // LW
+                    end
+                    3'b100: begin
+                        byte_en_o = 4'b0001; // LBU
+                    end
+                    3'b101: begin
+                        byte_en_o = 4'b0011; // LHU
+                    end
+                endcase
             end
 
             // I-type op = 3 
@@ -45,9 +54,9 @@ module main_decoder (
 
                 case (funct3_i)
                     // SLLI
-                    3'b001: imm_src_o = 3'b101;
+                    3'b001: imm_src_o  = 3'b101;
                     // SRLI/SRAI
-                    3'b101: imm_src_o = 3'b101;
+                    3'b101: imm_src_o  = 3'b101;
                     default: imm_src_o = 3'b000;
                 endcase
             end
@@ -60,6 +69,18 @@ module main_decoder (
                 imm_src_o = 3'b001;
                 alu_src_o = 1;
                 alu_op_o = 2'b00;
+
+                case (funct3_i)
+                    3'b000: begin
+                        byte_en_o = 4'b0001; // Store byte (sb)
+                    end
+                    3'b001: begin
+                        byte_en_o = 4'b0011; // Store half (sh)
+                    end
+                    3'b010: begin
+                        byte_en_o = 4'b1111; // Store word (sw)
+                    end
+                endcase
             end
 
             // R-type, op = 51
@@ -126,6 +147,7 @@ module main_decoder (
                 branch_o = 0;
                 result_src_o = 0;
                 alu_op_o = 2'b00;
+                byte_en_o = 4'b0000;
             end
         endcase
     end

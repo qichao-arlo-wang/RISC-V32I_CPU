@@ -1,8 +1,9 @@
 module alu_decoder (
-    input logic [1:0] alu_op_i,          // ALU Operation code from Main Decoder
+    input logic [1:0] alu_op_i,         // ALU Operation code from Main Decoder
     input logic [2:0] funct3_i,         // funct3 field from instruction
     input logic funct7_5_i,             // Bit 5 of funct7 field
-    output logic [3:0] alu_control_o     // ALU Control signal
+
+    output logic [3:0] alu_control_o    // ALU Control signal
 );
 
     always_comb begin
