@@ -1,6 +1,7 @@
 module main_decoder (
     input logic [6:0] opcode_i,    // Opcode from instruction
-    input logic [2:0] funct_3_i,   // funct3 field from instruction
+    input logic [2:0] funct3_i,   // funct3 field from instruction
+
     output logic reg_wr_en_o,      // Register Write Enable
     output logic mem_wr_en_o,      // Memory Write Enable
     output logic [2:0] imm_src_o,  // Immediate source control
@@ -8,7 +9,7 @@ module main_decoder (
     output logic branch_o,         // Branch control
     output logic result_src_o,     // Result source (ALU or memory)
     output logic [1:0] alu_op_o    // ALU Operation control
-    input logic [2:0] funct3_i,         // funct3 field from instruction
+    
 );
 
     always_comb begin
@@ -42,15 +43,12 @@ module main_decoder (
                 alu_src_o = 1;
                 alu_op_o = 2'b10;
 
-                case (funct_3_i)
+                case (funct3_i)
                     // SLLI
                     3'b001: imm_src_o = 3'b101;
                     // SRLI/SRAI
-                    3'b101: begin
-                        imm_src_o = 3'b101;
-                    end
-                    default:
-                        imm_src_o = 3'b000;
+                    3'b101: imm_src_o = 3'b101;
+                    default: imm_src_o = 3'b000;
                 endcase
             end
 
