@@ -3,7 +3,8 @@ module top #(
 ) (
     input   logic clk,                  // clock signal
     input   logic rst,                  // reset signal
-    output  logic [DATA_WIDTH-1:0] a0   // register 11 output
+    output  logic [DATA_WIDTH-1:0] a0,   // register 11 output
+    output logic [31:0] instruction
 );
 
 /// /// BLOCK 1: Program counter and related adders /// ///
@@ -48,7 +49,7 @@ pc_reg pc_reg(
 
 /// /// BLOCK 2: The Register File, ALU and the related MUX /// ///
 // Instruction & fields
-logic [DATA_WIDTH-1:0] instruction;
+//logic [DATA_WIDTH-1:0] instruction;
 /* verilator lint_off UNUSED */
 logic [24:0] instruction31_7 = instruction[31:7];
 /* verilator lint_on UNUSED */
@@ -96,9 +97,9 @@ control_unit ctrl (
 
 // Instantiate Sign-Extension Unit
 sign_exten sext (
-    .partial_instruction(instruction31_7),
+    .instr_31_7(instruction31_7),
     .imm_src(imm_src),
-    .imm_op(imm_op)
+    .imm_ext(imm_op)
 );
 
 
@@ -118,7 +119,7 @@ register_file reg_file_inst (
 
     .rd1(alu_op1),
     .rd2(rd2),
-    .a0(a0)
+    .a0(a0) //register 10
 );
 mux alu_mux_inst(
     .in0(rd2),
