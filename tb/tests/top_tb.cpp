@@ -20,7 +20,7 @@ int main() {
 
     // Load registers with initial values
     // Let's assume x1 holds 5, and we want to perform x3 = x1 + 10
-    dut->top__DOT__reg_file_inst__DOT__reg_file[1] = 5;   // rs1 (x1) = 5
+    dut->top__DOT__reg_file_inst__DOT__reg_file[10] = 5;   // rs1 (x1) = 5
     //dut->top__DOT__instruction_memory_inst__DOT__mem[0] = 0x00508213; // addi x4, x1, 10
 
     // Run simulation for a few clock cycles
@@ -29,11 +29,11 @@ int main() {
         dut->eval();
         sim_time += 5;
 
-        if (i % 2 == 0) {  // Print on positive edge
-            std::cout << "Time: " << sim_time
-                      << " - a0 (Register 10): " << dut->a0
-                      << std::endl;
-        }
+        std::cout << "Time: " << sim_time
+            << " - PC: " << dut->top__DOT__pc
+            << " - a0: " << dut->a0
+            << std::endl;
+
     }
 
     // Check results
