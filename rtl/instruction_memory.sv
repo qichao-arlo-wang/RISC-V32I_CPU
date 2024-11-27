@@ -19,5 +19,5 @@ module instruction_memory (
     end
 
     // Fetch instruction
-    assign instruction = (addr >> 2) < 256 ? mem[addr >> 2] : 32'b0;
+    assign instruction = (addr[31:2] < 256) ? mem[addr[31:2]] : 32'b0;
 endmodule
