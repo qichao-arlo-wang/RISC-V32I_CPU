@@ -9,16 +9,64 @@ protected:
     void initializeInputs() override {
         top->opcode_i = 0;
         top->funct3_i = 0;
-        top->funct7_5_i = 0;
+        top->funct7_i = 0;
         top->zero_i = 0;
     }
 };
+
+//Test for ADDI instruction I-type
+TEST_F(ControlUnitTestBench, ADDI){
+    top->opcode_i = 0b0010011; //ADDI opcode
+    top->funct3_i = 0b000; //ADDI funct3
+    top->funct7_i = 0; //not used for ADDI
+    top->zero_i = 0; //zero flag not used for ADDI
+
+    top->eval();
+
+    EXPECT_EQ(top->reg_wr_en_o, 1); //reg write enabled
+    EXPECT_EQ(top->alu_src_o, 1); //alu uses immediate
+    EXPECT_EQ(top->alu_control_o, 0x0); //alu control for add
+    EXPECT_EQ(top->pc_src_o, 0); //no branch
+}
+
+// Test for LW instruction I-type load
+TEST_F(ControlUnitTestBench, LW){
+    top->opcode_i = 0b0000011; //LW opcode
+    top->funct3_i = 0b010; // funct3 for LW
+    top->funct7_i = 0; //not used for LW
+    top->zero_i = 0; //zero flag not used for LW
+
+    top->eval();
+
+    EXPECT_EQ(top->reg_wr_en_o, 1); //reg write enabled
+    EXPECT_EQ(top->mem_wr_en_o, 0); // memory write disabled
+    EXPECT_EQ(top->alu_src_o, 1); //alu uses immediate
+    EXPECT_EQ(top->result_src_o, 1); // result comes from memory
+    EXPECT_EQ(top->alu_control_o, 0x0); //alu control for add
+    EXPECT_EQ(top->pc_src_o, 0); //no branch
+    EXPECT_EQ(top->byte_en_o, 0xF); //byte enable for word (4 bytes)
+}
+
+// Test for BNE instruction B-type
+TEST_F(ControlUnitTestBench, BNE){
+    top->opcode_i = 0b1100011; //branch opcode
+    top->funct3_i = 0b001; //BNE funct3
+    top->funct7_i = 0; //not significant for BNE
+    top->zero_i = 0; // zero flag not set
+
+    top->eval();
+
+    EXPECT_EQ(top->reg_wr_en_o, 0); //no reg write
+    EXPECT_EQ(top->alu_src_o, 0); //alu uses reg inputs
+    EXPECT_EQ(top->pc_src_o, 1); //branch taken
+    EXPECT_EQ(top->alu_control_o, 0xA); //alu control code for sub
+}
 
 // Test for R-type instruction
 TEST_F(ControlUnitTestBench, R_TYPE) {
     top->opcode_i = 0b0110011; // R-Type opcode
     top->funct3_i = 0b000;     // ADD operation
-    top->funct7_5_i = 0;       // No significance for ADD
+    top->funct7_i = 0;       // No significance for ADD
     top->zero_i = 0;           // Zero flag not used for R-type
 
     top->eval();
@@ -33,7 +81,7 @@ TEST_F(ControlUnitTestBench, R_TYPE) {
 TEST_F(ControlUnitTestBench, STORE_SW) {
     top->opcode_i = 0b0100011; // Store opcode
     top->funct3_i = 0b010;     // SW
-    top->funct7_5_i = 0;       // Not significant for SW
+    top->funct7_i = 0;       // Not significant for SW
     top->zero_i = 0;
 
     top->eval();
@@ -46,7 +94,7 @@ TEST_F(ControlUnitTestBench, STORE_SW) {
 TEST_F(ControlUnitTestBench, BRANCH_BEQ) {
     top->opcode_i = 0b1100011; // Branch opcode
     top->funct3_i = 0b000;     // BEQ
-    top->funct7_5_i = 0;       // Not significant for BEQ
+    top->funct7_i = 0;       // Not significant for BEQ
     top->zero_i = 1;           // Zero flag set (branch condition met)
 
     top->eval();
@@ -58,7 +106,7 @@ TEST_F(ControlUnitTestBench, BRANCH_BEQ) {
 TEST_F(ControlUnitTestBench, DEFAULT_CASE) {
     top->opcode_i = 0b1111111; // Invalid opcode
     top->funct3_i = 0;
-    top->funct7_5_i = 0;
+    top->funct7_i = 0;
     top->zero_i = 0;
 
     top->eval();
