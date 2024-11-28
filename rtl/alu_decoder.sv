@@ -1,46 +1,101 @@
 module alu_decoder (
     input logic [1:0] alu_op_i,         // ALU Operation code from Main Decoder
     input logic [2:0] funct3_i,         // funct3 field from instruction
-    input logic funct7_5_i,             // Bit 5 of funct7 field
+    input logic [6:0] funct7_i,             // funct7 field from instruction
 
     output logic [3:0] alu_control_o    // ALU Control signal
 );
 
     always_comb begin
         case (alu_op_i)
-            2'b00: alu_control_o = 4'b0000; // Add for lw/sw
-
-            2'b01: begin // branch
+            2'b0: begin // I-type operations
                 case (funct3_i)
-                    3'b000: alu_control_o = 4'b0001; // BEQ SUB
-                    3'b001: alu_control_o = 4'b1010; // BNE SUB set inverse zero needed
-                    3'b100: alu_control_o = 4'b0111; // BLT SLT 
-                    3'b101: alu_control_o = 4'b1011; // BGE SLT set inverse zero needed
-                    3'b110: alu_control_o = 4'b1000; // BLT SLTU 
-                    3'b111: alu_control_o = 4'b1000; // BGE SLTU 
-                    default: alu_control_o = 4'b0001; // Default Sub
+                    3'h0: alu_control_o = 4'h0; // ADD
+                    3'h4: alu_control_o = 4'h8; // XOR
+                    3'h6: alu_control_o = 4'h7; // OR
+                    3'h7: alu_control_o = 4'h9; // AND 
+                    3'h1: begin
+                        case (funct7_i)
+                            7'b0: alu_control_o = 4'h2; // SLLI
+                            default: $display "Error: invalid instruction"
+                        endcase
+                    end
+                    3'h5: begin
+                        case (funct7_i)
+                            7'b0:  alu_control_o = 4'h5; // SRLI
+                            7'h20: alu_control_o = 4'h6; // SRAI
+                            default: $display "Error: invalid instruction"
+                        endcase
+                    end
+                    3'h2: alu_control_o = 4'h3; // SLTI
+                    3'h3: alu_control_o = 4'h4; // SLTIU
+                    default: alu_control_o = 4'hA; // Default 32'b0
                 endcase
             end
 
-            2'b10: begin // I&R-type operations
-                case ({funct3_i, funct7_5_i})
-                    4'b0000: alu_control_o = 4'b0000; // ADD
-                    4'b0001: alu_control_o = 4'b0001; // SUB
-                    4'b0010: alu_control_o = 4'b0101; // SLL
-                    4'b0100: alu_control_o = 4'b0111; // SLT 
-                    4'b0110: alu_control_o = 4'b1000; // SLT(U)
-                    4'b1010: alu_control_o = 4'b0110; // SRL
-                    4'b1011: alu_control_o = 4'b1001; // SRA
-                    4'b1100: alu_control_o = 4'b0011; // OR
-                    4'b1000: alu_control_o = 4'b0100; // XOR
-                    4'b1110: alu_control_o = 4'b0010; // AND
-                    default: alu_control_o = 4'b0000; // Default ADD
+            2'b01: begin // B-type operations
+                alu_control_o = 4'h1;
+            end
+
+            2'b10: begin // R-type operations
+                case (funct3_i)
+                    4'h0: begin
+                        case (func_7_i)
+                            7'h0: alu_control_o = 4'h0    // ADD
+                            7'h20: alu_control_o = 4'h1  // SUB
+                            default: $display "Error: invalid instruction";
+                        endcase 
+                    end
+                    4'h4: begin
+                        case (func_7_i)
+                            7'h0: alu_control_o = 4'h8   // XOR
+                            default: $display "Error: invalid instruction";
+                        endcase
+                    end
+                    4'h6: begin
+                        case (funct7_i)
+                            7'h0: alu_control_o = 4'h7   // OR
+                            default: $display "Error: invalid instruction";
+                        endcase
+                    end
+                    4'h7: begin
+                        case (func_7_i)
+                            7'h0: alu_control_o = 4'h9   // AND
+                            default: $display "Error: invalid instruction";
+                        endcase
+                    end
+                    4'h1: begin
+                        case (func_7_i)
+                            7'h0: alu_control_o = 4'h2   // SLL
+                            default: $display "Error: invalid instruction";
+                        endcase
+                    end
+                    4'h5: begin
+                        case (func_7_i)
+                            7'h0: alu_control_o = 4'h5   // SRL
+                            7'h20: alu_control_o = 4'h6  // SRA
+                            default: $display "Error: invalid instruction";
+                        endcase
+                    end
+                    4'h2: begin
+                        case (func_7_i)
+                            7'h0: alu_control_o = 4'h3   // SLT
+                            default: $display "Error: invalid instruction";
+                        endcase
+                    end
+                    4'h3: begin
+                        case (func_7_i)
+                            7'h0: alu_control_o = 4'h4:  //SLTU
+                            default: $display "Error: invalid instruction";
+                        endcase
+                    end
+                    default: alu_control_o = 4'hA; // Default 0
                 endcase
             end
 
-            2'b11: alu_control_o = 4'b1111; // U type output alu with src_b_i<<12
+            2'b11: alu_control_o = 4'hA; // U type output alu with src_b_i<<12 WHAT IS THIS SUPPOSED TO BE?
             
-            default: alu_control_o = 4'b0000; // Default ADD
+            default: alu_control_o = 4'hA; // Default 0
         endcase
     end
 endmodule

@@ -109,7 +109,16 @@ module main_decoder (
                 reg_wr_en_o = 0;
                 mem_wr_en_o = 0;
 
-                imm_src_o   = 3'b010;
+                case (funct3_i)
+                    3'b110: begin
+                        imm_src_o = 3'b111;
+                    end
+                    3'b111: begin
+                        imm_src_o = 3'b111;
+                    end
+                    default: imm_src_o = 3'b010;
+                endcase
+
                 alu_src_o   = 0;
                 branch_o    = 1;
                 alu_op_o    = 2'b01;
