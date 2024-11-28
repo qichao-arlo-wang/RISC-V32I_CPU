@@ -1,31 +1,22 @@
-#include "base_testbench.h"
+#include "testbench.h"
 #include <filesystem>
 
 Vdut *top;
 VerilatedVcdC *tfp;
-unsigned int tick = 0;
+unsigned int ticks = 0;
 unsigned int CYCLES = 256;
 int i;
 
-class CpuTestbench : public BaseTestbench
+class CpuTestbench : public Testbench
 {
 protected:
     void initializeInputs() override
     {
         top->clk = 0;
         top->rst = 0;
-        top->a0 = 0;
-    }
+        // top->a0 = 0;
+    }    
 };
-
-void runSimulation(int cycles)
-{
-    for (tick = 0; tick < 2; tick++) {
-        tfp->dump (2*i+tick);  // unit is in ps!!!
-        top->clk = !top->clk;
-        top->eval ();
-    }
-}
 
 TEST_F(CpuTestbench, BaseProgramTest)
 {
@@ -37,6 +28,7 @@ TEST_F(CpuTestbench, BaseProgramTest)
     for (i = 0; i < CYCLES; i++)
     {
         runSimulation(2);
+        std::cout << top->a0 << std::endl;
         if (top->a0 == 254)
         {
             SUCCEED();
@@ -44,6 +36,7 @@ TEST_F(CpuTestbench, BaseProgramTest)
             break;
         }
     }
+
     if (!success)
     {
         FAIL() << "Counter did not reach 254";
