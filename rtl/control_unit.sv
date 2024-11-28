@@ -10,8 +10,8 @@ module control_unit (
     output logic alu_src_o,              // ALU source (register or immediate)
     output logic result_src_o,           // Result source (ALU or memory)
     output logic [3:0] alu_control_o,    // ALU Operation control (updated to 4 bits)
-    output logic pc_src_o                // Program counter source (branch decision)
-    output logic [3:0] byte_en_o,        // Byte enable for memory access
+    output logic pc_src_o,               // Program counter source (branch decision)
+    output logic [3:0] byte_en_o         // Byte enable for memory access
 );
 
     logic [1:0] alu_op;                // ALU operation control signal
@@ -28,7 +28,8 @@ module control_unit (
         .alu_src_o(alu_src_o),           // Connect ALU source
         .branch_o(branch),               // Connect Branch control
         .result_src_o(result_src_o),     // Connect Result source
-        .alu_op_o(alu_op)                // Connect ALU operation control
+        .alu_op_o(alu_op),                // Connect ALU operation control
+        .byte_en_o(byte_en_o)           // Connect byte enable
     );
 
     // Instantiate ALU Decoder

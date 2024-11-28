@@ -41,6 +41,9 @@ module main_decoder (
                     3'b101: begin
                         byte_en_o = 4'b0011; // LHU
                     end
+                    default: begin
+                        byte_en_o = 4'b0000; //default case
+                    end
                 endcase
             end
 
@@ -79,6 +82,9 @@ module main_decoder (
                     end
                     3'b010: begin
                         byte_en_o = 4'b1111; // Store word (sw)
+                    end
+                    default: begin
+                        byte_en_o = 4'b0000; //default case
                     end
                 endcase
             end
