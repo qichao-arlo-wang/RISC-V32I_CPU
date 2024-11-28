@@ -8,17 +8,7 @@ module alu_decoder (
     always_comb begin
         case (alu_op)
             2'b00: alu_control = 4'b000; // Add for lw/sw
-            2'b01: begin // branch
-                case (funct3)
-                    3'b000: alu_control = 4'b0001; // BEQ SUB
-                    3'b001: alu_control = 4'b0001; // BNE SUB set inverse zero needed
-                    3'b100: alu_control = 4'b0111; // BLT SLT 
-                    3'b101: alu_control = 4'b0111; // BGE SLT set inverse zero needed
-                    3'b110: alu_control = 4'b1000; // BLT SLTU 
-                    3'b111: alu_control = 4'b1000; // BGE SLTU 
-                    default: alu_control = 4'b0001; // Default Sub
-                endcase
-            end
+            2'b01: alu_control = 4'b0001;
             2'b10: begin // I&R-type operations
                 case ({funct3, funct7_5})
                     4'b0000: alu_control = 4'b0000; // ADD
