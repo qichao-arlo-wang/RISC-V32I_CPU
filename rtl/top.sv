@@ -40,7 +40,6 @@ pc_reg pc_reg_inst (
 );
 
 
-
 /// /// BLOCK 2: Register file, control unit, and extend /// ///
 
 // // // control unit signals
@@ -70,8 +69,9 @@ logic [DATA_WIDTH-1:0] imm_ext;
 control_unit ctrl (
     .opcode_i(op),
     .funct3_i(funct3),
-    .funct7_5_i(funct7_5),
+    .funct7_i(funct7_5),
     .zero_i(zero),
+    .alu_result_i(alu_result),
 
     .reg_wr_en_o(reg_wr_en),
     .mem_wr_en_o(mem_wr_en),
