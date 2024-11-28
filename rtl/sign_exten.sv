@@ -45,7 +45,7 @@ module sign_exten (
 
             3'b111:
                 //unsigned
-                imm_ext_o = {{19{0}}, instr_31_7_i[24], instr_31_7_i[0], instr_31_7_i[23:18], instr_31_7_i[4:1], 1'b0};
+                imm_ext_o = {{19{1'b0}}, instr_31_7_i[24], instr_31_7_i[0], instr_31_7_i[23:18], instr_31_7_i[4:1], 1'b0};
             default:     // Default 
                 imm_ext_o = 32'd0;  // Output zero 
         endcase

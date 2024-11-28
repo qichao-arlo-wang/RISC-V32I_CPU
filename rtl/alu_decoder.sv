@@ -41,51 +41,51 @@ module alu_decoder (
                 case (funct3_i)
                     4'h0: begin
                         case (func_7_i)
-                            7'h0: alu_control_o = 4'h0    // ADD
-                            7'h20: alu_control_o = 4'h1  // SUB
+                            7'h0: alu_control_o = 4'h0;    // ADD
+                            7'h20: alu_control_o = 4'h1;  // SUB
                             default: $display "Error: invalid instruction";
                         endcase 
                     end
                     4'h4: begin
                         case (func_7_i)
-                            7'h0: alu_control_o = 4'h8   // XOR
+                            7'h0: alu_control_o = 4'h8;   // XOR
                             default: $display "Error: invalid instruction";
                         endcase
                     end
                     4'h6: begin
                         case (funct7_i)
-                            7'h0: alu_control_o = 4'h7   // OR
+                            7'h0: alu_control_o = 4'h7;   // OR
                             default: $display "Error: invalid instruction";
                         endcase
                     end
                     4'h7: begin
                         case (func_7_i)
-                            7'h0: alu_control_o = 4'h9   // AND
+                            7'h0: alu_control_o = 4'h9;   // AND
                             default: $display "Error: invalid instruction";
                         endcase
                     end
                     4'h1: begin
                         case (func_7_i)
-                            7'h0: alu_control_o = 4'h2   // SLL
+                            7'h0: alu_control_o = 4'h2;   // SLL
                             default: $display "Error: invalid instruction";
                         endcase
                     end
                     4'h5: begin
                         case (func_7_i)
-                            7'h0: alu_control_o = 4'h5   // SRL
-                            7'h20: alu_control_o = 4'h6  // SRA
+                            7'h0: alu_control_o = 4'h5;   // SRL
+                            7'h20: alu_control_o = 4'h6;  // SRA
                             default: $display "Error: invalid instruction";
                         endcase
                     end
                     4'h2: begin
                         case (func_7_i)
-                            7'h0: alu_control_o = 4'h3   // SLT
+                            7'h0: alu_control_o = 4'h3;   // SLT
                             default: $display "Error: invalid instruction";
                         endcase
                     end
                     4'h3: begin
                         case (func_7_i)
-                            7'h0: alu_control_o = 4'h4:  //SLTU
+                            7'h0: alu_control_o = 4'h4;  //SLTU
                             default: $display "Error: invalid instruction";
                         endcase
                     end
@@ -93,9 +93,10 @@ module alu_decoder (
                 endcase
             end
 
-            2'b11: alu_control_o = 4'hA; // U type output alu with src_b_i<<12 WHAT IS THIS SUPPOSED TO BE?
-            
-            default: alu_control_o = 4'hA; // Default 0
+            // S-TYPE instruction
+            2'b11: alu_control_o = 4'h1; // Default ADD
+
+            default: alu_control_o = 4'h1; // Default ADD
         endcase
     end
 endmodule
