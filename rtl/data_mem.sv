@@ -70,8 +70,8 @@ module data_mem (
 
                 // half word (16 bits)
                 0b0011: begin
-                    mem[addr_i+1]   <= wr_data_i[7:0];    // Lowest byte
-                    mem[addr_i] <= wr_data_i[15:8];   // Highest byte
+                    mem[addr_i+1] <= wr_data_i[7:0];    // Lowest byte
+                    mem[addr_i]   <= wr_data_i[15:8];   // Highest byte
                 end
 
                 // word (32 bits)

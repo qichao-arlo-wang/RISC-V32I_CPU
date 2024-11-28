@@ -1,8 +1,8 @@
 module alu (
-    input logic [31:0] src_a_i, src_b_i,
-    input logic [3:0] alu_control_i,
+    input  logic [31:0] src_a_i, src_b_i,
+    input  logic [3:0]  alu_control_i,
     output logic [31:0] alu_result_o,
-    output logic zero_o
+    output logic        zero_o
 );
     // ALU operation logic
     always_comb begin
@@ -17,15 +17,10 @@ module alu (
             4'b0011: alu_result_o = src_a_i | src_b_i;                                     // OR
             4'b0100: alu_result_o = src_a_i ^ src_b_i;                                     // XOR
             4'b0010: alu_result_o = src_a_i & src_b_i;                                     // AND
-
-            4'b1010: alu_result_o = src_a_i - src_b_i;                                     // SUB for BNE
-            4'b1011: alu_result_o = ($signed(src_a_i) < $signed(src_b_i)) ? 32'd1 : 32'd0; // SLT for BGE
-
-            default: alu_result_o = 32'd0;    // default 0
+            default: alu_result_o = 32'd0;                                                 // default 0
         endcase
+
         // Set zero_o based on the ALU control signal and ALU result
-        // If alu_control_i is 1010(BNE) or 1011(BGE), zero_o is set to the negation of whether alu_result_o is zero
-        // Otherwise, zero_o is set to whether alu_result_o is zero
-        zero_o = (alu_control_i == 4'b1010 || alu_control_i == 4'b1011) ? ~(alu_result_o == 32'd0) : (alu_result_o == 32'd0);
+        zero_o = (alu_result_o == 32'd0) ? 1'b1 : 1'b0;
     end
 endmodule

@@ -11,3 +11,7 @@
 
 ## Stretch Goal 1: Pipelined RV32I Design
 
+### problems need to be considered:
+- zero extends & msb extends (alu might have solved it)
+- instruction mem need to be checked
+- data mem

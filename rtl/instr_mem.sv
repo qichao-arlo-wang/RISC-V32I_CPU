@@ -36,7 +36,8 @@ module instr_mem (
     always_comb begin
         if (addr_error) begin
             instr_o = 32'hDEADBEEF; // Return error value if address is invalid
-        end else begin
+        end 
+        else begin
             instr_o = {mem[addr_i], mem[addr_i+1], mem[addr_i+2], mem[addr_i+3]};
         end
     end 

@@ -8,7 +8,7 @@ module alu_decoder (
 
     always_comb begin
         case (alu_op_i)
-            2'b00: alu_control_o = 4'b000; // Add for lw/sw
+            2'b00: alu_control_o = 4'b0000; // Add for lw/sw
 
             2'b01: begin // branch
                 case (funct3_i)
