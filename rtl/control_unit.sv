@@ -14,6 +14,7 @@ module control_unit (
 
     logic [1:0] alu_op;                // ALU operation control signal
     logic branch;                      // Branch control signal
+    logic branch_condition;            // Condition for branching based on funct3 and zero
 
     // Instantiate Main Decoder
     main_decoder main_dec (
@@ -36,6 +37,15 @@ module control_unit (
         .alu_control(alu_control)    // Connect ALU control output
     );
 
-    // Branch decision
-    assign pc_src = branch & zero;     // Compute PC source based on branch and zero flag
+    // Compute Branch Condition
+    always_comb begin
+        case (funct3)
+            3'b000: branch_condition = zero;        // beq: branch if zero is set
+            3'b001: branch_condition = ~zero;       // bne: branch if zero is not set
+            default: branch_condition = 1'b0;       // Other branch types not implemented here
+        endcase
+    end
+
+    // Compute Program Counter Source
+    assign pc_src = branch & branch_condition;      // PC source considers branch enable and branch condition
 endmodule
