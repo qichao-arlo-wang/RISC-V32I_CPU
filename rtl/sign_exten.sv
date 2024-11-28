@@ -1,6 +1,7 @@
 module sign_exten (
     input logic [24:0] instr_31_7_i,  // instruction[31:7]
-    input logic [2:0] imm_src_i,
+    input logic [2:0]  imm_src_i,
+
     output logic [31:0] imm_ext_o
 );
 
@@ -37,7 +38,7 @@ module sign_exten (
                 //     = instr_31_7_i[24] + instr_31_7_i[11:4] + instr_31_7_i[12] + instr_31_7_i[23:14]
                 imm_ext_o = {{12{instr_31_7_i[24]}}, instr_31_7_i[12:5], instr_31_7_i[13], instr_31_7_i[23:14], 1'b0};
 
-            3'b101:       /////////not sure, cause fucnt7 should be used./////////
+            3'b101:
                 // slli, srri, srai 
                 // imm[5:11] = 0x00
                 imm_ext_o = {{27{1'b0}}, instr_31_7_i[17:13]};

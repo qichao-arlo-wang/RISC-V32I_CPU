@@ -1,6 +1,7 @@
 module pc_reg (
-    input  logic        clk,        // Clock
+    input  logic        clk,
     input  logic [31:0] pc_next_i,    // Next pc value
+
     output logic [31:0] pc_o          // Current pc value
 );
 

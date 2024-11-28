@@ -22,18 +22,17 @@ if [[ $# -eq 0 ]]; then
 else
     # If arguments provided, use them as input files
     files=("$@")
-
 fi
 
-cd $TEST_FOLDER
+# Cleanup
+rm -rf obj_dir
 
-# Wipe previous test output
-rm -rf test_out/*
+cd $TEST_FOLDER
 
 # Iterate through files
 for file in "${files[@]}"; do
     name=$(basename "$file" _tb.cpp | cut -f1 -d\-)
-
+    
     # If verify.cpp -> we are testing the top module
     if [ $name == "verify.cpp" ]; then
         name="top"
@@ -46,22 +45,30 @@ for file in "${files[@]}"; do
                 -y ${RTL_FOLDER} \
                 --prefix "Vdut" \
                 -o Vdut \
-                -LDFLAGS "-lgtest -lgtest_main -lpthread"
+                -CFLAGS "-isystem /opt/homebrew/Cellar/googletest/1.15.2/include"\
+                -LDFLAGS "-L/opt/homebrew/Cellar/googletest/1.15.2/lib -lgtest -lgtest_main -lpthread" \
 
     # Build C++ project with automatically generated Makefile
     make -j -C obj_dir/ -f Vdut.mk
-
+    
     # Run executable simulation file
     ./obj_dir/Vdut
-
+    
     # Check if the test succeeded or not
     if [ $? -eq 0 ]; then
         ((passes++))
     else
         ((fails++))
     fi
-
+    
 done
 
-# Save obj_dir in test_out
-mv obj_dir test_out/
+# Exit as a pass or fail (for CI purposes)
+if [ $fails -eq 0 ]; then
+    echo "${GREEN}Success! All ${passes} test(s) passed!"
+    exit 0
+else
+    total=$((passes + fails))
+    echo "${RED}Failure! Only ${passes} test(s) passed out of ${total}."
+    exit 1
+fi

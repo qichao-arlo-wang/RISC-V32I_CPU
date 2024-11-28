@@ -42,10 +42,10 @@ TEST_F(PcRegTestBench, BaseTest1)
 {   
     //Write data to register
     top->pc_next_i = 10;
+    top->eval();
+
     toggleClock();
-    toggleClock();
-    toggleClock();
-    // toggleClock();
+
     top->eval();
 
     EXPECT_EQ(top->pc_o, 10);
@@ -55,6 +55,8 @@ TEST_F(PcRegTestBench, BaseTest1)
 TEST_F(PcRegTestBench, InitializationTest)
 {
     initializeInputs();
+    top->eval();
+    toggleClock();
     toggleClock();
     top->eval();
 
@@ -65,23 +67,27 @@ TEST_F(PcRegTestBench, InitializationTest)
 TEST_F(PcRegTestBench, ContinuousUpdateTest)
 {
     top->pc_next_i = 10;
+    top->eval();
     toggleClock();
     toggleClock();
-    toggleClock();
+
     top->eval();
     EXPECT_EQ(top->pc_o, 10);
 
+    top->eval();
     top->pc_next_i = 20;
     toggleClock();
-    toggleClock();
-    toggleClock();
+
     top->eval();
     EXPECT_EQ(top->pc_o, 20);
+    top->eval();
 
     top->pc_next_i = 30;
+    top->eval();
+
     toggleClock();
     toggleClock();
-    toggleClock();
+
     top->eval();
     EXPECT_EQ(top->pc_o, 30);
 }
@@ -90,16 +96,18 @@ TEST_F(PcRegTestBench, ContinuousUpdateTest)
 TEST_F(PcRegTestBench, MaxValueTest)
 {
     top->pc_next_i = 0xFFFFFFFF;
+    top->eval();
     toggleClock();
     toggleClock();
-    toggleClock();
+
     top->eval();
     EXPECT_EQ(top->pc_o, 0xFFFFFFFF);
 
     top->pc_next_i = 0;
+    top->eval();
     toggleClock();
     toggleClock();
-    toggleClock();
+
     top->eval();
     EXPECT_EQ(top->pc_o, 0);
 }

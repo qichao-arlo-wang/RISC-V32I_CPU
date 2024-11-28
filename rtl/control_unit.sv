@@ -1,7 +1,7 @@
 module control_unit (
     input logic [6:0] opcode_i,          // Opcode from instruction
     input logic [2:0] funct3_i,          // funct3 field from instruction
-    input logic funct7_5_i,              // funct7_5 (bit 5 of funct7)
+    input logic funct7_5_i,              // funct7_5 (bit 5 of funct7, from instrution bit 30)
     input logic zero_i,                  // Zero flag
 
     output logic reg_wr_en_o,            // Register Write Enable
