@@ -1,34 +1,28 @@
 #include "testbench.h"
-#include <filesystem>
+#include <cstdlib>
 
-Vdut *top;
-VerilatedVcdC *tfp;
+#define CYCLES 10000
+
 unsigned int ticks = 0;
-unsigned int CYCLES = 256;
-int i;
 
 class CpuTestbench : public Testbench
 {
 protected:
     void initializeInputs() override
     {
-        top->clk = 0;
+        top->clk = 1;
         top->rst = 0;
-        // top->a0 = 0;
-    }    
+    }
 };
 
 TEST_F(CpuTestbench, BaseProgramTest)
 {
     bool success = false;
-    std::filesystem::current_path("../");
-    system("pwd");
-    system("./compile.sh asm/program.S");
+    //system("./compile.sh asm/program.S");
 
-    for (i = 0; i < CYCLES; i++)
+    for (int i = 0; i < CYCLES; i++)
     {
-        runSimulation(2);
-        std::cout << top->a0 << std::endl;
+        runSimulation(1);
         if (top->a0 == 254)
         {
             SUCCEED();
@@ -36,7 +30,6 @@ TEST_F(CpuTestbench, BaseProgramTest)
             break;
         }
     }
-
     if (!success)
     {
         FAIL() << "Counter did not reach 254";
