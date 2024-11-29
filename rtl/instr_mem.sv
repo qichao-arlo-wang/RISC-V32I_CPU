@@ -19,7 +19,7 @@ module instr_mem (
         
         // the default path when running the simulation is the tests directory
         // Read memory file with byte-level storage
-        $readmemh("instr_mem_test.hex", mem); 
+        $readmemh("program.hex", mem); 
     end
 
     // Combine 4 bytes to form a 32-bit instruction

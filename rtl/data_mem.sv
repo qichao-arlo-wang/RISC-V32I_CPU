@@ -24,7 +24,7 @@ module data_mem (
         
         // the default path when running the simulation is the tests directory
         // Read memory file with byte-level storage
-        $readmemh("data_mem_test.hex", mem); 
+        $readmemh("data.hex", mem); 
     end
 
     // Address range error detection

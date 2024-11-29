@@ -37,6 +37,7 @@ instr_mem instr_mem_inst (
 
 pc_reg pc_reg_inst (
     .clk(clk),
+    .rst(rst),
     .pc_next_i(pc_next),
 
     .pc_o(pc)
@@ -103,7 +104,8 @@ register_file reg_file_inst (
     .reg_wr_en_i(reg_wr_en),
 
     .rd_data1_o(rd_data1),
-    .rd_data2_o(rd_data2)
+    .rd_data2_o(rd_data2),
+    .a0(a0)
 );
 
 /// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// ///
