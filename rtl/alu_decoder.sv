@@ -94,9 +94,9 @@ module alu_decoder (
             end
 
             // S-TYPE instruction
-            2'b11: alu_control_o = 4'h1; // Default ADD
+            2'b11: alu_control_o = 4'h0; // Default ADD
 
-            default: alu_control_o = 4'h1; // Default ADD
+            default: alu_control_o = 4'h0; // Default ADD
         endcase
     end
 endmodule

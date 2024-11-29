@@ -25,17 +25,17 @@ protected:
     } 
 };
 
+
 // first full word data_mem read test case
 TEST_F(DataMemTestbench, FullWordReadTest1)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
-    top->addr_i = 0x00000000;
+    top->addr_i = 0x00000004;
     top->eval();
     toggleClock();
-    // toggleClock();
 
-    EXPECT_EQ(top->rd_data_o, 0x33221100);
+    EXPECT_EQ(top->rd_data_o, 0x77665544);
 }
 
 // second full word data_mem read test case
@@ -43,13 +43,12 @@ TEST_F(DataMemTestbench, FullWordReadTest2)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
-    top->addr_i = 0x00000004;
+    top->addr_i = 0x00000008;
     top->eval();
     toggleClock();
-    toggleClock();
-    toggleClock();
 
-    EXPECT_EQ(top->rd_data_o, 0x77665544);
+
+    EXPECT_EQ(top->rd_data_o, 0xbbaa9988);
 }
 
 // third full word data_mem read test case
@@ -57,13 +56,12 @@ TEST_F(DataMemTestbench, FullWordReadTest3)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
-    top->addr_i = 0x00000008;
+    top->addr_i = 0x0000000C;
     top->eval();
     toggleClock();
-    toggleClock();
-    toggleClock();
 
-    EXPECT_EQ(top->rd_data_o, 0xbbaa9988);
+
+    EXPECT_EQ(top->rd_data_o, 0xffeeddcc);
 }
 
 // fourth full word data_mem read test case
@@ -71,25 +69,10 @@ TEST_F(DataMemTestbench, FullWordReadTest4)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
-    top->addr_i = 0x0000000C;
-    top->eval();
-    toggleClock();
-    toggleClock();
-    toggleClock();
-
-    EXPECT_EQ(top->rd_data_o, 0xffeeddcc);
-}
-
-// fifth full word data_mem read test case
-TEST_F(DataMemTestbench, FullWordReadTest5)
-{
-    initializeInputs();
-    top->byte_en_i = 0b1111;
     top->addr_i = 0x0000001C;
     top->eval();
     toggleClock();
-    toggleClock();
-    toggleClock();
+
     EXPECT_EQ(top->rd_data_o, 0xffeeddcc);
 }
 
@@ -100,8 +83,6 @@ TEST_F(DataMemTestbench, HalfWordReadTest)
     top->byte_en_i = 0b0011;
     top->addr_i = 0x0000001C;
     top->eval();
-    toggleClock();
-    toggleClock();
     toggleClock();
 
     EXPECT_EQ(top->rd_data_o, 0xddcc);
@@ -115,8 +96,6 @@ TEST_F(DataMemTestbench, ByteWordReadTest)
     top->addr_i = 0x0000001C;
     top->eval();
     toggleClock();
-    toggleClock();
-    toggleClock();
 
     EXPECT_EQ(top->rd_data_o, 0xcc);
 }
@@ -129,7 +108,7 @@ TEST_F(DataMemTestbench, FullWordDataMemOutOfRangeTest)
     top->addr_i = 0x0001FFFC; // Unaligned address
     top->eval();
     toggleClock();
-    toggleClock();
+
     top->eval();
 
     EXPECT_EQ(top->rd_data_o, 0xDEADBEEF); // Should return error value
@@ -149,8 +128,6 @@ TEST_F(DataMemTestbench, FullWordDataMemWriteAndReadTest)
     toggleClock();
     toggleClock();
     toggleClock();
-    toggleClock();
-
     toggleClock();
     
     EXPECT_EQ(top->rd_data_o, 0xAACCBBDD);
@@ -173,8 +150,6 @@ TEST_F(DataMemTestbench, HalfWordDataMemPartialByteWriteTest)
     toggleClock();
     toggleClock();
 
-    toggleClock();
-
     EXPECT_EQ(top->rd_data_o, 0x0000EEFF); // Only lower bytes should be updated
 }
 
@@ -192,8 +167,6 @@ TEST_F(DataMemTestbench, ByteDataMemPartialByteWriteTest)
     toggleClock();
     toggleClock();
     toggleClock();
-    toggleClock();
-
     toggleClock();
 
     EXPECT_EQ(top->rd_data_o, 0x000000FF); // Only lower bytes should be updated
