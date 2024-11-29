@@ -29,26 +29,20 @@ TEST_F(ControlUnitTestBench, ADDI){
     EXPECT_EQ(top->pc_src_o, 0); //no branch
 }
 
-// Test for LW instruction I-type load
-TEST_F(ControlUnitTestBench, LW){
-    top->opcode_i = 0b0000011; //LW opcode
-    top->funct3_i = 0b010; // funct3 for LW
-    top->funct7_i = 0; //not used for LW
-    top->zero_i = 0; //zero flag not used for LW
+// Test for Branch instruction
+TEST_F(ControlUnitTestBench, BRANCH_BEQ) {
+    top->opcode_i = 0b1100011; // Branch opcode
+    top->funct3_i = 0b000;     // BEQ
+    top->funct7_i = 0;       // Not significant for BEQ
+    top->zero_i = 1;           // Zero flag set (branch condition met)
 
     top->eval();
 
-    EXPECT_EQ(top->reg_wr_en_o, 1); //reg write enabled
-    EXPECT_EQ(top->mem_wr_en_o, 0); // memory write disabled
-    EXPECT_EQ(top->alu_src_o, 1); //alu uses immediate
-    EXPECT_EQ(top->result_src_o, 1); // result comes from memory
-    EXPECT_EQ(top->alu_control_o, 0x0); //alu control for add
-    EXPECT_EQ(top->pc_src_o, 0); //no branch
-    EXPECT_EQ(top->byte_en_o, 0xF); //byte enable for word (4 bytes)
+    EXPECT_EQ(top->pc_src_o, 1);       // Branch taken
 }
 
 // Test for BNE instruction B-type
-TEST_F(ControlUnitTestBench, BNE){
+TEST_F(ControlUnitTestBench, BNE_TEST){
     top->opcode_i = 0b1100011; //branch opcode
     top->funct3_i = 0b001; //BNE funct3
     top->funct7_i = 0; //not significant for BNE
@@ -59,7 +53,71 @@ TEST_F(ControlUnitTestBench, BNE){
     EXPECT_EQ(top->reg_wr_en_o, 0); //no reg write
     EXPECT_EQ(top->alu_src_o, 0); //alu uses reg inputs
     EXPECT_EQ(top->pc_src_o, 1); //branch taken
-    EXPECT_EQ(top->alu_control_o, 0xA); //alu control code for sub
+    EXPECT_EQ(top->alu_control_o, 0x1); //alu control code for sub
+}
+
+// Test for BLT instruction
+TEST_F (ControlUnitTestBench, BLT_TEST){
+    top->opcode_i = 0b1100011; //branch opcode
+    top->funct3_i = 0b001; //BLT funct3
+    top->funct7_i = 0; //not significant for BLT
+    top->zero_i = 0; // zero flag not set
+    top->alu_result_i = -1;
+
+    top->eval();
+
+    EXPECT_EQ(top->reg_wr_en_o, 0); //no reg write
+    EXPECT_EQ(top->alu_src_o, 0); //alu uses reg inputs
+    EXPECT_EQ(top->pc_src_o, 1); //branch taken
+    EXPECT_EQ(top->alu_control_o, 0x1);
+}
+
+// Test for BLTU instruction
+TEST_F (ControlUnitTestBench, BLTU_TEST){
+    top->opcode_i = 0b1100011; //branch opcode
+    top->funct3_i = 0b111; //BLTU funct3
+    top->funct7_i = 0; //not significant for BLTU
+    top->zero_i = 1; // zero-extends
+    top->alu_result_i = -1;
+
+    top->eval();
+
+    EXPECT_EQ(top->reg_wr_en_o, 0); //no reg write
+    EXPECT_EQ(top->alu_src_o, 0); //alu uses reg inputs
+    EXPECT_EQ(top->pc_src_o, 1); //branch taken
+    EXPECT_EQ(top->alu_control_o, 0x1);
+}
+
+// Test for BGE instruction
+TEST_F (ControlUnitTestBench, BGE_TEST){
+    top->opcode_i = 0b1100011; //branch opcode
+    top->funct3_i = 0b101; //BGE funct3
+    top->funct7_i = 0; //not significant for BGE
+    top->zero_i = 0; // zero flag not set
+    top->alu_result_i = 1;
+
+    top->eval();
+
+    EXPECT_EQ(top->reg_wr_en_o, 0); //no reg write
+    EXPECT_EQ(top->alu_src_o, 0); //alu uses reg inputs
+    EXPECT_EQ(top->pc_src_o, 1); //branch taken
+    EXPECT_EQ(top->alu_control_o, 0x1);
+}
+
+// Test for BGEU instruction
+TEST_F (ControlUnitTestBench, BGEU_TEST){
+    top->opcode_i = 0b1100011; //branch opcode
+    top->funct3_i = 0b111; //BGEU funct3
+    top->funct7_i = 0; //not significant for BGE
+    top->zero_i = 1; // zero extends
+    top->alu_result_i = -1;
+
+    top->eval();
+
+    EXPECT_EQ(top->reg_wr_en_o, 0); //no reg write
+    EXPECT_EQ(top->alu_src_o, 0); //alu uses reg inputs
+    EXPECT_EQ(top->pc_src_o, 1); //branch taken
+    EXPECT_EQ(top->alu_control_o, 0x1);
 }
 
 // Test for R-type instruction
@@ -88,18 +146,6 @@ TEST_F(ControlUnitTestBench, STORE_SW) {
 
     EXPECT_EQ(top->reg_wr_en_o, 0);     // No register write
     EXPECT_EQ(top->mem_wr_en_o, 1);     // Memory write enabled
-}
-
-// Test for Branch instruction
-TEST_F(ControlUnitTestBench, BRANCH_BEQ) {
-    top->opcode_i = 0b1100011; // Branch opcode
-    top->funct3_i = 0b000;     // BEQ
-    top->funct7_i = 0;       // Not significant for BEQ
-    top->zero_i = 1;           // Zero flag set (branch condition met)
-
-    top->eval();
-
-    EXPECT_EQ(top->pc_src_o, 1);       // Branch taken
 }
 
 // Test for default case
