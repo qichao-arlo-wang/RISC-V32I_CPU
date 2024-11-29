@@ -3,12 +3,12 @@ module instr_mem (
     output logic [31:0] instr_o   // Fetched instruction
 );
 
-    localparam int          MEM_SIZE  = 4 * 1024;      // Memory size in bytes (0xBFC00000 to 0xBFC00FFF -> 4kb)
-    localparam logic [31:0] BASE_ADDR = 32'hBFC00000;  // Base address of instruction memory
-    localparam logic [31:0] TOP_ADDR  = 32'hBFC00FFF;  // Top address of instruction memory
+    localparam        MEM_SIZE  = 4 * 1024;      // Memory size in bytes (0xBFC00000 to 0xBFC00FFF -> 4kb)
+    localparam [31:0] BASE_ADDR = 32'hBFC00000;  // Base address of instruction memory
+    localparam [31:0] TOP_ADDR  = 32'hBFC00FFF;  // Top address of instruction memory
 
     // 4 x 1024 bytes memory
-    logic [7:0] mem [0:MEM_SIZE-1];
+    logic [7:0] mem [MEM_SIZE-1:0];
 
     // Internal signal for address error detection
     logic addr_error;

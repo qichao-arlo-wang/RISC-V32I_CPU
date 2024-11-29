@@ -9,12 +9,12 @@ module data_mem (
 );
 
     // Memory from 0x0000 to 0x1FFFF
-    localparam int MEM_SIZE = 128 * 1024;
+    localparam MEM_SIZE = 128 * 1024;
     // Top address of data memory
-    localparam logic [31:0] TOP_ADDR = 32'h0001FFFF;
+    localparam [31:0] TOP_ADDR = 32'h0001FFFF;
 
     // 128 * 1024 bytes memory
-    logic [7:0] mem [0:MEM_SIZE-1];
+    logic [7:0] mem [MEM_SIZE-1:0];
 
     // Internal signal for address error detection  
     logic addr_error;
