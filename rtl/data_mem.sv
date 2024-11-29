@@ -19,9 +19,6 @@ module data_mem (
     // Internal signal for address error detection  
     logic addr_error;
 
-    // local address
-    logic [31:0] local_addr;
-
     initial begin
         $display("LOADING DATA MEMORY.");
         
@@ -30,42 +27,21 @@ module data_mem (
         $readmemh("data_mem_test.hex", mem); 
     end
 
-
     // Address range error detection
     always_comb begin
         addr_error = 1'b0; // default no error
-        case (byte_en_i)
-            // byte (8 bits)
-            4'b0001: begin
-                if (addr_i > TOP_ADDR - 1) begin
-                    addr_error = 1'b1;
-                    $display("Warning: address not in the valid range: %h.", addr_i);
-                end
-            end
-            // half word (16 bits)
-            4'b0011: begin
-                if (addr_i > TOP_ADDR - 2) begin
-                    addr_error = 1'b1;
-                    $display("Warning: address not in the valid range: %h.", addr_i);
-                end
-            end
-            // word (32 bits)
-            4'b1111: begin
-                if (addr_i > TOP_ADDR - 4) begin
-                    addr_error = 1'b1;
-                    $display("Warning: address not in the valid range: %h.", addr_i);
-                end
-            end
-            default: begin
-                addr_error = 1'b1;
-                $display("Warning: invalid byte enable: %b.", byte_en_i);
-            end
-        endcase
+        if (addr_i > (TOP_ADDR - (byte_en_i == 4'b0001 ? 1 : byte_en_i == 4'b0011 ? 2 : byte_en_i == 4'b1111 ? 4 : 0))) begin
+            addr_error = 1'b1;
+            $display("Warning: address not in the valid range: %h.", addr_i);
+        end
+        if (byte_en_i != 4'b0001 && byte_en_i != 4'b0011 && byte_en_i != 4'b1111) begin
+            addr_error = 1'b1;
+            $display("Warning: invalid byte enable: %b.", byte_en_i);
+        end
     end
 
     // Synchronous logic for both store and load
     always_ff @(posedge clk) begin
-        local_addr <= {15'b0, addr_i[16:0]};
         if (addr_error) begin
             rd_data_o <= 32'hDEADBEEF; // Return error value if address is invalid
         end
@@ -74,30 +50,31 @@ module data_mem (
             if (wr_en_i) begin
                 case (byte_en_i)
                     // byte (8 bits)
-                    4'b0001: mem[local_addr] <= wr_data_i[7:0];
+                    4'b0001: mem[addr_i] <= wr_data_i[7:0];
                     // half word (16 bits)
                     4'b0011: begin
-                        mem[local_addr]   <= wr_data_i[7:0];    // Lowest byte
-                        mem[local_addr+1] <= wr_data_i[15:8];   // Highest byte
+                        mem[addr_i]   <= wr_data_i[7:0];    // Lowest byte
+                        mem[addr_i+1] <= wr_data_i[15:8];   // Highest byte
                     end
                     // word (32 bits)
                     4'b1111: begin
-                        mem[local_addr]   <= wr_data_i[7:0];    // Lowest byte
-                        mem[local_addr+1] <= wr_data_i[15:8];   // Next byte
-                        mem[local_addr+2] <= wr_data_i[23:16];  // Higher byte
-                        mem[local_addr+3] <= wr_data_i[31:24];  // Highest byte
+                        mem[addr_i]   <= wr_data_i[7:0];    // Lowest byte
+                        mem[addr_i+1] <= wr_data_i[15:8];   // Next byte
+                        mem[addr_i+2] <= wr_data_i[23:16];  // Higher byte
+                        mem[addr_i+3] <= wr_data_i[31:24];  // Highest byte
                     end
                     default: $display("Warning: Unrecognized byte enable: %b. No data written.", byte_en_i);
                 endcase
             end
-
+            $display("%h", {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]});
+            
             case (byte_en_i)
                 // byte (8 bits)
-                4'b0001: rd_data_o <= {24'b0, mem[local_addr]};
+                4'b0001: rd_data_o <= {24'b0, mem[addr_i]};
                 // half word (16 bits)
-                4'b0011: rd_data_o <= {16'b0, mem[local_addr+1], mem[local_addr]};
+                4'b0011: rd_data_o <= {16'b0, mem[addr_i+1], mem[addr_i]};
                 // word (32 bits)
-                4'b1111: rd_data_o <= {mem[local_addr+3], mem[local_addr+2], mem[local_addr+1], mem[local_addr]};
+                4'b1111: rd_data_o <= {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]};
                 // Return error value if byte enable is invalid
                 default: rd_data_o <= 32'hDEADBEEF;
             endcase
