@@ -19,8 +19,8 @@ adder pc_plus4_adder(
 
 // mux used to select between pc_target and pc_plus_4
 mux pc_mux(
-    .in0_i(pc_plus_4),
-    .in1_i(pc_target),
+    .in0_i(pc_plus_4), // PC += 4
+    .in1_i(pc_target), // branch
     .sel_i(pc_src),
 
     .out_o(pc_next)
@@ -47,11 +47,11 @@ pc_reg pc_reg_inst (
 logic [24:0] instr_31_7 = instr[31:7];
 logic [6:0] op = instr[6:0];
 logic [2:0] funct3 = instr[14:12];
-logic funct7_5 = instr[30];
+logic [6:0] funct7 = instr[31:25];
 logic zero;
 // signal pc_src has been declared in block 1
-logic reg_wr_en, mem_wr_en, alu_src, result_src;
-logic [1:0] imm_src;
+logic reg_wr_en, mem_wr_en, result_src, alu_src;
+logic [2:0] imm_src;
 logic [3:0] alu_control;
 
 
@@ -60,7 +60,7 @@ logic [4:0] rd_addr1 = instr[19:15]; // rd_addr1: instr[19:15]
 logic [4:0] rd_addr2 = instr[24:20]; // rd_addr2: instr[24:20]
 logic [4:0] wr_addr  = instr[11:7];  // wr_addr: instr[11:7]
 logic [DATA_WIDTH-1:0] rd_data1, rd_data2;
-logic [DATA_WIDTH-1:0] result;
+logic [DATA_WIDTH-1:0] alu_result;
 
 // // // extend block signal
 logic [DATA_WIDTH-1:0] imm_ext;
@@ -69,7 +69,7 @@ logic [DATA_WIDTH-1:0] imm_ext;
 control_unit ctrl (
     .opcode_i(op),
     .funct3_i(funct3),
-    .funct7_i(funct7_5),
+    .funct7_i(funct7),
     .zero_i(zero),
     .alu_result_i(alu_result),
 
@@ -103,14 +103,11 @@ register_file reg_file_inst (
     .rd_data2_o(rd_data2)
 );
 
-
 /// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// ///
-
 // pc_target has been declared in block 1
-
 // // ALU signals
-logic [DATA_WIDTH-1:0] src_a, src_b, alu_result;
-logic eq;
+logic [DATA_WIDTH-1:0] src_a, src_b;
+logic eq; // zero flag
 logic [3:0] mem_byte_en;
 
 // // data memory siganls 
@@ -127,22 +124,36 @@ alu alu_inst(
     .zero_o(zero)
 );
 
+logic [DATA_WIDTH-1:0] option;
 
-// // // need to be confirmed //// ///////
-// // // missing signal alu_src_a_sel ///// //////
+always_comb begin
+    case (op)
+        7'b0110111: option = 32'b0; // LUI
+        default: option = pc; // AUIPC
+    endcase
+end
+
 //MUX for src_a (ALU first operand)
 mux alu_src_a_mux(
     .in0_i(rd_data1),       // from reg_file (default operand)
-    .in1_i(pc),             // from pc 
+    .in1_i(option),
     .sel_i(alu_src_a_sel),  // new control signal for src_a selection
 
     .out_o(src_a)
 );
 
+always_comb begin
+    case (op)
+        7'b0110111: imm = imm_ext << 12; // LUI
+        7'b0010111: imm = imm_ext << 12; // AUIPC
+        default: imm = imm_ext;
+    endcase
+end
+
 // MUX for src_b (ALU second operand)
 mux alu_src_b_mux(
     .in0_i(rd_data2),         // From register file
-    .in1_i(imm_ext),          // Immediate value
+    .in1_i(imm),          // Immediate value
     .sel_i(alu_src),          // ALU source control signal
 
     .out_o(src_b)
@@ -157,9 +168,18 @@ mux data_mem_mux(
     .out_o(result) 
 );
 
+logic [DATA_WIDTH_1:0] option2;
+
+always_comb begin
+    case (op)
+        7'b1100111: option2 = rd_data1;
+        default: option2 = pc;
+    endcase
+end
+
 // adder used to add pc and imm_ext
 adder alu_adder(
-    .in1_i(pc),
+    .in1_i(option2)
     .in2_i(imm_ext),
     
     .out_o(pc_target)

@@ -5,11 +5,12 @@ module main_decoder (
     output logic reg_wr_en_o,      // Register Write Enable
     output logic mem_wr_en_o,      // Memory Write Enable
     output logic [2:0] imm_src_o,  // Immediate source control
-    output logic alu_src_o,        // ALU source (register or immediate)
+    output logic alu_src_o,  // ALU source (register or immediate or imm << 12)
     output logic branch_o,         // Branch control
     output logic result_src_o,     // Result source (ALU or memory)
     output logic [1:0] alu_op_o,   // ALU Operation control
-    output logic [3:0] byte_en_o   // Byte enable
+    output logic [3:0] byte_en_o,   // Byte enable
+    output logic alu_src_a_sel_o // enable rd1 to be pc
 );
 
     always_comb begin
@@ -25,8 +26,9 @@ module main_decoder (
                 branch_o = 0;
                 result_src_o = 1;
                 alu_op_o = 2'b0; // don't care
+                alu_src_a_sel_o = 0;
 
-                case (funct3_i) //// lbu & lhu needs zero-extended haven't been implemented
+                case (funct3_i) 
                     3'h0: begin
                         byte_en_o = 4'b0001; // LB
                         imm_src_o = 3'b000;
@@ -64,6 +66,7 @@ module main_decoder (
                 byte_en_o = 4'b0000; //default case
                 branch_o = 0;
                 result_src_o = 0;
+                alu_src_a_sel_o = 0;
 
                 case (funct3_i)
                     // SLLI
@@ -84,6 +87,7 @@ module main_decoder (
                 alu_op_o    = 2'b11;
                 branch_o = 0;
                 result_src_o = 1; 
+                alu_src_a_sel_o = 0;
 
                 case (funct3_i)
                     3'b000: begin
@@ -112,6 +116,7 @@ module main_decoder (
                 result_src_o = 0;
                 imm_src_o = 3'b110;
                 byte_en_o = 4'b0000;
+                alu_src_a_sel_o = 0;
             end
 
             // B-type, op = 99
@@ -135,6 +140,7 @@ module main_decoder (
                 alu_op_o    = 2'b01;
                 byte_en_o = 4'b0000;
                 result_src_o = 0; // don't care
+                alu_src_a_sel_o = 0;
             end
 
             // J-type, op = 111
@@ -148,6 +154,7 @@ module main_decoder (
                 mem_wr_en_o = 0;
                 alu_op_o = 2'b11; 
                 byte_en_o = 4'b0000;
+                alu_src_a_sel_o = 1;
             end
 
             // I-type op = 103
@@ -161,6 +168,7 @@ module main_decoder (
                 alu_op_o = 2'b0;
                 byte_en_o = 4'b0000;
                 mem_wr_en_o = 0;
+                alu_src_a_sel_o = 0;
             end
 
             // U type op = 55
@@ -174,6 +182,7 @@ module main_decoder (
                 branch_o = 0;
                 byte_en_o = 4'b0000;
                 alu_op_o = 2'b11; // use src_b_i as 0
+                alu_src_a_sel_o = 1;
             end
 
             // U type op = 23
@@ -187,6 +196,7 @@ module main_decoder (
                 branch_o = 0;
                 byte_en_o = 4'b0000;
                 alu_op_o = 2'b11; // Only use src_b_i in the ALU
+                alu_src_a_sel_o = 1;
             end
 
             default: begin
@@ -198,6 +208,7 @@ module main_decoder (
                 result_src_o = 0;
                 alu_op_o = 2'b00;
                 byte_en_o = 4'b0000;
+                alu_src_a_sel = 0;
             end
         endcase
     end
