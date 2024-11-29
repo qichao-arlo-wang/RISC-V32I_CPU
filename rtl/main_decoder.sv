@@ -208,7 +208,7 @@ module main_decoder (
                 result_src_o = 0;
                 alu_op_o = 2'b00;
                 byte_en_o = 4'b0000;
-                alu_src_a_sel = 0;
+                alu_src_a_sel_o = 0;
             end
         endcase
     end

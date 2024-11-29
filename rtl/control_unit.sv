@@ -32,7 +32,7 @@ module control_unit (
         .branch_o(branch),               // Connect Branch control
         .result_src_o(result_src_o),     // Connect Result source
         .alu_op_o(alu_op),               // Connect ALU operation control
-        .byte_en_o(byte_en_o)            // Connect byte enable
+        .byte_en_o(byte_en_o),            // Connect byte enable
         .alu_src_a_sel_o(alu_src_a_sel_o)
     );
 

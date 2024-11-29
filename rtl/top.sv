@@ -1,7 +1,10 @@
 module top #(
     parameter DATA_WIDTH = 32
 ) (
-    input   logic clk     // clock signal
+    input   logic clk,     // clock signal
+    input   logic trigger,
+    input   logic rst,
+    output  logic [DATA_WIDTH-1:0] a0
 );
 
 /// /// BLOCK 1: instruction memory, pc_plus4_adder, pc_reg and pc_mux /// ///
@@ -48,9 +51,8 @@ logic [24:0] instr_31_7 = instr[31:7];
 logic [6:0] op = instr[6:0];
 logic [2:0] funct3 = instr[14:12];
 logic [6:0] funct7 = instr[31:25];
-logic zero;
 // signal pc_src has been declared in block 1
-logic reg_wr_en, mem_wr_en, result_src, alu_src;
+logic reg_wr_en, mem_wr_en, result_src, alu_src, alu_src_a_sel;
 logic [2:0] imm_src;
 logic [3:0] alu_control;
 
@@ -70,7 +72,7 @@ control_unit ctrl (
     .opcode_i(op),
     .funct3_i(funct3),
     .funct7_i(funct7),
-    .zero_i(zero),
+    .zero_i(eq),
     .alu_result_i(alu_result),
 
     .reg_wr_en_o(reg_wr_en),
@@ -80,7 +82,8 @@ control_unit ctrl (
     .result_src_o(result_src),  
     .alu_control_o(alu_control),
     .pc_src_o(pc_src),
-    .byte_en_o(mem_byte_en)
+    .byte_en_o(mem_byte_en),
+    .alu_src_a_sel_o(alu_src_a_sel)
 );
 
 // Instantiate Sign-Extension Unit
@@ -111,7 +114,7 @@ logic eq; // zero flag
 logic [3:0] mem_byte_en;
 
 // // data memory siganls 
-logic [DATA_WIDTH-1:0] read_data, write_data;
+logic [DATA_WIDTH-1:0] read_data;
 // logic [DATA_WIDTH-1:0] result;  declared in block 2
 
 // ALU unit
@@ -121,7 +124,7 @@ alu alu_inst(
     .alu_control_i(alu_control),
 
     .alu_result_o(alu_result),
-    .zero_o(zero)
+    .zero_o(eq)
 );
 
 logic [DATA_WIDTH-1:0] option;
@@ -141,6 +144,7 @@ mux alu_src_a_mux(
 
     .out_o(src_a)
 );
+logic [DATA_WIDTH-1:0] imm, result;
 
 always_comb begin
     case (op)
@@ -168,7 +172,7 @@ mux data_mem_mux(
     .out_o(result) 
 );
 
-logic [DATA_WIDTH_1:0] option2;
+logic [DATA_WIDTH-1:0] option2;
 
 always_comb begin
     case (op)
@@ -179,7 +183,7 @@ end
 
 // adder used to add pc and imm_ext
 adder alu_adder(
-    .in1_i(option2)
+    .in1_i(option2),
     .in2_i(imm_ext),
     
     .out_o(pc_target)
@@ -188,7 +192,7 @@ adder alu_adder(
 data_mem data_mem_inst(
     .clk(clk),
     .addr_i(alu_result),
-    .wr_data_i(write_data),
+    .wr_data_i(rd_data2),
     .wr_en_i(mem_wr_en),
     .byte_en_i(mem_byte_en),
 
