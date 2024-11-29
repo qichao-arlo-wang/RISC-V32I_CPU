@@ -4,6 +4,7 @@
 
 # Default vars
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
+ASM_DIR="$SCRIPT_DIR/asm"
 output_file="$SCRIPT_DIR/program.hex"
 
 # Handle terminal arguments
@@ -12,7 +13,18 @@ if [[ $# -eq 0 ]]; then
     exit 1
 fi
 
+# if input file is not absolute path, assume it is in asm directory
 input_file=$1
+if [[ "$input_file" != /* ]]; then
+    input_file="$ASM_DIR/$input_file"
+fi
+
+# Check if input file exists
+if [[ ! -f "$input_file" ]]; then
+    echo "Error: Input file '$input_file' does not exist."
+    exit 1
+fi
+
 basename=$(basename "$input_file" | sed 's/\.[^.]*$//')
 parent=$(dirname "$input_file")
 file_extension="${input_file##*.}"
@@ -43,5 +55,9 @@ riscv64-unknown-elf-objdump -f -d --source -m riscv \
 od -v -An -t x1 "a.bin" | tr -s '\n' | awk '{$1=$1};1' > "${output_file}"
 
 rm "a.out.reloc"
-rm "a.out"
+rm "a.out
 rm "a.bin"
+
+echo "Assembly and processing of '$input_file' completed successfully."
+echo "Disassembly output is saved in: ${LOG_DIR}/program.dis"
+echo "Hex file is saved in: ${output_file}"
