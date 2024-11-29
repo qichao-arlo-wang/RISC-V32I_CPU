@@ -50,8 +50,8 @@ module control_unit (
             3'b001: branch_condition = ~zero_i;                     // bne: branch if zero is not set
             3'b100: branch_condition = (alu_result_i < 0);          // blt
             3'b101: branch_condition = zero_i | (alu_result_i > 0); // bge
-            3'b110: branch_condition = (alu_result_i < 0);
-            3'b111: branch_condition = zero_i | (alu_result_i > 0);
+            3'b110: branch_condition = (alu_result_i < 0);           //bltu 
+            3'b111: branch_condition = zero_i | (alu_result_i > 0);  //bgeu
             default: branch_condition = 1'b0;                       // Other branch types not implemented here
         endcase
     end
