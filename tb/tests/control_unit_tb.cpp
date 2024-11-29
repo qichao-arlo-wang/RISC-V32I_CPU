@@ -148,6 +148,19 @@ TEST_F(ControlUnitTestBench, STORE_SW) {
     EXPECT_EQ(top->mem_wr_en_o, 1);     // Memory write enabled
 }
 
+// Test for JAL instruction
+TEST_F(ControlUnitTestBench, JAL) {
+    top->opcode_i = 0b1101111; // Store opcode
+    top->funct3_i = 0b000;     // SW
+    top->funct7_i = 0;       // Not significant for SW
+    top->zero_i = 0;
+
+    top->eval();
+
+    EXPECT_EQ(top->reg_wr_en_o, 1);     // No register write
+    EXPECT_EQ(top->mem_wr_en_o, 0);     // Memory write enabled
+}
+
 // Test for default case
 TEST_F(ControlUnitTestBench, DEFAULT_CASE) {
     top->opcode_i = 0b1111111; // Invalid opcode
