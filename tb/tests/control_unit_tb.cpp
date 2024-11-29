@@ -151,8 +151,44 @@ TEST_F(ControlUnitTestBench, STORE_SW) {
 // Test for JAL instruction
 TEST_F(ControlUnitTestBench, JAL) {
     top->opcode_i = 0b1101111; // Store opcode
-    top->funct3_i = 0b000;     // SW
-    top->funct7_i = 0;       // Not significant for SW
+    top->funct3_i = 0b000;     
+    top->funct7_i = 0;       
+    top->zero_i = 0;
+
+    top->eval();
+
+    EXPECT_EQ(top->reg_wr_en_o, 1);     // No register write
+    EXPECT_EQ(top->mem_wr_en_o, 0);     // Memory write enabled
+}
+
+TEST_F(ControlUnitTestBench, JALR) {
+    top->opcode_i = 0b1100111; // Store opcode
+    top->funct3_i = 0b000;   
+    top->funct7_i = 0;     
+    top->zero_i = 0;
+
+    top->eval();
+
+    EXPECT_EQ(top->reg_wr_en_o, 1);     // No register write
+    EXPECT_EQ(top->mem_wr_en_o, 0);     // Memory write enabled
+}
+
+TEST_F(ControlUnitTestBench, LUI) {
+    top->opcode_i = 0b0110111; // Store opcode
+    top->funct3_i = 0;   
+    top->funct7_i = 0;     
+    top->zero_i = 0;
+
+    top->eval();
+
+    EXPECT_EQ(top->reg_wr_en_o, 1);     // No register write
+    EXPECT_EQ(top->mem_wr_en_o, 0);     // Memory write enabled
+}
+  
+TEST_F(ControlUnitTestBench, AUIPC) {
+    top->opcode_i = 0b0010111; // Store opcode
+    top->funct3_i = 0;   
+    top->funct7_i = 0;     
     top->zero_i = 0;
 
     top->eval();
