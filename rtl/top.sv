@@ -124,7 +124,7 @@ alu alu_inst(
     .alu_control_i(alu_control),
 
     .alu_result_o(alu_result),
-    .zero_o(zero)
+    .zero_o(eq)
 );
 
 logic [DATA_WIDTH-1:0] option;
