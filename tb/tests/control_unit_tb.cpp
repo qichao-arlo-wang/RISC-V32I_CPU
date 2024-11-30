@@ -3,16 +3,30 @@
 #include "gtest/gtest.h"
 #include "verilated.h"
 
-// Test Fixture
-class ControlUnitTestBench : public BaseTestbench {
+Vdut *top;
+
+class ControlUnitTestBench : public testing::Test {
 protected:
-    void initializeInputs() override {
+    void SetUp() override {
+        top = new Vdut;  // Initialize the top module
+        initializeInputs();
+    }
+
+    void TearDown() override {
+        top->final();
+        delete top;
+        top = nullptr;
+    }
+
+    void initializeInputs() {
         top->opcode_i = 0;
         top->funct3_i = 0;
         top->funct7_i = 0;
         top->zero_i = 0;
+        top->alu_result_i = 0;    
     }
 };
+
 
 //Test for ADDI instruction I-type
 TEST_F(ControlUnitTestBench, ADDI){
@@ -29,8 +43,8 @@ TEST_F(ControlUnitTestBench, ADDI){
     EXPECT_EQ(top->pc_src_o, 0); //no branch
 }
 
-// Test for Branch instruction
-TEST_F(ControlUnitTestBench, BRANCH_BEQ) {
+// Test for BEQ instruction
+TEST_F(ControlUnitTestBench, BEQ_TEST) {
     top->opcode_i = 0b1100011; // Branch opcode
     top->funct3_i = 0b000;     // BEQ
     top->funct7_i = 0;       // Not significant for BEQ
@@ -159,6 +173,7 @@ TEST_F(ControlUnitTestBench, JAL) {
 
     EXPECT_EQ(top->reg_wr_en_o, 1);     // No register write
     EXPECT_EQ(top->mem_wr_en_o, 0);     // Memory write enabled
+    EXPECT_EQ(top->pc_src_o, 0);        //PC source for JAL
 }
 
 TEST_F(ControlUnitTestBench, JALR) {
@@ -171,6 +186,7 @@ TEST_F(ControlUnitTestBench, JALR) {
 
     EXPECT_EQ(top->reg_wr_en_o, 1);     // No register write
     EXPECT_EQ(top->mem_wr_en_o, 0);     // Memory write enabled
+    EXPECT_EQ(top->pc_src_o, 1);        ///pc source for jalr
 }
 
 TEST_F(ControlUnitTestBench, LUI) {
@@ -183,6 +199,8 @@ TEST_F(ControlUnitTestBench, LUI) {
 
     EXPECT_EQ(top->reg_wr_en_o, 1);     // No register write
     EXPECT_EQ(top->mem_wr_en_o, 0);     // Memory write enabled
+    EXPECT_EQ(top->result_src_o, 0);    //result source for LUI
+    EXPECT_EQ(top->pc_src_o, 0);
 }
   
 TEST_F(ControlUnitTestBench, AUIPC) {
@@ -195,6 +213,8 @@ TEST_F(ControlUnitTestBench, AUIPC) {
 
     EXPECT_EQ(top->reg_wr_en_o, 1);     // No register write
     EXPECT_EQ(top->mem_wr_en_o, 0);     // Memory write enabled
+    EXPECT_EQ(top->result_src_o, 0);    //result source for AUIPC
+    EXPECT_EQ(top->pc_src_o, 0);        //no branch
 }
 
 // Test for default case
@@ -214,6 +234,13 @@ TEST_F(ControlUnitTestBench, DEFAULT_CASE) {
 int main(int argc, char **argv) {
     Verilated::commandArgs(argc, argv);  // Initialize Verilator args
     testing::InitGoogleTest(&argc, argv);
+    
+    top = new Vdut;
+    
     auto res = RUN_ALL_TESTS();
+    
+    top->final();
+    delete top;
+
     return res;
 }
