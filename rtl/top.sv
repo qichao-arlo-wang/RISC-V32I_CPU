@@ -148,6 +148,16 @@ always_comb begin
     endcase
 end
 
+data_mem data_mem_inst(
+    .clk(clk),
+    .addr_i(alu_result),
+    .wr_data_i(rd_data2),
+    .wr_en_i(mem_wr_en),
+    .byte_en_i(mem_byte_en),
+
+    .rd_data_o(read_data)
+);
+
 //MUX for src_a (ALU first operand)
 mux alu_src_a_mux(
     .in0_i(rd_data1),       // from reg_file (default operand)
@@ -199,16 +209,6 @@ adder alu_adder(
     .in2_i(imm_ext),
     
     .out_o(pc_target)
-);
-
-data_mem data_mem_inst(
-    .clk(clk),
-    .addr_i(alu_result),
-    .wr_data_i(rd_data2),
-    .wr_en_i(mem_wr_en),
-    .byte_en_i(mem_byte_en),
-
-    .rd_data_o(read_data)
 );
 
 endmodule

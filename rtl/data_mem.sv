@@ -66,11 +66,15 @@ module data_mem (
     // Synchronous logic for both store and load
     always_ff @(posedge clk) begin
         if (byte_en_i == 4'b0000) begin
-            rd_data_o <= 32'h0;
+            /* verilator lint_off BLKSEQ */
+            rd_data_o = 32'h0;
+            /* verilator lint_on BLKSEQ */
         end
         else begin
             if (addr_error) begin
-                rd_data_o <= 32'hDEADBEEF; // Return error value if address is invalid
+                /* verilator lint_off BLKSEQ */
+                rd_data_o = 32'hDEADBEEF; // Return error value if address is invalid
+                /* verilator lint_on BLKSEQ */
             end
             else begin
                 // store logic
@@ -96,14 +100,16 @@ module data_mem (
                 $display("%h", {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]});
                 
                 case (byte_en_i)
+                /* verilator lint_off BLKSEQ */
                     // byte (8 bits)
-                    4'b0001: rd_data_o <= {24'b0, mem[addr_i]};
+                    4'b0001: rd_data_o = {24'b0, mem[addr_i]};
                     // half word (16 bits)
-                    4'b0011: rd_data_o <= {16'b0, mem[addr_i+1], mem[addr_i]};
+                    4'b0011: rd_data_o = {16'b0, mem[addr_i+1], mem[addr_i]};
                     // word (32 bits)
-                    4'b1111: rd_data_o <= {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]};
+                    4'b1111: rd_data_o = {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]};
                     // Return error value if byte enable is invalid
-                    default: rd_data_o <= 32'hDEADBEEF;
+                    default: rd_data_o = 32'hDEADBEEF;
+                /* verilator lint_on BLKSEQ */
                 endcase
             end
         end

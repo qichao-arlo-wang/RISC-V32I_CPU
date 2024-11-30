@@ -20,7 +20,7 @@ public:
     void setupTest(const std::string &name)
     {
         name_ = name;
-        std::ignore = system(("/root/Documents/Group-9-RISC-V/tb/assemble.sh asm/" + name_ + ".s").c_str());
+        std::ignore = system(("/root/Documents/Group-9-RISC-V/tb/assemble.sh /root/Documents/Group-9-RISC-V/tb/asm/" + name_ + ".s").c_str());
         std::ignore = system("touch data.hex");
     }
 
@@ -35,7 +35,7 @@ public:
 
         top_->clk = 1;
         top_->rst = 1;
-        top_->trigger = 1;
+        top_->trigger = 1; //changed this to trigger and start the program
         runSimulation(10);  // Process reset
         top_->rst = 0;
     }
