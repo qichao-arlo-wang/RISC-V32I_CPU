@@ -28,56 +28,84 @@ module data_mem (
     end
 
     // Address range error detection
-    always_comb begin
-        addr_error = 1'b0; // default no error
-        if (addr_i > (TOP_ADDR - (byte_en_i == 4'b0001 ? 1 : byte_en_i == 4'b0011 ? 2 : byte_en_i == 4'b1111 ? 4 : 0))) begin
-            addr_error = 1'b1;
-            $display("Warning: address not in the valid range: %h.", addr_i);
-        end
-        if (byte_en_i != 4'b0001 && byte_en_i != 4'b0011 && byte_en_i != 4'b1111) begin
-            addr_error = 1'b1;
-            $display("Warning: invalid byte enable: %b.", byte_en_i);
+  always_comb begin
+    addr_error = 1'b0; // default no error
+    if (byte_en_i == 4'b0000) begin
+        rd_data_o = 32'b0;
+    end
+        else begin
+            // Check if the address is within the valid range
+            if (addr_i > TOP_ADDR) begin
+                addr_error = 1'b1;
+                $display("Warning: address %h exceeds memory range: 0x0 to %h.", addr_i, TOP_ADDR);
+            end
+
+            // Check if the address is correctly aligned for the byte enable type
+            if (byte_en_i == 4'b0001 && addr_i[0] != 1'b0) begin
+                addr_error = 1'b1;
+                $display("Warning: address %h is not aligned for byte access.", addr_i);
+            end
+            else if (byte_en_i == 4'b0011 && addr_i[1:0] != 2'b00) begin
+                addr_error = 1'b1;
+                $display("Warning: address %h is not aligned for half-word access.", addr_i);
+            end
+            else if (byte_en_i == 4'b1111 && addr_i[3:0] != 4'b0000) begin
+                addr_error = 1'b1;
+                $display("Warning: address %h is not aligned for word access.", addr_i);
+            end
+
+            // Validate the byte enable signal
+            if (byte_en_i != 4'b0001 && byte_en_i != 4'b0011 && byte_en_i != 4'b1111) begin
+                addr_error = 1'b1;
+                $display("Warning: heLLO invalid byte enable: %b.", byte_en_i);
+            end
         end
     end
 
+
     // Synchronous logic for both store and load
     always_ff @(posedge clk) begin
-        if (addr_error) begin
-            rd_data_o <= 32'hDEADBEEF; // Return error value if address is invalid
+        if (byte_en_i == 4'b0000) begin
+            rd_data_o <= 32'h0;
         end
         else begin
-            // store logic
-            if (wr_en_i) begin
+            if (addr_error) begin
+                rd_data_o <= 32'hDEADBEEF; // Return error value if address is invalid
+            end
+            else begin
+                // store logic
+                if (wr_en_i) begin
+                    case (byte_en_i)
+                        // byte (8 bits)
+                        4'b0001: mem[addr_i] <= wr_data_i[7:0];
+                        // half word (16 bits)
+                        4'b0011: begin
+                            mem[addr_i]   <= wr_data_i[7:0];    // Lowest byte
+                            mem[addr_i+1] <= wr_data_i[15:8];   // Highest byte
+                        end
+                        // word (32 bits)
+                        4'b1111: begin
+                            mem[addr_i]   <= wr_data_i[7:0];    // Lowest byte
+                            mem[addr_i+1] <= wr_data_i[15:8];   // Next byte
+                            mem[addr_i+2] <= wr_data_i[23:16];  // Higher byte
+                            mem[addr_i+3] <= wr_data_i[31:24];  // Highest byte
+                        end
+                        default: $display("Warning: Unrecognized byte enable: %b. No data written.", byte_en_i);
+                    endcase
+                end
+                $display("%h", {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]});
+                
                 case (byte_en_i)
                     // byte (8 bits)
-                    4'b0001: mem[addr_i] <= wr_data_i[7:0];
+                    4'b0001: rd_data_o <= {24'b0, mem[addr_i]};
                     // half word (16 bits)
-                    4'b0011: begin
-                        mem[addr_i]   <= wr_data_i[7:0];    // Lowest byte
-                        mem[addr_i+1] <= wr_data_i[15:8];   // Highest byte
-                    end
+                    4'b0011: rd_data_o <= {16'b0, mem[addr_i+1], mem[addr_i]};
                     // word (32 bits)
-                    4'b1111: begin
-                        mem[addr_i]   <= wr_data_i[7:0];    // Lowest byte
-                        mem[addr_i+1] <= wr_data_i[15:8];   // Next byte
-                        mem[addr_i+2] <= wr_data_i[23:16];  // Higher byte
-                        mem[addr_i+3] <= wr_data_i[31:24];  // Highest byte
-                    end
-                    default: $display("Warning: Unrecognized byte enable: %b. No data written.", byte_en_i);
+                    4'b1111: rd_data_o <= {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]};
+                    // Return error value if byte enable is invalid
+                    default: rd_data_o <= 32'hDEADBEEF;
                 endcase
             end
-            $display("%h", {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]});
-            
-            case (byte_en_i)
-                // byte (8 bits)
-                4'b0001: rd_data_o <= {24'b0, mem[addr_i]};
-                // half word (16 bits)
-                4'b0011: rd_data_o <= {16'b0, mem[addr_i+1], mem[addr_i]};
-                // word (32 bits)
-                4'b1111: rd_data_o <= {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]};
-                // Return error value if byte enable is invalid
-                default: rd_data_o <= 32'hDEADBEEF;
-            endcase
         end
     end
 endmodule

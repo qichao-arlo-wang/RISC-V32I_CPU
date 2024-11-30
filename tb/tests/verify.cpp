@@ -1,13 +1,14 @@
 #include <cstdlib>
 #include <utility>
 
-#include "cpu_testbench.h"
+#include "cpu_testbench_2.h"
 
 #define CYCLES 10000
 
 TEST_F(CpuTestbench, TestAddiBne)
 {
     setupTest("1_addi_bne");
+    std::cout << "addi_bne" << std::endl;
     initSimulation();
     runSimulation(CYCLES);
     EXPECT_EQ(top_->a0, 254);

@@ -7,6 +7,16 @@ module top #(
     output  logic [DATA_WIDTH-1:0] a0
 );
 
+logic trigger_latched;
+
+always_ff @(posedge clk or posedge rst) begin
+    if (rst) begin
+        trigger_latched <= 0;
+    end else if (trigger) begin
+        trigger_latched <= 1;
+    end
+end
+
 /// /// BLOCK 1: instruction memory, pc_plus4_adder, pc_reg and pc_mux /// ///
 logic [DATA_WIDTH-1:0] pc, pc_plus_4, pc_target, pc_next; // block 1 internal signals
 logic pc_src; // Control signal
@@ -36,7 +46,7 @@ instr_mem instr_mem_inst (
 );
 
 pc_reg pc_reg_inst (
-    .clk(clk),
+    .clk(clk & trigger_latched),
     .rst(rst),
     .pc_next_i(pc_next),
 
