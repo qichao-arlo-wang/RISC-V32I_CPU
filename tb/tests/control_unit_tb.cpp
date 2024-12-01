@@ -173,7 +173,7 @@ TEST_F(ControlUnitTestBench, JAL) {
 
     EXPECT_EQ(top->reg_wr_en_o, 1);     // No register write
     EXPECT_EQ(top->mem_wr_en_o, 0);     // Memory write enabled
-    EXPECT_EQ(top->pc_src_o, 0);        //PC source for JAL
+    EXPECT_EQ(top->pc_src_o, 1);        //PC source for JAL
 }
 
 TEST_F(ControlUnitTestBench, JALR) {
