@@ -4,7 +4,8 @@
 
 # Default vars
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
-output_file="$SCRIPT_DIR/program.hex"
+ASM_DIR="$SCRIPT_DIR/asm"
+output_file="$SCRIPT_DIR/tests/program.hex"
 
 # Handle terminal arguments
 if [[ $# -eq 0 ]]; then
@@ -13,6 +14,19 @@ if [[ $# -eq 0 ]]; then
 fi
 
 input_file=$1
+
+# # if input file is not an absolute path, assume it is in the asm directory
+# if [[ "$input_file" != /* ]]; then
+#     input_file="$ASM_DIR/$input_file"
+#     echo "Resolved input file path: $input_file"
+# fi
+
+# Check if input file exists
+if [[ ! -f "$input_file" ]]; then
+    echo "Error: Input file '$input_file' does not exist."
+    exit 1
+fi
+
 basename=$(basename "$input_file" | sed 's/\.[^.]*$//')
 parent=$(dirname "$input_file")
 file_extension="${input_file##*.}"
@@ -45,3 +59,6 @@ od -v -An -t x1 "a.bin" | tr -s '\n' | awk '{$1=$1};1' > "${output_file}"
 rm "a.out.reloc"
 rm "a.out"
 rm "a.bin"
+
+# echo "Assembly and processing of '$input_file' completed successfully."
+# echo "Hex file is saved in: ${output_file}"

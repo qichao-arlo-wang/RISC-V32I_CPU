@@ -8,7 +8,7 @@ module instr_mem (
     localparam [31:0] TOP_ADDR  = 32'hBFC00FFF;  // Top address of instruction memory
 
     // 4 x 1024 bytes memory
-    logic [7:0] mem [MEM_SIZE-1:0];
+    logic [7:0] mem [0:MEM_SIZE-1];
 
     // Internal signal for address error detection
     logic addr_error;
@@ -19,8 +19,12 @@ module instr_mem (
         
         // The default path when running the simulation is the tests directory
         // Read memory file with byte-level storage
-        $readmemh("/root/Documents/Group-9-RISC-V/tb/test_out/4_jal_ret/program.hex", mem); 
+        $readmemh("program.hex", mem); 
+        // for (int i = 0; i < 50; i += 4) begin
+        //     $display("MEM[%0d]: %h%h%h%h", i, mem[i+3], mem[i+2], mem[i+1], mem[i]);
+        // end
     end
+
     logic [31:0] actual_addr;
 
     // Address error detection logic
@@ -41,6 +45,7 @@ module instr_mem (
 
     // Read logic: fetch instruction
     always_comb begin
+        instr_o = 32'hDEADBEEF; // Default value
         if (addr_error) begin
             // Return error value if address is invalid
             instr_o = 32'hDEADBEEF; 

@@ -23,7 +23,9 @@ public:
     {
         name_ = name;
         // Assemble the program
-        std::ignore = system(("./assemble.sh asm/" + name_ + ".s").c_str());
+        // program.hex will be saved into tb/tests directory
+        std::ignore = system(("cd .. && ./assemble.sh asm/" + name_ + ".s").c_str());
+        // std::ignore = system("pwd");
         // Create default empty file for data memory
         std::ignore = system("touch data.hex");
     }
@@ -38,12 +40,12 @@ public:
         // Initialise trace and simulation
         Verilated::traceEverOn(true);
         top_->trace(tfp_, 99);
-        tfp_->open(("test_out/" + name_ + "/waveform.vcd").c_str());
+        tfp_->open(("../test_out/" + name_ + "/waveform.vcd").c_str());
 
         // Initialise inputs
         top_->clk = 1;
         top_->rst = 1;
-        top_->trigger = 0;
+        top_->trigger = 1;  // Start the program
         runSimulation(10);  // Process reset
         top_->rst = 0;
     }
@@ -80,8 +82,9 @@ public:
         delete context_;
 
         // Save data and program memory files to test_out directory
-        std::ignore = system(("mv data.hex test_out/" + name_ + "/data.hex").c_str());
-        std::ignore = system(("mv program.hex test_out/" + name_ + "/program.hex").c_str());
+        // std::ignore = system("pwd");
+        std::ignore = system(("mv data.hex ../test_out/" + name_ + "/data.hex").c_str());
+        std::ignore = system(("mv program.hex ../test_out/" + name_ + "/program.hex").c_str());
     }
 
     void setData(const std::string &data_file)
