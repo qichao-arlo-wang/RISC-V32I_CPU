@@ -64,6 +64,7 @@ module control_unit (
     always_comb begin
         case (opcode_i)
             7'b1100111: pc_src_o = branch;
+            7'b1101111: pc_src_o = branch;
             default: pc_src_o = branch & branch_condition;
         endcase
     end
