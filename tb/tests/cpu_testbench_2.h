@@ -20,7 +20,7 @@ public:
     void setupTest(const std::string &name)
     {
         name_ = name;
-        std::ignore = system(("/root/Documents/Group-9-RISC-V/tb/assemble.sh /root/Documents/Group-9-RISC-V/tb/asm/" + name_ + ".s").c_str());
+        // std::ignore = system(("./root/Documents/Group-9-RISC-V/tb/assemble.sh /root/Documents/Group-9-RISC-V/tb/asm/" + name_ + ".s").c_str());
         std::ignore = system("touch data.hex");
     }
 
@@ -31,7 +31,7 @@ public:
 
         Verilated::traceEverOn(true);
         top_->trace(tfp_, 99);
-        tfp_->open(("test_out/" + name_ + "/waveform.vcd").c_str());
+        tfp_->open(("/root/Documents/Group-9-RISC-V/tb/test_out/" + name_ + "/waveform.vcd").c_str());
 
         top_->clk = 1;
         top_->rst = 1;
@@ -40,7 +40,7 @@ public:
         top_->rst = 0;
     }
 
-    void runSimulation(int cycles = 1)
+    void runSimulation(int cycles)
     {
         for (int i = 0; i < cycles; i++)
         {
@@ -60,15 +60,17 @@ public:
     }
 
     void TearDown() override
-    {
+    {   
+        std::cout << "Closing simulation..." << std::endl;
         top_->final();
+        tfp_->flush();        
         tfp_->close();
-
+        std::cout << "Waveform saved." << std::endl;
         if (top_) delete top_;
         if (tfp_) delete tfp_;
 
-        std::ignore = system(("mv data.hex test_out/" + name_ + "/data.hex").c_str());
-        std::ignore = system(("mv program.hex test_out/" + name_ + "/program.hex").c_str());
+        std::ignore = system(("mv data.hex /root/Documents/Group-9-RISC-V/tb/test_out/" + name_ + "/data.hex").c_str());
+        std::ignore = system(("mv /root/Documents/Group-9-RISC-V/tb/program.hex /root/Documents/Group-9-RISC-V/tb/test_out/" + name_ + "/program.hex").c_str());
     }
 
     void setData(const std::string &data_file)

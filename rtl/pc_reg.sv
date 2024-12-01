@@ -8,7 +8,7 @@ module pc_reg (
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin  
-            pc_o <= 32'hBFC00000;
+            pc_o <= 32'h0;
         end
         else begin
             pc_o <= pc_next_i;

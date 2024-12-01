@@ -19,19 +19,21 @@ module instr_mem (
         
         // The default path when running the simulation is the tests directory
         // Read memory file with byte-level storage
-        $readmemh("/root/Documents/Group-9-RISC-V/rtl/program.hex", mem); 
+        $readmemh("/root/Documents/Group-9-RISC-V/tb/test_out/4_jal_ret/program.hex", mem); 
     end
+    logic [31:0] actual_addr;
 
     // Address error detection logic
     always_comb begin
         addr_error = 1'b0; // Default: no error
-        
+        actual_addr = addr_i + BASE_ADDR;
+
         // Address alignment and range checking
-        if (addr_i < BASE_ADDR || addr_i > TOP_ADDR) begin
+        if (actual_addr < BASE_ADDR || actual_addr > TOP_ADDR) begin
             addr_error = 1'b1;
             $display("Warning: Address out of range: %h.", addr_i);
         end 
-        else if (addr_i[1:0] != 2'b00) begin
+        else if (actual_addr[1:0] != 2'b00) begin
             addr_error = 1'b1;
             $display("Warning: Unaligned address detected: %h.", addr_i);
         end
@@ -45,7 +47,7 @@ module instr_mem (
         end 
         else begin
             // Calculate local memory address offset by subtracting BASE_ADDR
-            logic [11:0] local_addr = addr_i[11:0];  // addr_i - BASE_ADDR assumes addr_i is within valid range
+            logic [11:0] local_addr = actual_addr[11:0];  // addr_i - BASE_ADDR assumes addr_i is within valid range
             instr_o = {mem[local_addr + 3], mem[local_addr + 2], mem[local_addr + 1], mem[local_addr]};
         end
     end 
