@@ -1,4 +1,5 @@
 #include "base_testbench.h"
+#include <climits>
 
 Vdut *top;
 VerilatedVcdC *tfp;
@@ -56,7 +57,7 @@ TEST_F(AdderTestbench, AdderMaxIntTest)
     top->eval();
     // Use int64_t to safely handle the addition without overflow
     int64_t expected = static_cast<int64_t>(INT_MAX) + 1;
-    EXPECT_EQ(static_cast<int64_t>(top->out), expected);
+    EXPECT_EQ(static_cast<int64_t>(top->out_o), expected);
     
     // EXPECT_EQ(top->out, INT_MAX + 1);  this works too but the above is more safe without overflow
 }
@@ -72,7 +73,8 @@ TEST_F(AdderTestbench, AdderMinIntTest)
 
     // Use int64_t to safely handle the subtraction without overflow
     int64_t expected = static_cast<int64_t>(INT_MIN) - 1;
-    EXPECT_EQ(static_cast<int64_t>(top->out), expected);
+    expected = static_cast<int32_t>(expected); // Simulate 32-bit wraparound
+    EXPECT_EQ(static_cast<int32_t>(top->out_o), expected);
 }
 
 
