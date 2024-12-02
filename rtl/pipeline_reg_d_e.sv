@@ -3,7 +3,7 @@ module pipeline_reg_f_d #(
 )(
     input logic clk_i,
     input logic flush_i,
-    input logic lw_flush_i,
+    input logic stall_i, // store for load
 
     // control unit
     // note branch_d & jump_d are in lecture slides
@@ -47,7 +47,7 @@ module pipeline_reg_f_d #(
 
     always_ff @(posedge clk) begin
         // control unit
-        if (!flush_i && !lw_flush_i) begin
+        if (!flush_i && !stall_i) begin
             reg_wr_en_e_o <= reg_wr_en_d_i;
             mem_wr_en_e_o <= mem_wr_en_d_i;
             pc_src_e_o <= pc_src_d_i;
