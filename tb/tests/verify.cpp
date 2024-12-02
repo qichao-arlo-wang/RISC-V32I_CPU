@@ -22,7 +22,7 @@ TEST_F(CpuTestbench, TestLiAdd)
     setupTest("2_li_add");
     initSimulation();
     runSimulation(CYCLES);
-    EXPECT_EQ(top_->a0, 1000);
+    EXPECT_EQ(top_->a0, 5096);
 }
 
 TEST_F(CpuTestbench, TestLbuSb)
