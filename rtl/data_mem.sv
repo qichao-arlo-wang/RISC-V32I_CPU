@@ -54,7 +54,7 @@ module data_mem (
         // endcase
     end
 
-    Asynchronous read logic
+    // Asynchronous read logic
     always_comb begin
         case (byte_en_i)
             4'b0001: rd_data_o = {24'b0, mem[addr_i][7:0]};

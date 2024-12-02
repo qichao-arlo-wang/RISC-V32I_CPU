@@ -1,7 +1,7 @@
 module main_decoder (
     input logic [6:0] opcode_i,    // Opcode from instruction
     input logic [2:0] funct3_i,   // funct3 field from instruction
-    input logic [6:0] funct7_i;   // funct7 field from instruction
+    input logic [6:0] funct7_i,   // funct7 field from instruction
 
     output logic reg_wr_en_o,      // Register Write Enable
     output logic mem_wr_en_o,      // Memory Write Enable
@@ -78,7 +78,7 @@ module main_decoder (
                         imm_src_o = 3'b101;
                         signed_o = 1;
                     end
-                    3'b101:  
+                    3'b101: begin
                         imm_src_o = 3'b101;
                         case (funct7_i) 
                             // SRLI
@@ -90,6 +90,7 @@ module main_decoder (
                                 signed_o = 1;
                             end
                         endcase
+                    end
                     default: begin
                         imm_src_o = 3'b000;
                         signed_o = 1;
