@@ -1,6 +1,7 @@
 module sign_exten (
     input logic [24:0] instr_31_7_i,  // instruction[31:7]
     input logic [2:0]  imm_src_i,
+    input logic signed_i,
 
     output logic [31:0] imm_ext_o
 );
@@ -11,7 +12,9 @@ module sign_exten (
                 // I-type 
                 // imm = instruction[31:20] = instr_31_7_i[24:13]
                 // sign extension from 12 bit to 32 bit
-                imm_ext_o = {{20{instr_31_7_i[24]}}, instr_31_7_i[24:13]};
+                case (signed_i)
+                    1'b1: imm_ext_o = {{20{instr_31_7_i[24]}}, instr_31_7_i[24:13]};
+                    1'b0: imm_ext_o = {{20{1'b0}}, instr_31_7_i[24:13]};
 
             3'b001:       
                 // S-type
@@ -39,13 +42,15 @@ module sign_exten (
                 imm_ext_o = {{12{instr_31_7_i[24]}}, instr_31_7_i[12:5], instr_31_7_i[13], instr_31_7_i[23:14], 1'b0};
 
             3'b101:
-                // slli, srri, srai 
-                // imm[5:11] = 0x00
-                imm_ext_o = {{27{1'b0}}, instr_31_7_i[17:13]};
+                case (signed_i)
+                    1'b0: imm_ext_o = {{27{1'b0}}, instr_31_7_i[17:13]};            // SLLI, SRRI
+                    1'b1: imm_ext_o = {{27{instr_31_7_i[17]}}, instr_31_7_i[17:13]}; // SRAI
+                endcase
 
             3'b111:
                 //unsigned
                 imm_ext_o = {{19{1'b0}}, instr_31_7_i[24], instr_31_7_i[0], instr_31_7_i[23:18], instr_31_7_i[4:1], 1'b0};
+                
             default:     // Default 
                 imm_ext_o = 32'd0;  // Output zero 
         endcase

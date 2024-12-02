@@ -1,8 +1,28 @@
 module top #(
     parameter DATA_WIDTH = 32
 ) (
-    input   logic clk     // clock signal
+    input   logic clk,     // clock signal
+    input   logic trigger,
+    input   logic rst,
+    output  logic [DATA_WIDTH-1:0] a0
 );
+
+logic trigger_latched;
+
+always_ff @(posedge clk or posedge rst) begin
+    if (rst) begin
+        // set trigger_latched based on trigger during reset
+        if (trigger) begin
+            trigger_latched <= 1;
+        end else begin
+            trigger_latched <= 0;
+        end
+    end
+    else if (trigger) begin
+        // standard trigger logic after reset
+        trigger_latched <= 1;
+    end
+end
 
 /// /// BLOCK 1: instruction memory, pc_plus4_adder, pc_reg and pc_mux /// ///
 logic [DATA_WIDTH-1:0] pc, pc_plus_4, pc_target, pc_next; // block 1 internal signals
@@ -19,8 +39,8 @@ adder pc_plus4_adder(
 
 // mux used to select between pc_target and pc_plus_4
 mux pc_mux(
-    .in0_i(pc_plus_4),
-    .in1_i(pc_target),
+    .in0_i(pc_plus_4), // PC += 4
+    .in1_i(pc_target), // branch
     .sel_i(pc_src),
 
     .out_o(pc_next)
@@ -33,7 +53,8 @@ instr_mem instr_mem_inst (
 );
 
 pc_reg pc_reg_inst (
-    .clk(clk),
+    .clk(clk & trigger_latched),
+    .rst(rst),
     .pc_next_i(pc_next),
 
     .pc_o(pc)
@@ -48,11 +69,11 @@ pc_reg pc_reg_inst (
 logic [24:0] instr_31_7 = instr[31:7];
 logic [6:0] op = instr[6:0];
 logic [2:0] funct3 = instr[14:12];
-logic funct7_5 = instr[30];
+logic [6:0] funct7 = instr[31:25];
 logic zero;
 // signal pc_src has been declared in block 1
-logic reg_wr_en, mem_wr_en, alu_src, result_src;
-logic [1:0] imm_src;
+logic reg_wr_en, mem_wr_en, alu_src, result_src, alu_src_a_sel, signed_bit;
+logic [2:0] imm_src;
 logic [3:0] alu_control;
 
 
@@ -61,7 +82,7 @@ logic [4:0] rd_addr1 = instr[19:15]; // rd_addr1: instr[19:15]
 logic [4:0] rd_addr2 = instr[24:20]; // rd_addr2: instr[24:20]
 logic [4:0] wr_addr  = instr[11:7];  // wr_addr: instr[11:7]
 logic [DATA_WIDTH-1:0] rd_data1, rd_data2;
-logic [DATA_WIDTH-1:0] result;
+logic [DATA_WIDTH-1:0] alu_result;
 
 // // // extend block signal
 logic [DATA_WIDTH-1:0] imm_ext;
@@ -72,6 +93,7 @@ control_unit ctrl (
     .funct3_i(funct3),
     .funct7_5_i(funct7_5),
     .zero_i(zero),
+    .alu_result_i(alu_result),
 
     .reg_wr_en_o(reg_wr_en),
     .mem_wr_en_o(mem_wr_en),
@@ -80,14 +102,17 @@ control_unit ctrl (
     .result_src_o(result_src),  
     .alu_control_o(alu_control),
     .pc_src_o(pc_src),
-    .byte_en_o(mem_byte_en)
+    .byte_en_o(mem_byte_en),
+    .alu_src_a_sel_o(alu_src_a_sel),
+    .signed_o(signed_bit)
 );
 
 // Instantiate Sign-Extension Unit
 sign_exten sign_exten_inst (
     .instr_31_7_i(instr_31_7),
-
     .imm_src_i(imm_src),
+    .signed_i(signed_bit),
+
     .imm_ext_o(imm_ext)
 );
 
@@ -100,7 +125,8 @@ register_file reg_file_inst (
     .reg_wr_en_i(reg_wr_en),
 
     .rd_data1_o(rd_data1),
-    .rd_data2_o(rd_data2)
+    .rd_data2_o(rd_data2),
+    .ao(a0)
 );
 
 
@@ -114,7 +140,7 @@ logic eq;
 logic [3:0] mem_byte_en;
 
 // // data memory siganls 
-logic [DATA_WIDTH-1:0] read_data, write_data;
+logic [DATA_WIDTH-1:0] read_data;
 // logic [DATA_WIDTH-1:0] result;  declared in block 2
 
 // ALU unit
@@ -127,9 +153,44 @@ alu alu_inst(
     .zero_o(zero)
 );
 
+logic [DATA_WIDTH-1:0] option;
 
-// // // need to be confirmed //// ///////
-// // // missing signal alu_src_a_sel ///// //////
+always_comb begin
+    case (op)
+        7'b0110111: option = 32'b0; //LUI
+        default: option = pc; // AUIPC
+    endcase
+end
+
+data_mem data_mem_inst(
+    .clk(clk),
+    .addr_i(alu_result),
+    .wr_data_i(rd_data2),
+    .wr_en_i(mem_wr_en),
+    .byte_en_i(mem_byte_en),
+
+    .rd_data_o(read_data)
+);
+
+logic data_mem_or_pc_mem_sel;
+logic [31:0] data_to_use;
+
+always_comb begin
+    case (op)
+        7'b1101111: data_mem_or_pc_mem_sel = 1;
+        7'b1100111: data_mem_or_pc_mem_sel = 1;
+        default: data_mem_or_pc_mem_sel = 0;
+    endcase
+end
+
+mux data_mem_pc_next(
+    .in0_i(read_data),
+    .in1_i(pc_plus_4),
+    .sel_i(data_mem_or_pc_mem_sel),
+
+    .out_o(data_to_use)
+);
+
 //MUX for src_a (ALU first operand)
 mux alu_src_a_mux(
     .in0_i(rd_data1),       // from reg_file (default operand)
@@ -138,6 +199,8 @@ mux alu_src_a_mux(
 
     .out_o(src_a)
 );
+
+logic [DATA_WIDTH-1:0] result;
 
 // MUX for src_b (ALU second operand)
 mux alu_src_b_mux(
@@ -151,28 +214,32 @@ mux alu_src_b_mux(
 // mux used for data memory
 mux data_mem_mux(
     .in0_i(alu_result),
-    .in1_i(read_data),
+    .in1_i(data_to_use),
     .sel_i(result_src),
 
     .out_o(result) 
 );
 
+logic [ DATA_WIDTH-1:0] option2;
+
+always_comb begin
+    case (op)
+        7'b1100111: begin
+            option2 = rd_data1;
+        end
+        7'b1101111: begin
+            option2 = pc;
+        end
+        default: option2 = pc;
+    endcase
+end
+
 // adder used to add pc and imm_ext
 adder alu_adder(
-    .in1_i(pc),
+    .in1_i(option2),
     .in2_i(imm_ext),
     
     .out_o(pc_target)
-);
-
-data_mem data_mem_inst(
-    .clk(clk),
-    .addr_i(alu_result),
-    .wr_data_i(write_data),
-    .wr_en_i(mem_wr_en),
-    .byte_en_i(mem_byte_en),
-
-    .rd_data_o(read_data)
 );
 
 endmodule
