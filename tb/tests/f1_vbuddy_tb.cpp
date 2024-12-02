@@ -30,6 +30,8 @@ int main(int argc, char **argv, char **env)
     // initialize simulation inputs
     top->clk = 0;
     top->rst = 0;
+    top->trigger = 0;
+    top->a0 
 
     // run simulation for MAX_SIM_CYC clock cycles
     for (simcyc = 0; simcyc < MAX_SIM_CYC; simcyc++)
@@ -42,18 +44,24 @@ int main(int argc, char **argv, char **env)
             top->eval();
         }
 
-        vbdCycle(simcyc);
         // Display toggle neopixel
-        if (top->fsm_en)
+        if (top->trigger)
         {
             vbdBar(lights);
             lights = lights ^ 0xFF;
         }
 
+        // set up input singals of testbench
+        top->rst = (simcyc < 2) ? 1 : 0; // reset active for first 2 cycles
+        top->trigger = (simcyc >2) ? 1 : 0; // trigger active after 2 cycles
+        
+        vbdCycle(simcyc);
+
         if (Verilated::gotFinish() || vbdGetkey() == 'q')
             exit(0);
     }
 
+    vbdClose();
     tfp->close();
     exit(0);
 }
