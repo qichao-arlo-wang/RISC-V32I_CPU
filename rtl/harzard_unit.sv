@@ -68,8 +68,9 @@ module hazard_unit (
         // Load Instruction --> Stall
         // When both 1: There is Load Instruction in the Execution stage
         //           2: Register used to write at Execution stage Overlapped with one of register are used in Decoding Stage
-
-        if (MemRead_E && ((Rd_E == Rs1_D) || (Rd_E == Rs2_D))) begin
+        
+        //mem_ byte_en need to  change based for load 
+        if ((mem_byte_en_e_i == ??) && ((wr_addr_e_i == rd_addr1_d_i) || (wr_addr_e_i == rd_addr2_d_i))) begin
             stall_o = 1'b1;
         end 
         else begin
