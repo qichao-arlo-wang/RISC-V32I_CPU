@@ -5,7 +5,6 @@ module sign_exten (
 
     output logic [31:0] imm_ext_o
 );
-
     always_comb begin
         case (imm_src_i)  // Use imm_src to determine the type of extension
             3'b000:       
@@ -34,7 +33,8 @@ module sign_exten (
                 // U-type
                 // imm = instruction[31:12] = instr_31_7_i[24:5]
                 // lower 12 bits are extended with zeros
-                imm_ext_o = {instr_31_7_i[24:5], 12'b0};  
+                
+                imm_ext_o = {instr_31_7_i[24:5], 12'b0};
             
             3'b100:       
                 // J-type
@@ -43,9 +43,10 @@ module sign_exten (
                 imm_ext_o = {{12{instr_31_7_i[24]}}, instr_31_7_i[12:5], instr_31_7_i[13], instr_31_7_i[23:14], 1'b0};
 
             3'b101:
-                // slli, srri, srai 
-                // imm[5:11] = 0x00
-                imm_ext_o = {{27{1'b0}}, instr_31_7_i[17:13]};
+                case (signed_i)
+                    1'b0: imm_ext_o = {{27{1'b0}}, instr_31_7_i[17:13]}; //SLLI, SRRI
+                    1'b1: imm_ext_o = {{27{instr_31_7_i[17]}}, instr_31_7_i[17:13]}; //SRAI
+                endcase
 
             3'b111:
                 //unsigned
