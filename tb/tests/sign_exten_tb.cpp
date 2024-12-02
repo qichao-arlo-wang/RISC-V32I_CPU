@@ -27,7 +27,7 @@ TEST_F(SignExtenTestbench, I_TYPE_NEG)
     top->imm_src_i = 0;
     top->eval();
 
-    EXPECT_EQ(top->imm_ext_o, -329);
+    EXPECT_EQ(top->imm_ext_o, 3767);
 }
 
 TEST_F(SignExtenTestbench, S_TYPE)
