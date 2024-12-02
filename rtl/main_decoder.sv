@@ -89,6 +89,9 @@ module main_decoder (
                             7'h20: begin
                                 signed_o = 1;
                             end
+                            default: begin
+                                signed_o = 0;
+                            end
                         endcase
                     end
                     default: begin
