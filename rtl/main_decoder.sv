@@ -34,15 +34,15 @@ module main_decoder (
                 case (funct3_i) 
                     3'h0: begin
                         byte_en_o = 4'b0001; // LB
-                        signed_o = 1'b0;
+                        signed_o = 1'b1;
                     end
                     3'h1: begin
                         byte_en_o = 4'b0011; // LH
-                        signed_o = 1'b0;
+                        signed_o = 1'b1;
                     end
                     3'h2: begin
                         byte_en_o = 4'b1111; // LW
-                        signed_o = 1'b0;
+                        signed_o = 1'b1;
                     end
                     3'h4: begin
                         byte_en_o = 4'b0001; // LBU
@@ -50,11 +50,11 @@ module main_decoder (
                     end
                     3'h5: begin
                         byte_en_o = 4'b0011; // LHU
-                        signed_o = 0'b0;
+                        signed_o = 1'b0;
                     end
                     default: begin
                         byte_en_o = 4'b0000; //default case
-                        signed_o = 0'b0;
+                        signed_o = 1'b0;
                     end
                 endcase
             end
