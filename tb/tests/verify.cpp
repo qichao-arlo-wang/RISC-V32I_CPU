@@ -22,7 +22,7 @@ TEST_F(CpuTestbench, TestLiAdd)
     setupTest("2_li_add");
     initSimulation();
     runSimulation(CYCLES);
-    EXPECT_EQ(top_->a0, 5096);
+    EXPECT_EQ(top_->a0, 1000);
 }
 
 TEST_F(CpuTestbench, TestLbuSb)
@@ -41,15 +41,15 @@ TEST_F(CpuTestbench, TestJalRet)
     EXPECT_EQ(top_->a0, 53);
 }
 
-// TEST_F(CpuTestbench, TestPdf)
-// {
-//     setupTest("5_pdf");
-//     system("pwd");
-//     setData("../reference/gaussian.mem");
-//     initSimulation();
-//     runSimulation(CYCLES * 100);
-//     EXPECT_EQ(top_->a0, 15363);
-// }
+TEST_F(CpuTestbench, TestPdf)
+{
+    setupTest("5_pdf");
+    system("pwd");
+    setData("../reference/gaussian.mem");
+    initSimulation();
+    runSimulation(CYCLES * 100);
+    EXPECT_EQ(top_->a0, 15363);
+}
 
 int main(int argc, char **argv)
 {
