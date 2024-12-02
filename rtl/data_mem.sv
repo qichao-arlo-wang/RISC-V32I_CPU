@@ -42,7 +42,6 @@ module data_mem (
         end
             // $display("%h", {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]});
             
-        // load logic
         // case (byte_en_i)
         //     // byte (8 bits)
         //     4'b0001: rd_data_o <= {24'b0, mem[addr_i][7:0]};
@@ -55,7 +54,7 @@ module data_mem (
         // endcase
     end
 
-    // Asynchronous read logic
+    Asynchronous read logic
     always_comb begin
         case (byte_en_i)
             4'b0001: rd_data_o = {24'b0, mem[addr_i][7:0]};
