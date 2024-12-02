@@ -10,7 +10,7 @@
 - Enxing: testing
 
 ## Stretch Goal 1: Pipelined RV32I Design
-
+![pipeline schematic](/images/pipeline.jpeg)
 ### problems need to be considered:
 - zero extends & msb extends (alu might have solved it)
 - instruction mem need to be checked
