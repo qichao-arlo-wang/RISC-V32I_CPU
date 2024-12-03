@@ -28,6 +28,7 @@ module hazard_unit (
         forward_a_e_o = 2'b00;
         forward_b_e_o = 2'b00;
 
+
         // MUX for forward_a_e_o
             // 00 : rd_addr1_e : same as no pipeline
             // 01 : result_w : forwarding from W state after a MUX in lecture slides(after data memory)
@@ -42,6 +43,7 @@ module hazard_unit (
         else begin
             forward_a_e_o = 2'b00;
         end
+
 
         // MUX for forward_b_e_o
             // 00 : rd_addr2_e : same as no pipeline
@@ -63,6 +65,7 @@ module hazard_unit (
         if (pc_src_i) begin 
             flush_o = 1;
         end
+
 
         // Load Instruction --> Stall
         // When both 1: There is Load Instruction in the Execution stage
