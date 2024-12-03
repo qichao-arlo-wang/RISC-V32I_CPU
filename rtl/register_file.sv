@@ -8,7 +8,7 @@ module register_file #(
     input logic [ADR_WIDTH-1:0] rd_addr1_i, rd_addr2_i, wr_addr_i, // READ (read_addr1_i, read_addr2_i) and write (write_addr_i) addresses
     input logic [REG_WIDTH-1:0] wr_data_i,
 
-    output logic [REG_WIDTH-1:0] rd_data1_o, rd_data2_o // read data output
+    output logic [REG_WIDTH-1:0] rd_data1_o, rd_data2_o, // read data output
     output logic [REG_WIDTH-1:0] a0
 );
     // declare register file

@@ -11,18 +11,19 @@ logic trigger_latched;
 
 always_ff @(posedge clk or posedge rst) begin
     if (rst) begin
-        // set trigger_latched based on trigger during reset
+        // Set trigger_latched based on trigger during reset
         if (trigger) begin
             trigger_latched <= 1;
         end else begin
             trigger_latched <= 0;
         end
-    end
+    end 
     else if (trigger) begin
-        // standard trigger logic after reset
+        // Standard trigger logic after reset
         trigger_latched <= 1;
     end
 end
+
 
 /// /// BLOCK 1: instruction memory, pc_plus4_adder, pc_reg and pc_mux /// ///
 logic [DATA_WIDTH-1:0] pc, pc_plus_4, pc_target, pc_next; // block 1 internal signals
@@ -61,7 +62,6 @@ pc_reg pc_reg_inst (
 );
 
 
-
 /// /// BLOCK 2: Register file, control unit, and extend /// ///
 
 // // // control unit signals
@@ -70,9 +70,8 @@ logic [24:0] instr_31_7 = instr[31:7];
 logic [6:0] op = instr[6:0];
 logic [2:0] funct3 = instr[14:12];
 logic [6:0] funct7 = instr[31:25];
-logic zero;
 // signal pc_src has been declared in block 1
-logic reg_wr_en, mem_wr_en, alu_src, result_src, alu_src_a_sel, signed_bit;
+logic reg_wr_en, mem_wr_en, result_src, alu_src, alu_src_a_sel, signed_bit;
 logic [2:0] imm_src;
 logic [3:0] alu_control;
 
@@ -91,8 +90,8 @@ logic [DATA_WIDTH-1:0] imm_ext;
 control_unit ctrl (
     .opcode_i(op),
     .funct3_i(funct3),
-    .funct7_5_i(funct7_5),
-    .zero_i(zero),
+    .funct7_i(funct7),
+    .zero_i(eq),
     .alu_result_i(alu_result),
 
     .reg_wr_en_o(reg_wr_en),
@@ -126,22 +125,18 @@ register_file reg_file_inst (
 
     .rd_data1_o(rd_data1),
     .rd_data2_o(rd_data2),
-    .ao(a0)
+    .a0(a0)
 );
 
-
 /// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// ///
-
 // pc_target has been declared in block 1
-
 // // ALU signals
-logic [DATA_WIDTH-1:0] src_a, src_b, alu_result;
-logic eq;
+logic [DATA_WIDTH-1:0] src_a, src_b;
+logic eq; // zero flag
 logic [3:0] mem_byte_en;
 
 // // data memory siganls 
 logic [DATA_WIDTH-1:0] read_data;
-// logic [DATA_WIDTH-1:0] result;  declared in block 2
 
 // ALU unit
 alu alu_inst(
@@ -150,14 +145,14 @@ alu alu_inst(
     .alu_control_i(alu_control),
 
     .alu_result_o(alu_result),
-    .zero_o(zero)
+    .zero_o(eq)
 );
 
 logic [DATA_WIDTH-1:0] option;
 
 always_comb begin
     case (op)
-        7'b0110111: option = 32'b0; //LUI
+        7'b0110111: option = 32'b0; // LUI
         default: option = pc; // AUIPC
     endcase
 end
@@ -194,7 +189,7 @@ mux data_mem_pc_next(
 //MUX for src_a (ALU first operand)
 mux alu_src_a_mux(
     .in0_i(rd_data1),       // from reg_file (default operand)
-    .in1_i(pc),             // from pc 
+    .in1_i(option), // only for LUi and AUIPC
     .sel_i(alu_src_a_sel),  // new control signal for src_a selection
 
     .out_o(src_a)
@@ -220,17 +215,14 @@ mux data_mem_mux(
     .out_o(result) 
 );
 
-logic [ DATA_WIDTH-1:0] option2;
+logic [DATA_WIDTH-1:0] option2;
 
 always_comb begin
     case (op)
-        7'b1100111: begin
+        7'b1100111: begin //JAL
             option2 = rd_data1;
         end
-        7'b1101111: begin
-            option2 = pc;
-        end
-        default: option2 = pc;
+        default: option2 = pc; // JALR
     endcase
 end
 

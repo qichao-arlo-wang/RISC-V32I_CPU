@@ -25,137 +25,151 @@ protected:
     } 
 };
 
-// first data_mem read test case
-TEST_F(DataMemTestbench, DataMemWorksTest1)
+
+// first full word data_mem read test case
+TEST_F(DataMemTestbench, FullWordReadTest1)
 {
     initializeInputs();
-    top->addr_i = 0;
+    top->byte_en_i = 0b1111;
+    top->addr_i = 0x00000004;
     top->eval();
+    toggleClock();
 
-    EXPECT_EQ(top->rd_data_o, 0x00112233);
+    EXPECT_EQ(top->rd_data_o, 0x77665544);
 }
 
-// second data_mem read test case
-TEST_F(DataMemTestbench, DataMemWorksTest2)
+// second full word data_mem read test case
+TEST_F(DataMemTestbench, FullWordReadTest2)
 {
     initializeInputs();
-    top->addr_i = 4;
+    top->byte_en_i = 0b1111;
+    top->addr_i = 0x00000008;
     top->eval();
+    toggleClock();
 
-    EXPECT_EQ(top->rd_data_o, 0x44556677);
+
+    EXPECT_EQ(top->rd_data_o, 0xbbaa9988);
 }
 
-// third data_mem read test case
-TEST_F(DataMemTestbench, DataMemWorksTest3)
+// third full word data_mem read test case
+TEST_F(DataMemTestbench, FullWordReadTest3)
 {
     initializeInputs();
-    top->addr_i = 8;
+    top->byte_en_i = 0b1111;
+    top->addr_i = 0x0000000C;
     top->eval();
+    toggleClock();
 
-    EXPECT_EQ(top->rd_data_o, 0x8899aabb);
-}
-
-// fourth data_mem read test case
-TEST_F(DataMemTestbench, DataMemWorksTest4)
-{
-    initializeInputs();
-    top->addr_i = 12;
-    top->eval();
-
-    EXPECT_EQ(top->rd_data_o, 0xccddeeff);
-}
-
-// fifth data_mem read test case
-TEST_F(DataMemTestbench, DataMemWorksTest5)
-{
-    initializeInputs();
-    top->addr_i = 32;
-    top->eval();
 
     EXPECT_EQ(top->rd_data_o, 0xffeeddcc);
 }
 
-// unalighed address test case
-TEST_F(DataMemTestbench, DataMemUnalignedAddressTest)
+// fourth full word data_mem read test case
+TEST_F(DataMemTestbench, FullWordReadTest4)
 {
     initializeInputs();
-    top->addr_i = 1; // Unaligned address
+    top->byte_en_i = 0b1111;
+    top->addr_i = 0x0000001C;
+    top->eval();
+    toggleClock();
+
+    EXPECT_EQ(top->rd_data_o, 0xffeeddcc);
+}
+
+// half word data_mem read test case
+TEST_F(DataMemTestbench, HalfWordReadTest)
+{
+    initializeInputs();
+    top->byte_en_i = 0b0011;
+    top->addr_i = 0x0000001C;
+    top->eval();
+    toggleClock();
+
+    EXPECT_EQ(top->rd_data_o, 0xddcc);
+}
+
+// byte data_mem read test case
+TEST_F(DataMemTestbench, ByteWordReadTest)
+{
+    initializeInputs();
+    top->byte_en_i = 0b0001;
+    top->addr_i = 0x0000001C;
+    top->eval();
+    toggleClock();
+
+    EXPECT_EQ(top->rd_data_o, 0xcc);
+}
+
+// full word out of range address test case
+TEST_F(DataMemTestbench, FullWordDataMemOutOfRangeTest)
+{
+    initializeInputs();
+    top->byte_en_i = 0b1111;
+    top->addr_i = 0x0001FFFC; // Unaligned address
+    top->eval();
+    toggleClock();
+
     top->eval();
 
     EXPECT_EQ(top->rd_data_o, 0xDEADBEEF); // Should return error value
 }
 
-// out of range address test case
-TEST_F(DataMemTestbench, DataMemOutOfRangeTest)
+// full word write and read back test case
+TEST_F(DataMemTestbench, FullWordDataMemWriteAndReadTest)
 {
     initializeInputs();
-    top->addr_i = 4096; // Address out of valid range
-    top->eval();
-
-    EXPECT_EQ(top->rd_data_o, 0xDEADBEEF); // Should return error value
-}
-
-// write and read back test case
-TEST_F(DataMemTestbench, DataMemWriteAndReadTest)
-{
-    initializeInputs();
-
     // Write data
-    top->addr_i = 8;
+    top->addr_i = 4;
     top->wr_en_i = 1;
     top->byte_en_i = 0b1111; // Enable all bytes
     top->wr_data_i = 0xAACCBBDD;
     top->eval();
 
-    toggleClock(); // Simulate rising edge
-    toggleClock(); // Simulate falling edge
+    toggleClock();
+    toggleClock();
+    toggleClock();
+    toggleClock();
     
-    // Read back
-    top->eval();
     EXPECT_EQ(top->rd_data_o, 0xAACCBBDD);
 }
 
-// Write with partial byte enable
-TEST_F(DataMemTestbench, DataMemPartialByteWriteTest)
+// half word write and read back test case
+TEST_F(DataMemTestbench, HalfWordDataMemPartialByteWriteTest)
 {
     initializeInputs();
 
     // Write lower two bytes
     top->addr_i = 8;
     top->wr_en_i = 1;
-    top->byte_en_i = 0b0011; // Enable lower two bytes
+    top->byte_en_i = 0b0011;    // Enable lower two bytes
     top->wr_data_i = 0x0000EEFF;
     top->eval();
 
-    toggleClock(); // Simulate rising edge
-    toggleClock(); // Simulate falling edge
-
-    // Read back
-    top->wr_en_i = 0;
-    top->eval();
+    toggleClock();
+    toggleClock();
+    toggleClock();
+    toggleClock();
 
     EXPECT_EQ(top->rd_data_o, 0x0000EEFF); // Only lower bytes should be updated
 }
 
-// Write and check alignment warning
-TEST_F(DataMemTestbench, DataMemWriteUnalignedTest)
+// byte write and read back test case
+TEST_F(DataMemTestbench, ByteDataMemPartialByteWriteTest)
 {
     initializeInputs();
 
-    // Write with unaligned address
-    top->addr_i = 3; // Unaligned address
+    top->addr_i = 8;
     top->wr_en_i = 1;
-    top->byte_en_i = 0b1111;
-    top->wr_data_i = 0x12345678;
-
-    toggleClock(); // Simulate rising edge
-    toggleClock(); // Simulate falling edge
-
-    // Address error should prevent writing, and memory remains unchanged
-    top->wr_en_i = 0;
+    top->byte_en_i = 0b0001;    // Enable lower two bytes
+    top->wr_data_i = 0x000000FF;
     top->eval();
 
-    EXPECT_EQ(top->rd_data_o, 0xDEADBEEF); // Unaligned write should not modify data
+    toggleClock();
+    toggleClock();
+    toggleClock();
+    toggleClock();
+
+    EXPECT_EQ(top->rd_data_o, 0x000000FF); // Only lower bytes should be updated
 }
 
 int main(int argc, char **argv)

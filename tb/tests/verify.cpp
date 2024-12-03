@@ -3,11 +3,15 @@
 
 #include "cpu_testbench.h"
 
+// #include "cpu_testbench_2.h" 
+// enxing's version
+
 #define CYCLES 10000
 
 TEST_F(CpuTestbench, TestAddiBne)
 {
     setupTest("1_addi_bne");
+    std::cout << "addi_bne" << std::endl;
     initSimulation();
     runSimulation(CYCLES);
     EXPECT_EQ(top_->a0, 254);
@@ -40,7 +44,8 @@ TEST_F(CpuTestbench, TestJalRet)
 TEST_F(CpuTestbench, TestPdf)
 {
     setupTest("5_pdf");
-    setData("reference/gaussian.mem");
+    system("pwd");
+    setData("../reference/gaussian.mem");
     initSimulation();
     runSimulation(CYCLES * 100);
     EXPECT_EQ(top_->a0, 15363);
