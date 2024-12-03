@@ -39,10 +39,19 @@ module data_mem (
                 4'b1111: mem[addr_i]       <= wr_data_i;
                 default: $display("Warning: Unrecognized byte enable: %b. No data written.", byte_en_i);
             endcase
+
+            // // read back the data that was written
+            // case (byte_en_i)
+            //     4'b0001: rd_data_o <= {24'b0, wr_data_i[7:0]};
+            //     4'b0011: rd_data_o <= {16'b0, wr_data_i[15:0]};
+            //     4'b1111: rd_data_o <= wr_data_i;
+            //     default: rd_data_o <= wr_data_i;
+            // endcase
         end
-            // $display("%h", {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]});
-            
-        // case (byte_en_i)
+
+        // // load logic
+        // else begin
+        //     case (byte_en_i)
         //     // byte (8 bits)
         //     4'b0001: rd_data_o <= {24'b0, mem[addr_i][7:0]};
         //     // half word (16 bits)
@@ -51,7 +60,8 @@ module data_mem (
         //     4'b1111: rd_data_o <= {mem[addr_i][31:0]};
         //     // default case
         //     default: rd_data_o <= rd_data_o;
-        // endcase
+        //     endcase
+        // end
     end
 
     // Asynchronous read logic
