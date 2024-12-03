@@ -69,8 +69,8 @@ module hazard_unit (
         // When both 1: There is Load Instruction in the Execution stage
         //           2: Register used to write at Execution stage Overlapped with one of register are used in Decoding Stage
         
-        //mem_ byte_en need to  change based for load 
-        if ((mem_byte_en_e_i == ??) && ((wr_addr_e_i == rd_addr1_d_i) || (wr_addr_e_i == rd_addr2_d_i))) begin
+        //mem_ byte_en used for load (3 case depends on bit used)
+        if ((((mem_byte_en_e_i == 4'b0001)||(mem_byte_en_e_i == 4'b0001)||(mem_byte_en_e_i == 4'b0001))) && ((wr_addr_e_i == rd_addr1_d_i) || (wr_addr_e_i == rd_addr2_d_i))) begin
             stall_o = 1'b1;
         end 
         else begin
