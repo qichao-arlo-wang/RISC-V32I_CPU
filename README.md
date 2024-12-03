@@ -13,3 +13,4 @@
 ![pipeline schematic](/images/pipeline.jpeg)
 ### issues need to be considered:
 - instead of using branch& jump in the lecture slides, may use pc_src_e directly for the pc selector MUX????
+- top.sv schematic needed for combine pipeline to the original project
