@@ -11,7 +11,5 @@
 
 ## Stretch Goal 1: Pipelined RV32I Design
 ![pipeline schematic](/images/pipeline.jpeg)
-### problems need to be considered:
-- zero extends & msb extends (alu might have solved it)
-- instruction mem need to be checked
-- data mem
+### issues need to be considered:
+- instead of using branch& jump in the lecture slides, may use pc_src_e directly for the pc selector MUX????
