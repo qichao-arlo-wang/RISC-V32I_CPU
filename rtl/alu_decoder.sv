@@ -22,7 +22,7 @@ module alu_decoder (
                     end
                     3'h5: begin
                         case (funct7_i)
-                            7'b0:  alu_control_o = 4'h5; // SRLI
+                            7'h0:  alu_control_o = 4'h5; // SRLI
                             7'h20: alu_control_o = 4'h6; // SRAI
                             default: $display ("Error: invalid instruction");
                         endcase

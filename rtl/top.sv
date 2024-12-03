@@ -137,7 +137,6 @@ logic [3:0] mem_byte_en;
 
 // // data memory siganls 
 logic [DATA_WIDTH-1:0] read_data;
-// logic [DATA_WIDTH-1:0] result;  declared in block 2
 
 // ALU unit
 alu alu_inst(
@@ -190,7 +189,7 @@ mux data_mem_pc_next(
 //MUX for src_a (ALU first operand)
 mux alu_src_a_mux(
     .in0_i(rd_data1),       // from reg_file (default operand)
-    .in1_i(option),
+    .in1_i(option), // only for LUi and AUIPC
     .sel_i(alu_src_a_sel),  // new control signal for src_a selection
 
     .out_o(src_a)
@@ -227,15 +226,10 @@ logic [DATA_WIDTH-1:0] option2;
 
 always_comb begin
     case (op)
-        7'b1100111: begin
+        7'b1100111: begin //JAL
             option2 = rd_data1;
-            // assign result = pc_plus_4;
         end
-        7'b1101111: begin
-            option2 = pc;
-            // assign result = pc_plus_4;
-        end
-        default: option2 = pc;
+        default: option2 = pc; // JALR
     endcase
 end
 
