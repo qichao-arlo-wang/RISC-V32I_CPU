@@ -5,7 +5,7 @@ module hazard_unit (
     input logic [4:0] wr_addr_e_i, // RdE
     input logic mem_byte_en_e_i,
     
-    // d
+    // data 
     input logic [4:0] rd_addr1_e_i, // Rs1E
     input logic [4:0] rd_addr2_e_i, // Rs2E
     input logic [4:0] wr_addr_m_i, // RdM
@@ -69,9 +69,9 @@ module hazard_unit (
         //           2: Register used to write at Execution stage Overlapped with one of register are used in Decoding Stage
         
         //mem_ byte_en used for load (3 case depends on bit used)
-        if ((((mem_byte_en_e_i == 4'b0001)||(mem_byte_en_e_i == 4'b0001)||(mem_byte_en_e_i == 4'b0001))) && ((wr_addr_e_i == rd_addr1_d_i) || (wr_addr_e_i == rd_addr2_d_i))) begin
+        if ((((mem_byte_en_e_i == 4'b0001)||(mem_byte_en_e_i == 4'b0011)||(mem_byte_en_e_i == 4'b1111))) && ((wr_addr_e_i == rd_addr1_d_i) || (wr_addr_e_i == rd_addr2_d_i))) begin
             stall_o = 1'b1;
-        end 
+        end
         else begin
             stall_o = 1'b0;
         end
