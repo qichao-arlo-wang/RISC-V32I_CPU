@@ -59,9 +59,8 @@ module hazard_unit (
         end
 
 
-        // For B-type / J-type hazard --> flush
-        // use branch signal or some specific pc_scr value to assign flush when branch/jump
-        if (branch_i) begin // or specific pc_scr
+        // Branch happen / Jump instruction  ---> flush
+        if (pc_src_i) begin 
             flush_o = 1;
         end
 
