@@ -25,7 +25,6 @@ module control_unit (
     main_decoder main_dec (
         .opcode_i(opcode_i),             // Connect opcode
         .funct3_i(funct3_i),             // Connect funct3 to funct_3_i
-        .funct7_i(funct7_i),            // funct7
 
         .reg_wr_en_o(reg_wr_en_o),       // Connect Register Write Enable
         .mem_wr_en_o(mem_wr_en_o),       // Connect Memory Write Enable
