@@ -12,7 +12,7 @@ module hazard_unit (
     input logic [4:0] wr_addr_w_i, // RdW
     input logic reg_wr_en_m_i,
     input logic reg_wr_en_w_i,
-    input logic branch_i, // or pr_scr
+    input logic pc_src_i, // the original pc_src, not in those registers for pipeline
 
     output logic [1:0] forward_a_e_o,
     output logic [1:0] forward_b_e_o,
