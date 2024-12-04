@@ -14,7 +14,7 @@ module pipeline_reg_f_d #(
     input logic pc_src_d_i,
     input logic [3:0] alu_control_d_i,
     input logic alu_src_d_i,
-    input logic alu_src_a_d_i,
+    input logic alu_src_a_sel_d_i,
     input logic [WIDTH-1:0] option_d_i,
     input logic [WIDTH-1:0] option2_d_i,
     input logic data_mem_or_pc_mem_sel_d_i,
@@ -26,7 +26,7 @@ module pipeline_reg_f_d #(
     output logic pc_src_e_o,
     output logic [3:0] alu_control_e_o,
     output logic alu_src_e_o,
-    output logic alu_src_a_e_o,
+    output logic alu_src_a_sel_e_o,
     output logic [WIDTH-1:0] option_e_o,
     output logic [WIDTH-1:0] option2_e_o,
     output logic data_mem_or_pc_mem_sel_e_o,
@@ -70,6 +70,7 @@ module pipeline_reg_f_d #(
         mem_byte_en_e_o <= mem_byte_en_d_i;
         alu_control_e_o <= alu_control_d_i;
         alu_src_e_o <= alu_src_d_i;
+        alu_src_a_sel_e_o <= alu_src_a_sel_d_i;
         option_e_o <= option_d_i;
         option2_e_o <= option2_d_i;
         data_mem_or_pc_mem_sel_e_o <= data_mem_or_pc_mem_sel_d_i;
