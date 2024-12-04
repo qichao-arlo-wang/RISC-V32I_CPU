@@ -30,11 +30,11 @@ end
 logic stall, flush;
 
 // pc related signals
-logic [DATA_WIDTH-1:0] pc_f, pc_plus_4_f, pc_next_f; // block 1 internal signals
+logic [DATA_WIDTH-1:0] pc_f, pc_plus_4_f, pc_next_f; 
 logic [DATA_WIDTH-1:0] pc_target_e; // pc target E
-logic pc_src_e; 
-logic [DATA_WIDTH-1:0] instr_f; // Instruction signal
-logic [DATA_WIDTH-1:0] instr_d, pc_d, pc_plus_4_d, pc_plus_4_e; // output for decoding
+logic pc_src_d, pc_src_e; 
+logic [DATA_WIDTH-1:0] instr_finstr_d; // Instruction signal
+logic [DATA_WIDTH-1:0] pc_d, pc_plus_4_d, pc_plus_4_e, pc_plus_4_m, pc_plus_4_w; // output for decoding
 
 
 // control unit signals - Decode
@@ -48,9 +48,14 @@ logic [3:0] alu_control_d, mem_byte_en_d;
 logic [DATA_WIDTH-1:0] option_d, option2_d; // for MUX in Execution stage
 
 // control unit signals - Execution
-logic pc_src_e, reg_wr_en_e, mem_wr_en_e, result_src_e, alu_src_e, alu_src_a_sel_e, data_mem_or_pc_mem_sel_e, signed_bit;
-logic [2:0] imm_src_d;
-logic [3:0] alu_control_d, mem_byte_en_d;
+logic pc_src_e, reg_wr_en_e, mem_wr_en_e, result_src_e, alu_src_e, alu_src_a_sel_e, data_mem_or_pc_mem_sel_e,;
+logic [3:0] alu_control_e, mem_byte_en_e;
+logic [DATA_WIDTH-1:0] option_e, option2_e; // for MUX in Execution stage
+
+// control unit signals - Mem
+logic reg_wr_en_m, mem_wr_en_m, result_src_m, data_mem_or_pc_mem_sel_m;
+logic [3:0] mem_byte_en_m;
+
 
 // Register signals - Decode
 logic [4:0] rd_addr1_d = instr[19:15]; // rd_addr1: instr[19:15]
@@ -62,8 +67,12 @@ logic [DATA_WIDTH-1:0] rd_data1_d, rd_data2_d;
 logic [4:0] rd_addr1_e, rd_addr2_e, wr_addr_e;
 logic [DATA_WIDTH-1:0] rd_data1_e, rd_data2_e;
 
+// Register signals - Mem
+logic [DATA_WIDTH-1:0] rd_data2_m;
+logic [4:0] wr_addr_m;
 
-// // // extend block signal
+
+// extend block signal
 logic [DATA_WIDTH-1:0] imm_ext_d, imm_ext_e;
 
 // ALU signals
@@ -71,17 +80,22 @@ logic [DATA_WIDTH-1:0] src_a, src_b;
 logic eq_e; // zero flag
 logic [3:0] mem_byte_en_e;
 logic [DATA_WIDTH-1:0] alu_result_e; // unsure to use e stage /m stage
-
+logic [DATA_WIDTH-1:0] alu_result_m;
 
 // harzard unit
 logic [1:0] forward_a_e;
 logic [1:0] forward_b_e;
-
-
+logic [DATA_WIDTH-1:0] harzard_mux_a_out;
+logic [DATA_WIDTH-1:0] harzard_mux_b_out;
 
 
 // data memory siganls 
 logic [DATA_WIDTH-1:0] read_data_m;
+
+logic [DATA_WIDTH-1:0] result_w;
+
+
+
 
 // Stage 1 Fetch - f
 
@@ -260,9 +274,47 @@ pipeline_reg_f_d #(
 );
 
 
-// Stage 3 Execution
+// Stage 3 Execution  -e
 
 /// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// 
+
+// ALU unit
+alu alu_inst(
+    .src_a_i(src_a),
+    .src_b_i(src_b),
+    .alu_control_i(alu_control_e),
+
+    .alu_result_o(alu_result_e),
+    .zero_o(eq_e)
+);
+
+//MUX for src_a (ALU first operand)
+mux alu_src_a_mux(
+    .in0_i(harzard_mux_a_out),// From harzard mux a
+    .in1_i(option_e),         // only for LUi and AUIPC
+    .sel_i(alu_src_a_sel_e),  // new control signal for src_a selection
+
+    .out_o(src_a)
+);
+
+
+// MUX for src_b (ALU second operand)
+mux alu_src_b_mux(
+    .in0_i(harzard_mux_b_out),  // From harzard mux b
+    .in1_i(imm_ext_e),          // Immediate value
+    .sel_i(alu_src_e),          // ALU source control signal
+
+    .out_o(src_b)
+);
+
+// adder used to add pc and imm_ext
+adder alu_adder(
+    .in1_i(option2_e),
+    .in2_i(imm_ext_e),
+    
+    .out_o(pc_target_e)
+);
+
 
 // hazard MUX for src_a 
 mux4 harzard_a (
@@ -270,35 +322,70 @@ mux4 harzard_a (
     .in1_i(result_w),        // from writeback stage result
     .in2_i(alu_result_m),     // from memory stage ALU result
     .in3_i(0),               // default zero
-    .sel_i(forwarda_e),      // forward control signal for src_a
+    .sel_i(forward_a_e),      // forward control signal for src_a
 
-    .out_o(srca_e)           // selected source a for ALU
+    .out_o(harzard_mux_a_out)          
 );
 
 // hazard MUX for writedata 
 mux4 harzard_b (
-    .in0_i(rd_addr1_e),           // from register file
+    .in0_i(rd_addr2_e),       // from register file
     .in1_i(result_w),        // from writeback stage result
     .in2_i(alu_result_m),     // from memory stage ALU result
     .in3_i(0),               // default zero
-    .sel_i(forwardb_e),      // forward control signal for writedata
+    .sel_i(forward_b_e),      // forward control signal for writedata
 
-    .out_o(writedata_e)      // selected write data
+    .out_o(harzard_mux_b_out)    
+);
+
+
+pipeline_e_m #(
+    .WIDTH(DATA_WIDTH)
+) (
+    // Control Unit
+    .clk_i(clk),
+    .reg_wr_en_e_i(reg_wr_en_e),
+    .result_src_e_i(result_src_e),
+    .mem_wr_en_e_i(mem_wr_en_e),
+    .mem_byte_en_e_i(mem_byte_en_e),
+    .data_mem_or_pc_mem_sel_e_i(data_mem_or_pc_mem_sel_e),
+
+    .reg_wr_en_m_o(reg_wr_en_m),
+    .result_src_m_o(result_src_m),
+    .mem_wr_en_m_o(mem_wr_en_m),
+    .mem_byte_en_m_o(mem_byte_en_m),
+    .data_mem_or_pc_mem_sel_m_o(data_mem_or_pc_mem_sel_m),
+
+    // Data Path
+    .alu_result_e_i(alu_result_e),
+    .rd_data2_e_i(rd_data2_e),
+    .wr_addr_e_i(wr_addr_e),
+    .pc_plus_4_e_i(pc_plus_4_e),
+
+    .alu_result_m_o(alu_result_m),
+    .rd_data2_m_o(rd_data2_m),
+    .wr_addr_m_o(wr_addr_m),
+    .pc_plus_4_m_o(pc_plus_4_m)
 );
 
 
 
 
 
-// ALU unit
-alu alu_inst(
-    .src_a_i(src_a),
-    .src_b_i(src_b),
-    .alu_control_i(alu_control),
 
-    .alu_result_o(alu_result),
-    .zero_o(eq)
-);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 data_mem data_mem_inst(
@@ -322,26 +409,6 @@ mux data_mem_pc_next(
     .out_o(data_to_use)
 );
 
-//MUX for src_a (ALU first operand)
-mux alu_src_a_mux(
-    .in0_i(rd_data1),       // from reg_file (default operand)
-    .in1_i(option), // only for LUi and AUIPC
-    .sel_i(alu_src_a_sel),  // new control signal for src_a selection
-
-    .out_o(src_a)
-);
-
-logic [DATA_WIDTH-1:0] result_w;
-
-// MUX for src_b (ALU second operand)
-mux alu_src_b_mux(
-    .in0_i(rd_data2),         // From register file
-    .in1_i(imm_ext),          // Immediate value
-    .sel_i(alu_src),          // ALU source control signal
-
-    .out_o(src_b)
-);
-
 // mux used for data memory
 mux data_mem_mux(
     .in0_i(alu_result),
@@ -351,15 +418,8 @@ mux data_mem_mux(
     .out_o(result) 
 );
 
-// adder used to add pc and imm_ext
-adder alu_adder(
-    .in1_i(option2),
-    .in2_i(imm_ext),
-    
-    .out_o(pc_target)
-);
 
-endmodule
+
 
 hazard_unit #(
 ) (
@@ -376,7 +436,7 @@ hazard_unit #(
     .wr_addr_w_i(wr_addr_w),
     .reg_wr_en_m_i(reg_wr_en_m),
     .reg_wr_en_w_i(reg_wr_en_w),
-    .pc_src_i(pc_src),
+    .pc_src_i(pc_src_d),
 
     
     .forward_a_e_o(forward_a_e),
@@ -384,3 +444,6 @@ hazard_unit #(
     .stall_o(stall),
     .flush_o(flush)
 );
+
+
+endmodule
