@@ -13,7 +13,7 @@
 # sed -i 's/\/\*pdfend/Ypdfend/' tests/f1_vbuddy_tb.cpp
 
 # Formatting instructions in instr_mem
-sed -i 's/program.hex//root/Documents/Group-9-RISC-V/tb/f1.mem/' /root/Documents/Group-9-RISC-V/rtl/instr_mem.sv
+#sed -i 's/program.hex/f1.mem/' /root/Documents/Group-9-RISC-V/rtl/instr_mem.sv
 rm -rf obj_dir
 rm -f top.vcd
 

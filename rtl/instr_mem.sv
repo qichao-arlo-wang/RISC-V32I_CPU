@@ -19,13 +19,14 @@ module instr_mem (
         
         // The default path when running the simulation is the tests directory
         // Read memory file with byte-level storage
-        $readmemh("program.hex", mem); 
+        $readmemh("/root/Documents/Group-9-RISC-V/tb/f1.hex", mem); 
         // for (int i = 0; i < 50; i += 4) begin
         //     $display("MEM[%0d]: %h%h%h%h", i, mem[i+3], mem[i+2], mem[i+1], mem[i]);
         // end
     end
 
     logic [31:0] actual_addr;
+    logic [11:0] local_addr;
 
     // Address error detection logic
     always_comb begin
@@ -46,13 +47,14 @@ module instr_mem (
     // Read logic: fetch instruction
     always_comb begin
         instr_o = 32'hDEADBEEF; // Default value
+        local_addr = 12'd0;
         if (addr_error) begin
             // Return error value if address is invalid
             instr_o = 32'hDEADBEEF; 
         end 
         else begin
             // Calculate local memory address offset by subtracting BASE_ADDR
-            logic [11:0] local_addr = actual_addr[11:0];  // addr_i - BASE_ADDR assumes addr_i is within valid range
+            local_addr = actual_addr[11:0];  // addr_i - BASE_ADDR assumes addr_i is within valid range
             instr_o = {mem[local_addr + 3], mem[local_addr + 2], mem[local_addr + 1], mem[local_addr]};
         end
     end 
