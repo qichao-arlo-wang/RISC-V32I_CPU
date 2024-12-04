@@ -23,7 +23,7 @@ module register_file #(
     end
 
     // write data into the register file on the rising edge of the clock
-    always_ff @(posedge clk) begin
+    always_ff @(negedge clk) begin
         if (reg_wr_en_i && wr_addr_i != 0) begin
             reg_file[wr_addr_i] <= wr_data_i;
         end
