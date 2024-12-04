@@ -70,6 +70,9 @@ module pipeline_reg_f_d #(
         mem_byte_en_e_o <= mem_byte_en_d_i;
         alu_control_e_o <= alu_control_d_i;
         alu_src_e_o <= alu_src_d_i;
+        option_e_o <= option_d_i;
+        option2_e_o <= option2_d_i;
+        data_mem_or_pc_mem_sel_e_o <= data_mem_or_pc_mem_sel_d_i;
 
         // data path
         rd_data1_e_o <= rd_data1_d_i;

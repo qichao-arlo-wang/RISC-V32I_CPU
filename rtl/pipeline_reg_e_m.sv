@@ -8,11 +8,13 @@ module pipeline_e_m #(
     input logic result_src_e_i,
     input logic mem_wr_en_e_i,
     input logic mem_byte_en_e_i,
+    input logic data_mem_or_pc_mem_sel_e_i,
 
     output logic reg_wr_en_m_o,
     output logic result_src_m_o,
     output logic mem_wr_en_m_o,
     output logic mem_byte_en_m_o,
+    output logic data_mem_or_pc_mem_sel_m_o,
 
     // data path
     input logic [WIDTH - 1:0] alu_result_e_i,
