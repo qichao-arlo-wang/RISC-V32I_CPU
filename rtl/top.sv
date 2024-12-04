@@ -24,18 +24,68 @@ always_ff @(posedge clk or posedge rst) begin
     end
 end
 
+
+////// Signal Declare
 // Stall & Flush
 logic stall, flush;
 
+// pc related signals
+logic [DATA_WIDTH-1:0] pc_f, pc_plus_4_f, pc_next_f; // block 1 internal signals
+logic [DATA_WIDTH-1:0] pc_target_e; // pc target E
+logic pc_src_e; 
+logic [DATA_WIDTH-1:0] instr_f; // Instruction signal
+logic [DATA_WIDTH-1:0] instr_d, pc_d, pc_plus_4_d, pc_plus_4_e; // output for decoding
+
+
+// control unit signals - Decode
+logic [24:0] instr_31_7 = instr_d[31:7];
+logic [6:0] op = instr_d[6:0];
+logic [2:0] funct3 = instr_d[14:12];
+logic [6:0] funct7 = instr_d[31:25];
+logic pc_src_d, reg_wr_en_d, mem_wr_en_d, result_src_d, alu_src_d, alu_src_a_sel_d, data_mem_or_pc_mem_sel_d, signed_bit;
+logic [2:0] imm_src_d;
+logic [3:0] alu_control_d, mem_byte_en_d;
+logic [DATA_WIDTH-1:0] option_d, option2_d; // for MUX in Execution stage
+
+// control unit signals - Execution
+logic pc_src_e, reg_wr_en_e, mem_wr_en_e, result_src_e, alu_src_e, alu_src_a_sel_e, data_mem_or_pc_mem_sel_e, signed_bit;
+logic [2:0] imm_src_d;
+logic [3:0] alu_control_d, mem_byte_en_d;
+
+// Register signals - Decode
+logic [4:0] rd_addr1_d = instr[19:15]; // rd_addr1: instr[19:15]
+logic [4:0] rd_addr2_d = instr[24:20]; // rd_addr2: instr[24:20]
+logic [4:0] wr_addr_d  = instr[11:7];  // wr_addr: instr[11:7]
+logic [DATA_WIDTH-1:0] rd_data1_d, rd_data2_d;
+
+// Register signals - Execution
+logic [4:0] rd_addr1_e, rd_addr2_e, wr_addr_e;
+logic [DATA_WIDTH-1:0] rd_data1_e, rd_data2_e;
+
+
+// // // extend block signal
+logic [DATA_WIDTH-1:0] imm_ext_d, imm_ext_e;
+
+// ALU signals
+logic [DATA_WIDTH-1:0] src_a, src_b;
+logic eq_e; // zero flag
+logic [3:0] mem_byte_en_e;
+logic [DATA_WIDTH-1:0] alu_result_e; // unsure to use e stage /m stage
+
+
+// harzard unit
+logic [1:0] forward_a_e;
+logic [1:0] forward_b_e;
+
+
+
+
+// data memory siganls 
+logic [DATA_WIDTH-1:0] read_data_m;
 
 // Stage 1 Fetch - f
 
 /// /// BLOCK 1: instruction memory, pc_plus4_adder, pc_reg and pc_mux /// ///
-logic [DATA_WIDTH-1:0] pc_f, pc_plus_4_f, pc_next_f; // block 1 internal signals
-logic [DATA_WIDTH-1:0] pc_target_e; // pc target E
-logic pc_src_e; // Control signal
-logic [DATA_WIDTH-1:0] instr_f; // Instruction signal
-logic [DATA_WIDTH-1:0] instr_d, pc_d, pc_plus_4_d; // output for decoding
 
 // adder used to +4
 adder pc_plus4_adder(
@@ -87,32 +137,7 @@ pipeline_reg_f_d #(
 
 /// /// Stage 2 Decode - d
 
-
 /// /// BLOCK 2: Register file, control unit, and extend /// ///
-
-// // // control unit signals
-// instr signal has been declared in block 1
-logic [24:0] instr_31_7 = instr_d[31:7];
-logic [6:0] op = instr_d[6:0];
-logic [2:0] funct3 = instr_d[14:12];
-logic [6:0] funct7 = instr_d[31:25];
-
-logic pc_src_d, reg_wr_en_d, mem_wr_en_d, result_src_d, alu_src_d, alu_src_a_sel_d, signed_bit;
-logic [2:0] imm_src_d;
-logic [3:0] alu_control_d, mem_byte_en_d;
-
-
-
-// // // Register signals
-logic [4:0] rd_addr1_d = instr[19:15]; // rd_addr1: instr[19:15]
-logic [4:0] rd_addr2_d = instr[24:20]; // rd_addr2: instr[24:20]
-logic [4:0] wr_addr_d  = instr[11:7];  // wr_addr: instr[11:7]
-logic [DATA_WIDTH-1:0] rd_data1_d, rd_data2_d;
-logic [DATA_WIDTH-1:0] alu_result_e; // unsure to use e stage /m stage
-
-// // // extend block signal
-logic [DATA_WIDTH-1:0] imm_ext;
-
 // Instantiate Control Unit
 control_unit ctrl (
     .opcode_i(op),
@@ -155,7 +180,6 @@ register_file reg_file_inst (
     .a0(a0)
 );
 
-logic [DATA_WIDTH-1:0] option_d, option2_d; // for MUX in Execution stage
 
 always_comb begin
     case (op)
@@ -173,7 +197,7 @@ always_comb begin
     endcase
 end
 
-logic data_mem_or_pc_mem_sel_d;
+
 always_comb begin
     case (op)
         7'b1101111: data_mem_or_pc_mem_sel_d = 1;
@@ -238,15 +262,33 @@ pipeline_reg_f_d #(
 
 // Stage 3 Execution
 
-/// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// ///
-// pc_target has been declared in block 1
-// // ALU signals
-logic [DATA_WIDTH-1:0] src_a, src_b;
-logic eq; // zero flag
-logic [3:0] mem_byte_en_e;
+/// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// 
 
-// // data memory siganls 
-logic [DATA_WIDTH-1:0] read_data;
+// hazard MUX for src_a 
+mux4 harzard_a (
+    .in0_i(rd_addr1_e),      // from register file (default operand)
+    .in1_i(result_w),        // from writeback stage result
+    .in2_i(alu_result_m),     // from memory stage ALU result
+    .in3_i(0),               // default zero
+    .sel_i(forwarda_e),      // forward control signal for src_a
+
+    .out_o(srca_e)           // selected source a for ALU
+);
+
+// hazard MUX for writedata 
+mux4 harzard_b (
+    .in0_i(rd_addr1_e),           // from register file
+    .in1_i(result_w),        // from writeback stage result
+    .in2_i(alu_result_m),     // from memory stage ALU result
+    .in3_i(0),               // default zero
+    .sel_i(forwardb_e),      // forward control signal for writedata
+
+    .out_o(writedata_e)      // selected write data
+);
+
+
+
+
 
 // ALU unit
 alu alu_inst(
@@ -318,3 +360,27 @@ adder alu_adder(
 );
 
 endmodule
+
+hazard_unit #(
+) (
+    // Detect lw for stall
+    .rd_addr1_d_i(rd_addr1_d),
+    .rd_addr2_d_i(rd_addr2_d),
+    .wr_addr_e_i(wr_addr_e),
+    .mem_byte_en_e_i(mem_byte_en_e),
+
+    // Data forwarding signals
+    .rd_addr1_e_i(rd_addr1_e),
+    .rd_addr2_e_i(rd_addr2_e),
+    .wr_addr_m_i(wr_addr_m),
+    .wr_addr_w_i(wr_addr_w),
+    .reg_wr_en_m_i(reg_wr_en_m),
+    .reg_wr_en_w_i(reg_wr_en_w),
+    .pc_src_i(pc_src),
+
+    
+    .forward_a_e_o(forward_a_e),
+    .forward_b_e_o(forward_b_e),
+    .stall_o(stall),
+    .flush_o(flush)
+);
