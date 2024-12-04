@@ -22,8 +22,7 @@ module pipeline_reg_f_d #(
         end
         if (flush_i) begin
             instr_d_o <= 0;     
-        end 
-
+        end
 
     end
 
