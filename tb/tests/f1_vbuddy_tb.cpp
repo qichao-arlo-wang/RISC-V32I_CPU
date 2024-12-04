@@ -28,7 +28,7 @@ int main(int argc, char **argv, char **env) {
 
     // Initialize inputs
     top->clk = 0;
-    top->rst = 0;
+    top->rst = 1;  // Start with reset active
     top->trigger = 0;
 
     // Simulation loop
@@ -39,20 +39,22 @@ int main(int argc, char **argv, char **env) {
             top->eval();
         }
 
-        // Reset and trigger logic
-        //top->rst = (simcyc < 2) ? 1 : 0;
-        //top->trigger = (simcyc > 2) ? vbdFlag() : 0;
+        // Control reset and trigger
+        top->rst = (simcyc < 10) ? 1 : 0;             // Reset for the first 10 cycles
+        top->trigger = (simcyc > 10); // Enable trigger after reset
 
-        // Simulate changes to a0 for testing
-        //if (simcyc % 20 == 0) {
-        top->a0 = simcyc & 0xFF; // Debug: Simulate light updates
-        //}
-
-        // Vbuddy display
-        vbdBar(top->a0 & 0xFF);
-        vbdHex(3, (top->a0 >> 8) & 0xF);
+        // Observe and display outputs
+        vbdBar(top->a0 & 0xFF);                      // Display lights on vBuddy bar
+        vbdHex(3, (top->a0 >> 8) & 0xF);             // Display higher bits if applicable
         vbdHex(2, (top->a0 >> 4) & 0xF);
         vbdHex(1, top->a0 & 0xF);
+
+        // Debugging information
+        std::cout << "Cycle: " << simcyc
+                  << ", A0: " << std::hex << std::setw(2) << std::setfill('0') << top->a0
+                  << ", Trigger: " << top->trigger
+                  << ", Reset: " << top->rst
+                  << std::endl;
 
         // End simulation if user quits
         if (Verilated::gotFinish() || vbdGetkey() == 'q') break;
