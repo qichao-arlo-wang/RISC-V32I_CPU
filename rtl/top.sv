@@ -24,43 +24,67 @@ always_ff @(posedge clk or posedge rst) begin
     end
 end
 
+// Stall & Flush
+logic stall, flush;
+
+
+// Stage 1 Fetch - f
 
 /// /// BLOCK 1: instruction memory, pc_plus4_adder, pc_reg and pc_mux /// ///
-logic [DATA_WIDTH-1:0] pc, pc_plus_4, pc_target, pc_next; // block 1 internal signals
-logic pc_src; // Control signal
-logic [DATA_WIDTH-1:0] instr; // Instruction signal
+logic [DATA_WIDTH-1:0] pc_f, pc_plus_4_f, pc_next_f; // block 1 internal signals
+logic [DATA_WIDTH-1:0] pc_target_e; // pc target E
+logic pc_src_e; // Control signal
+logic [DATA_WIDTH-1:0] instr_f; // Instruction signal
 
 // adder used to +4
 adder pc_plus4_adder(
-    .in1_i (pc), 
+    .in1_i (pc_f), 
     .in2_i (32'd4),
 
-    .out_o (pc_plus_4)
+    .out_o (pc_plus_4_f)
 );
 
 // mux used to select between pc_target and pc_plus_4
 mux pc_mux(
-    .in0_i(pc_plus_4), // PC += 4
+    .in0_i(pc_plus_4_f), // PC += 4
     .in1_i(pc_target), // branch
-    .sel_i(pc_src),
+    .sel_i(pc_src_e),
 
-    .out_o(pc_next)
+    .out_o(pc_next_f)
 );
 
 // Instantiate Instruction Memory
 instr_mem instr_mem_inst (
-    .addr_i(pc),
-    .instr_o(instr)
+    .addr_i(pc_f),
+    .instr_o(instr_f)
 );
 
 pc_reg pc_reg_inst (
     .clk(clk & trigger_latched),
     .rst(rst),
-    .pc_next_i(pc_next),
+    .pc_next_i(pc_next_f),
 
-    .pc_o(pc)
+    .pc_o(pc_f)
 );
 
+pipeline_reg_f_d #(
+    .WIDTH(DATA_WIDTH)
+) (
+    .clk_i(clk),
+    .stall_i(stall),
+    .flush_i(flush),
+    .instr_f_i(instr_f),
+    .pc_f_i(pc_f),
+    .pc_plus_4_f_i(pc_plus_4_f),
+
+    .instr_d_o(instr_d),
+    .pc_d_o(pc_d),
+    .pc_plus_4_d_o(pc_plus_4_d)
+);
+
+
+
+// Stage 2 Decode - d
 
 /// /// BLOCK 2: Register file, control unit, and extend /// ///
 
