@@ -14,6 +14,7 @@ module pipeline_reg_f_d #(
     input logic pc_src_d_i,
     input logic [3:0] alu_control_d_i,
     input logic alu_src_d_i,
+    input logic alu_src_a_d_i,
 
     output logic reg_wr_en_e_o,
     output logic result_src_e_i,
@@ -22,6 +23,7 @@ module pipeline_reg_f_d #(
     output logic pc_src_e_o,
     output logic [3:0] alu_control_e_o,
     output logic alu_src_e_o,
+    output logic alu_src_a_e_o,
 
     // data path
     input logic [WIDTH - 1:0] rd_data1_d_i, // RD1_D in lecture slide
