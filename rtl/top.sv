@@ -25,7 +25,7 @@ always_ff @(posedge clk or posedge rst) begin
 end
 
 
-////// Signal Declare
+// // Signal Declare
 // stall & flush
 logic stall, flush;
 
@@ -36,7 +36,6 @@ logic [DATA_WIDTH-1:0] pc_plus_4_f, pc_plus_4_d, pc_plus_4_e, pc_plus_4_m, pc_pl
 logic [DATA_WIDTH-1:0] pc_target_e; // pc target e
 logic pc_src_d, pc_src_e; 
 logic [DATA_WIDTH-1:0] instr_f, instr_d; // instruction signal
-
 
 // control unit signals - Decode
 logic [24:0] instr_31_7 = instr_d[31:7];
@@ -59,7 +58,6 @@ logic [DATA_WIDTH-1:0] option_e, option2_e; // for MUX in Execution stage
 // control unit signals - Mem
 logic reg_wr_en_m, mem_wr_en_m, result_src_m, data_mem_or_pc_mem_sel_m;
 logic [3:0] mem_byte_en_m;
-
 
 // Register signals - Decode
 logic [4:0] rd_addr1_d = instr[19:15]; // rd_addr1: instr[19:15]
@@ -92,7 +90,6 @@ logic [1:0] forward_b_e;
 logic [DATA_WIDTH-1:0] harzard_mux_a_out;
 logic [DATA_WIDTH-1:0] harzard_mux_b_out;
 
-
 // data memory siganls 
 logic [DATA_WIDTH-1:0] read_data_m;
 logic [31:0] data_to_use;
@@ -101,9 +98,9 @@ logic [DATA_WIDTH-1:0] result_w;
 
 
 
-// Stage 1 Fetch - f
+// // Stage 1 Fetch - f
 
-/// /// BLOCK 1: instruction memory, pc_plus4_adder, pc_reg and pc_mux /// ///
+/// BLOCK 1: instruction memory, pc_plus4_adder, pc_reg and pc_mux /// ///
 
 // adder used to +4
 adder pc_plus4_adder(
@@ -153,9 +150,9 @@ pipeline_reg_f_d #(
 
 
 
-/// /// Stage 2 Decode - d
+// // Stage 2 Decode - d
 
-/// /// BLOCK 2: Register file, control unit, and extend /// ///
+/// BLOCK 2: Register file, control unit, and extend /// ///
 // Instantiate Control Unit
 control_unit ctrl (
     .opcode_i(op),
@@ -198,7 +195,6 @@ register_file reg_file_inst (
     .a0(a0)
 );
 
-
 always_comb begin
     case (op)
         7'b0110111: option_d = 32'b0; // LUI
@@ -214,7 +210,6 @@ always_comb begin
         default: option2_d = pc_d; // JALR stage for pc need defined for option2_d
     endcase
 end
-
 
 always_comb begin
     case (op)
@@ -278,9 +273,8 @@ pipeline_reg_d_e #(
 );
 
 
-// Stage 3 Execution  -e
-
-/// /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// 
+// // Stage 3 Execution  -e
+/// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// 
 
 // ALU unit
 alu alu_inst(
@@ -372,7 +366,7 @@ pipeline_e_m #(
     .pc_plus_4_m_o(pc_plus_4_m)
 );
 
-// Stage 4 Memory  -m
+// // Stage 4 Memory  -m
 
 data_mem data_mem_inst(
     .clk(clk),
@@ -411,8 +405,7 @@ pipeline_m_w #(
 );
 
 
-
-// Stage 5 Writeback  -w
+// // Stage 5 Writeback  -w
 mux data_mem_pc_next(
     .in0_i(read_data_w),
     .in1_i(pc_plus_4_w),
