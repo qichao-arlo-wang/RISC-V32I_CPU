@@ -91,7 +91,7 @@ logic [DATA_WIDTH-1:0] harzard_mux_b_out;
 
 // data memory siganls 
 logic [DATA_WIDTH-1:0] read_data_m;
-
+logic [31:0] data_to_use;
 logic [DATA_WIDTH-1:0] result_w;
 
 
@@ -406,43 +406,25 @@ pipeline_m_w #(
     .pc_plus_4_w_o(pc_plus_4_w)
 );
 
+
+
 // Stage 5 Writeback  -w
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-logic [31:0] data_to_use;
 mux data_mem_pc_next(
-    .in0_i(read_data),
-    .in1_i(pc_plus_4),
-    .sel_i(data_mem_or_pc_mem_sel),
+    .in0_i(read_data_w),
+    .in1_i(pc_plus_4_w),
+    .sel_i(data_mem_or_pc_mem_sel_w),
 
     .out_o(data_to_use)
 );
 
 // mux used for data memory
 mux data_mem_mux(
-    .in0_i(alu_result),
+    .in0_i(alu_result_W),
     .in1_i(data_to_use),
-    .sel_i(result_src),
+    .sel_i(result_src_w),
 
-    .out_o(result) 
+    .out_o(result_w) 
 );
-
-
 
 
 hazard_unit #(
