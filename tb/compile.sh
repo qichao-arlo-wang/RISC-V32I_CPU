@@ -55,7 +55,7 @@ riscv64-unknown-elf-objdump -f -d --source -m riscv \
 od -v -An -t x1 "a.bin" | tr -s '\n' | awk '{$1=$1};1' > "${output_file}"
 
 rm "a.out.reloc"
-rm "a.out
+rm "a.out"
 rm "a.bin"
 
 echo "Assembly and processing of '$input_file' completed successfully."

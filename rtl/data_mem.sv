@@ -23,7 +23,7 @@ module data_mem (
         
         // the default path when running the simulation is the tests directory
         // load data.hex into data_array with an offset of 0x0001 0000
-        $readmemh("data.hex", mem, 32'h00010000); 
+        $readmemh("/root/Documents/Group-9-RISC-V/tb/test_out/F1Assembly/data.hex", mem, 32'h00010000); 
     end
 
     // Synchronous logic for both store and load

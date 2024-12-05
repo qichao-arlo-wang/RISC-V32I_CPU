@@ -4,7 +4,9 @@ module top #(
     input   logic clk,     // clock signal
     input   logic trigger,
     input   logic rst,
-    output  logic [DATA_WIDTH-1:0] a0
+    output  logic [DATA_WIDTH-1:0] a0,  // Already declared
+    output  logic [DATA_WIDTH-1:0] pc,  // Add this
+    output  logic [DATA_WIDTH-1:0] instr // Add this
 );
 
 logic trigger_latched;
@@ -26,9 +28,17 @@ end
 
 
 /// /// BLOCK 1: instruction memory, pc_plus4_adder, pc_reg and pc_mux /// ///
-logic [DATA_WIDTH-1:0] pc, pc_plus_4, pc_target, pc_next; // block 1 internal signals
+logic [DATA_WIDTH-1:0] pc_plus_4, pc_target, pc_next; // block 1 internal signals
 logic pc_src; // Control signal
-logic [DATA_WIDTH-1:0] instr; // Instruction signal
+//logic [DATA_WIDTH-1:0] instr; // Instruction signal
+
+
+    // Internal connections
+    logic [DATA_WIDTH-1:0] internal_pc, internal_instr;
+
+    // Connect internal signals to top-level outputs
+    assign pc = internal_pc;
+    assign instr = internal_instr;
 
 // adder used to +4
 adder pc_plus4_adder(
@@ -50,7 +60,7 @@ mux pc_mux(
 // Instantiate Instruction Memory
 instr_mem instr_mem_inst (
     .addr_i(pc),
-    .instr_o(instr)
+    .instr_o(internal_instr)
 );
 
 pc_reg pc_reg_inst (
@@ -58,7 +68,7 @@ pc_reg pc_reg_inst (
     .rst(rst),
     .pc_next_i(pc_next),
 
-    .pc_o(pc)
+    .pc_o(internal_pc)
 );
 
 
