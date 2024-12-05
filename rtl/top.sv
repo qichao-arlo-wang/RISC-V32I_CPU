@@ -220,7 +220,7 @@ always_comb begin
     endcase
 end
 
-pipeline_reg_f_d #(
+pipeline_reg_d_e #(
     .WIDTH(DATA_WIDTH)
 ) (
 
@@ -381,8 +381,32 @@ data_mem data_mem_inst(
 );
 
 
+pipeline_m_w #(
+    .WIDTH(DATA_WIDTH)
+) (
+    // Control Unit
+    .clk_i(clk),
+    .reg_wr_en_m_i(reg_wr_en_m),
+    .result_src_m_i(result_src_m),
+    .data_mem_or_pc_mem_sel_m_i(data_mem_or_pc_mem_sel_m),
 
+    .reg_wr_en_w_o(reg_wr_en_w),
+    .result_src_w_o(result_src_w),
+    .data_mem_or_pc_mem_sel_w_i(data_mem_or_pc_mem_sel_w),
 
+    // Data Path
+    .alu_result_m_i(alu_result_m),
+    .read_data_m_i(read_data_m),
+    .wr_addr_m_i(wr_addr_m),
+    .pc_plus_4_m_i(pc_plus_4_m),
+
+    .alu_result_w_o(alu_result_w),
+    .read_data_w_o(read_data_w),
+    .wr_addr_w_o(wr_addr_w),
+    .pc_plus_4_w_o(pc_plus_4_w)
+);
+
+// Stage 5 Writeback  -w
 
 
 
