@@ -26,15 +26,16 @@ end
 
 
 ////// Signal Declare
-// Stall & Flush
+// stall & flush
 logic stall, flush;
 
 // pc related signals
-logic [DATA_WIDTH-1:0] pc_f, pc_plus_4_f, pc_next_f; 
-logic [DATA_WIDTH-1:0] pc_target_e; // pc target E
+logic [DATA_WIDTH-1:0] pc_f, pc_d;
+logic [DATA_WIDTH-1:0] pc_next_f;
+logic [DATA_WIDTH-1:0] pc_plus_4_f, pc_plus_4_d, pc_plus_4_e, pc_plus_4_m, pc_plus_4_w;
+logic [DATA_WIDTH-1:0] pc_target_e; // pc target e
 logic pc_src_d, pc_src_e; 
-logic [DATA_WIDTH-1:0] instr_finstr_d; // Instruction signal
-logic [DATA_WIDTH-1:0] pc_d, pc_plus_4_d, pc_plus_4_e, pc_plus_4_m, pc_plus_4_w; // output for decoding
+logic [DATA_WIDTH-1:0] instr_f, instr_d; // instruction signal
 
 
 // control unit signals - Decode
@@ -42,13 +43,16 @@ logic [24:0] instr_31_7 = instr_d[31:7];
 logic [6:0] op = instr_d[6:0];
 logic [2:0] funct3 = instr_d[14:12];
 logic [6:0] funct7 = instr_d[31:25];
-logic pc_src_d, reg_wr_en_d, mem_wr_en_d, result_src_d, alu_src_d, alu_src_a_sel_d, data_mem_or_pc_mem_sel_d, signed_bit;
+logic pc_src_d, result_src_d, alu_src_d, alu_src_a_sel_d, signed_bit;
+logic reg_wr_en_d, mem_wr_en_d, data_mem_or_pc_mem_sel_d;
 logic [2:0] imm_src_d;
-logic [3:0] alu_control_d, mem_byte_en_d;
+logic [3:0] alu_control_d;
+logic [3:0] mem_byte_en_d;
 logic [DATA_WIDTH-1:0] option_d, option2_d; // for MUX in Execution stage
 
 // control unit signals - Execution
-logic pc_src_e, reg_wr_en_e, mem_wr_en_e, result_src_e, alu_src_e, alu_src_a_sel_e, data_mem_or_pc_mem_sel_e,;
+logic pc_src_e, result_src_e, alu_src_e, alu_src_a_sel_e;
+logic reg_wr_en_e, mem_wr_en_e, data_mem_or_pc_mem_sel_e;
 logic [3:0] alu_control_e, mem_byte_en_e;
 logic [DATA_WIDTH-1:0] option_e, option2_e; // for MUX in Execution stage
 
