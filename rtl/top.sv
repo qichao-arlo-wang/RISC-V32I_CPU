@@ -157,7 +157,7 @@ always_comb begin
     endcase
 end
 
-data_mem data_mem_inst(
+data_mem_sys data_mem_sys_inst(
     .clk(clk),
     .addr_i(alu_result),
     .wr_data_i(rd_data2),

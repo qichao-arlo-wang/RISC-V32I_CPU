@@ -1,0 +1,141 @@
+module l1_4way_cache_4kb #(
+    parameter ADDR_WIDTH = 32,     // Address width
+    parameter DATA_WIDTH = 32,     // Data width
+    // parameter BLOCK_SIZE = 4,      // Cache block size (4 bytes)
+    parameter NUM_SETS = 256,      // Number of sets (calculated from 4096 bytes / 4-way)
+    parameter NUM_WAYS = 4         // Number of ways per set
+) (
+    input logic                   clk,                  // Clock signal
+    // input logic                   rst,                  // Reset signal
+    input logic                   wr_en_i,                // Write enable
+    input logic [ADDR_WIDTH-1:0]  addr_i,                 // Memory address
+    input logic [DATA_WIDTH-1:0]  wr_data_i,            // Data to write
+    input logic [3:0]             byte_en_i,            // byte enable
+
+    output logic [DATA_WIDTH-1:0] rd_data_o,              // Data read
+    output logic                  cache_hit_o             // Indicates a cache hit
+);
+
+    /* 4-way set-associative cache 
+        Cache structure:
+        |       way1        |       way2        |       way3        |       way4        |            
+        |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data | 
+        | [1] | [22] | [32] | [1] | [22] | [32] | [1] | [22] | [32] | [1] | [22] | [32] |
+        
+        Memory address (32 bits):
+            | tag      | set index | byte offset |
+            |   [22]   |    [8]    |     [2]     |
+            | a[31:10] |   a[9:2]  |     00      |
+    */
+
+    // Derived parameters
+    localparam BYTE_OFFSET_BITS = 2; // bottom 2 bits of the address, which are 00
+    localparam SETS_INDEX_BITS = $clog2(NUM_SETS);   // log2(256) = 8 bits
+    localparam TAG_BITS = ADDR_WIDTH - SETS_INDEX_BITS - BYTE_OFFSET_BITS; // 22 bits
+    
+    // Cache structures
+    logic [TAG_BITS-1:0] tag_array[NUM_SETS-1:0][NUM_WAYS-1:0];
+    logic [DATA_WIDTH-1:0] data_array[NUM_SETS-1:0][NUM_WAYS-1:0];
+    logic valid_array[NUM_SETS-1:0][NUM_WAYS-1:0];
+    // Each way needs a 2-bit LRU counter
+    logic [2:0] lru_bits[NUM_SETS-1:0][NUM_WAYS-1:0]; // LRU(least recently used) bits
+
+    // Address decomposition
+    logic [TAG_BITS-1:0] tag; // 21 bits
+    logic [SETS_INDEX_BITS-1:0] sets_index; // 8 bits
+    
+    // Extract the set index and tag from the address
+    assign tag        = addr_i[ADDR_WIDTH-1 : SETS_INDEX_BITS + BYTE_OFFSET_BITS]; // 31:10 (21 bits)
+    assign sets_index = addr_i[SETS_INDEX_BITS + BYTE_OFFSET_BITS - 1 : BYTE_OFFSET_BITS]; // 9:2 (8 bits)
+    
+    // Internal signals
+    logic [NUM_WAYS-1:0] way_hit_flag;
+    logic hit_detected;
+
+    // Cache lookup and read logic 
+    always_comb begin
+        hit_detected = 1'b0;         // Default: no cache hit
+        way_hit_flag = '0;        // Default: no way is hit
+        rd_data_o = '0;             // Default: no data output
+
+        for (int i = 0; i < NUM_WAYS; i++) begin
+            // Check if the cache line is valid and the tags match
+            if (valid_array[sets_index][i] && tag_array[sets_index][i] == tag) begin
+                hit_detected = 1'b1;                    // Mark as a hit
+                way_hit_flag[i] = 1'b1;              // Mark the hit way
+                case (byte_en_i)
+                    4'b0001: rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
+                    4'b0011: rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
+                    4'b1111: rd_data_o = data_array[sets_index][i][31:0];
+                    default: rd_data_o = 32'hDEADBEEF;
+                endcase
+            end
+        end
+    end
+    
+    assign cache_hit_o = hit_detected;
+    
+    // Synchronous update of cache arrays and LRU
+    always_ff @(posedge clk) begin
+        if (hit_detected) begin
+            // On hit: update LRU
+            for (int i = 0; i < NUM_WAYS; i++) begin
+                if (way_hit_flag[i]) begin
+                    // Hit way is most recently used
+                    lru_bits[sets_index][i] <= '0;
+                end 
+                else begin
+                    // Increment LRU count for others (only if less than NUM_WAYS-1)
+                    if (lru_bits[sets_index][i] < (NUM_WAYS-1))
+                        lru_bits[sets_index][i] <= lru_bits[sets_index][i] + 1;
+                end
+            end
+
+            // Write data if wr_en_i
+            if (wr_en_i) begin
+                for (int i = 0; i < NUM_WAYS; i++) begin
+                    if (way_hit_flag[i]) begin
+                        case (byte_en_i)
+                            4'b0001: data_array[sets_index][i][7:0]   <= wr_data_i[7:0];
+                            4'b0011: data_array[sets_index][i][15:0]  <= wr_data_i[15:0];
+                            4'b1111: data_array[sets_index][i]        <= wr_data_i;
+                            default: $display("Warning: Unrecognized byte enable: %b. No data written.", byte_en_i);
+                        endcase
+                    end
+                end
+            end
+        end 
+        
+        else begin
+            // Cache miss: Replace the LRU line
+            int evict_way = -1;
+            // Find the way with the highest LRU count = NUM_WAYS-1
+            for (int i = 0; i < NUM_WAYS; i++) begin
+                if (lru_bits[sets_index][i] == (NUM_WAYS-1)) begin
+                    evict_way = i;
+                end
+            end
+
+            if (evict_way == -1) begin
+                // If not found, just pick way 0 for simplicity (should not happen if LRU maintained properly)
+                evict_way = 0;
+            end
+
+            // Replace the evicted line
+            tag_array[sets_index][evict_way]   <= tag;
+            data_array[sets_index][evict_way]  <= wr_data_i;
+            valid_array[sets_index][evict_way] <= 1'b1;
+
+            // Update LRU bits: new line is most recently used = 0
+            for (int i = 0; i < NUM_WAYS; i++) begin
+                if (i == evict_way) begin
+                    lru_bits[sets_index][i] <= 0;
+                end else begin
+                    if (lru_bits[sets_index][i] < (NUM_WAYS-1))
+                        lru_bits[sets_index][i] <= lru_bits[sets_index][i] + 1;
+                end
+            end
+        end
+    end
+
+endmodule
