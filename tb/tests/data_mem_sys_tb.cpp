@@ -5,7 +5,7 @@ VerilatedVcdC *tfp;
 unsigned int ticks = 0;
 unsigned int main_time = 0;
 
-class DataMemTestbench : public BaseTestbench
+class DataMemSysTestbench : public BaseTestbench
 {
 protected:
     void initializeInputs() override
@@ -27,7 +27,7 @@ protected:
 
 
 // first full word data_mem read test case
-TEST_F(DataMemTestbench, FullWordReadTest1)
+TEST_F(DataMemSysTestbench, FullWordReadTest1)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
@@ -39,7 +39,7 @@ TEST_F(DataMemTestbench, FullWordReadTest1)
 }
 
 // second full word data_mem read test case
-TEST_F(DataMemTestbench, FullWordReadTest2)
+TEST_F(DataMemSysTestbench, FullWordReadTest2)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
@@ -52,7 +52,7 @@ TEST_F(DataMemTestbench, FullWordReadTest2)
 }
 
 // third full word data_mem read test case
-TEST_F(DataMemTestbench, FullWordReadTest3)
+TEST_F(DataMemSysTestbench, FullWordReadTest3)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
@@ -65,7 +65,7 @@ TEST_F(DataMemTestbench, FullWordReadTest3)
 }
 
 // fourth full word data_mem read test case
-TEST_F(DataMemTestbench, FullWordReadTest4)
+TEST_F(DataMemSysTestbench, FullWordReadTest4)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
@@ -77,7 +77,7 @@ TEST_F(DataMemTestbench, FullWordReadTest4)
 }
 
 // half word data_mem read test case
-TEST_F(DataMemTestbench, HalfWordReadTest)
+TEST_F(DataMemSysTestbench, HalfWordReadTest)
 {
     initializeInputs();
     top->byte_en_i = 0b0011;
@@ -89,7 +89,7 @@ TEST_F(DataMemTestbench, HalfWordReadTest)
 }
 
 // byte data_mem read test case
-TEST_F(DataMemTestbench, ByteWordReadTest)
+TEST_F(DataMemSysTestbench, ByteWordReadTest)
 {
     initializeInputs();
     top->byte_en_i = 0b0001;
@@ -101,7 +101,7 @@ TEST_F(DataMemTestbench, ByteWordReadTest)
 }
 
 // full word out of range address test case
-TEST_F(DataMemTestbench, FullWordDataMemOutOfRangeTest)
+TEST_F(DataMemSysTestbench, FullWordDataMemOutOfRangeTest)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
@@ -115,7 +115,7 @@ TEST_F(DataMemTestbench, FullWordDataMemOutOfRangeTest)
 }
 
 // full word write and read back test case
-TEST_F(DataMemTestbench, FullWordDataMemWriteAndReadTest)
+TEST_F(DataMemSysTestbench, FullWordDataMemWriteAndReadTest)
 {
     initializeInputs();
     // Write data
@@ -134,7 +134,7 @@ TEST_F(DataMemTestbench, FullWordDataMemWriteAndReadTest)
 }
 
 // half word write and read back test case
-TEST_F(DataMemTestbench, HalfWordDataMemPartialByteWriteTest)
+TEST_F(DataMemSysTestbench, HalfWordDataMemPartialByteWriteTest)
 {
     initializeInputs();
 
@@ -154,7 +154,7 @@ TEST_F(DataMemTestbench, HalfWordDataMemPartialByteWriteTest)
 }
 
 // byte write and read back test case
-TEST_F(DataMemTestbench, ByteDataMemPartialByteWriteTest)
+TEST_F(DataMemSysTestbench, ByteDataMemPartialByteWriteTest)
 {
     initializeInputs();
 
