@@ -368,39 +368,39 @@ pipeline_e_m #(
     .pc_plus_4_m_o(pc_plus_4_m)
 );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Stage 4 Memory  -m
 
 data_mem data_mem_inst(
     .clk(clk),
-    .addr_i(alu_result),
-    .wr_data_i(rd_data2),
-    .wr_en_i(mem_wr_en),
-    .byte_en_i(mem_byte_en),
+    .addr_i(alu_result_m),
+    .wr_data_i(rd_data2_m),
+    .wr_en_i(mem_wr_en_m),
+    .byte_en_i(mem_byte_en_m),
 
-    .rd_data_o(read_data)
+    .rd_data_o(read_data_m)
 );
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 logic [31:0] data_to_use;
-
-
 mux data_mem_pc_next(
     .in0_i(read_data),
     .in1_i(pc_plus_4),
