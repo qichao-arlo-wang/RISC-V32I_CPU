@@ -1,4 +1,4 @@
-module pipeline_m_w #(
+module pipeline_reg_m_w #(
     parameter WIDTH = 32
 )(
     input logic clk_i,
@@ -10,7 +10,7 @@ module pipeline_m_w #(
 
     output logic reg_wr_en_w_o,
     output logic result_src_w_o,
-    input logic data_mem_or_pc_mem_sel_w_i,
+    output logic data_mem_or_pc_mem_sel_w_o,
 
     // data path
     input logic [WIDTH - 1:0] alu_result_m_i,

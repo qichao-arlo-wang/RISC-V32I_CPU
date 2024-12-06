@@ -1,4 +1,4 @@
-module pipeline_e_m #(
+module pipeline_reg_e_m #(
     parameter WIDTH = 32
 )(
     input logic clk_i,
@@ -7,13 +7,13 @@ module pipeline_e_m #(
     input logic reg_wr_en_e_i,
     input logic result_src_e_i,
     input logic mem_wr_en_e_i,
-    input logic mem_byte_en_e_i,
+    input logic [3:0] mem_byte_en_e_i,
     input logic data_mem_or_pc_mem_sel_e_i,
 
     output logic reg_wr_en_m_o,
     output logic result_src_m_o,
     output logic mem_wr_en_m_o,
-    output logic mem_byte_en_m_o,
+    output logic [3:0] mem_byte_en_m_o,
     output logic data_mem_or_pc_mem_sel_m_o,
 
     // data path
@@ -37,6 +37,7 @@ always_ff @(posedge clk_i) begin
     result_src_m_o <= result_src_e_i;
     mem_wr_en_m_o <= mem_wr_en_e_i;
     mem_byte_en_m_o <= mem_byte_en_e_i;
+    data_mem_or_pc_mem_sel_m_o <= data_mem_or_pc_mem_sel_e_i;
 
     // data path
     alu_result_m_o <= alu_result_e_i;

@@ -2,7 +2,6 @@ module sign_exten (
     input logic [24:0] instr_31_7_i,  // instruction[31:7]
     input logic [2:0]  imm_src_i,
     input logic signed_i,
-    input logic signed_i,
 
     output logic [31:0] imm_ext_o
 );

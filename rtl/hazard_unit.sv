@@ -3,7 +3,7 @@ module hazard_unit (
     input logic [4:0] rd_addr1_d_i,
     input logic [4:0] rd_addr2_d_i,
     input logic [4:0] wr_addr_e_i, // RdE
-    input logic mem_byte_en_e_i,
+    input logic [3:0] mem_byte_en_e_i,
     
     // data 
     input logic [4:0] rd_addr1_e_i, // Rs1E

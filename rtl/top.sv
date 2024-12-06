@@ -46,13 +46,17 @@ logic result_src_d, alu_src_d, alu_src_a_sel_d, signed_bit;
 logic reg_wr_en_d, mem_wr_en_d, data_mem_or_pc_mem_sel_d;
 logic [2:0] imm_src_d;
 logic [3:0] alu_control_d;
+/* verilator lint_off UNUSED */
 logic [3:0] mem_byte_en_d;
+/* verilator lint_on UNUSED */
 logic [DATA_WIDTH-1:0] option_d, option2_d; // for MUX in Execution stage
 
 // control unit signals - Execution
 logic result_src_e, alu_src_e, alu_src_a_sel_e;
 logic reg_wr_en_e, mem_wr_en_e, data_mem_or_pc_mem_sel_e;
+/* verilator lint_off UNUSED */
 logic [3:0] alu_control_e, mem_byte_en_e;
+/* verilator lint_on UNUSED */
 logic [DATA_WIDTH-1:0] option_e, option2_e; // for MUX in Execution stage
 
 // control unit signals - Mem & Writeback
@@ -217,9 +221,7 @@ always_comb begin
     endcase
 end
 
-pipeline_reg_d_e #(
-    .WIDTH(DATA_WIDTH)
-) pipeline_reg_d_e_inst (
+pipeline_reg_d_e pipeline_reg_d_e_inst (
 
     .clk_i(clk),
     .flush_i(flush),
@@ -311,8 +313,8 @@ adder alu_adder(
 
 
 // hazard MUX for src_a 
-mux4 harzard_a (
-    .in0_i(rd_addr1_e),      // from register file (default operand)
+mux4 hazard_a (
+    .in0_i(rd_data1_e),      // from register file (default operand)
     .in1_i(result_w),        // from writeback stage result
     .in2_i(alu_result_m),     // from memory stage ALU result
     .in3_i(0),               // default zero
@@ -322,8 +324,8 @@ mux4 harzard_a (
 );
 
 // hazard MUX for writedata 
-mux4 harzard_b (
-    .in0_i(rd_addr2_e),       // from register file
+mux4 hazard_b (
+    .in0_i(rd_data2_e),       // from register file
     .in1_i(result_w),        // from writeback stage result
     .in2_i(alu_result_m),     // from memory stage ALU result
     .in3_i(0),               // default zero
@@ -333,9 +335,7 @@ mux4 harzard_b (
 );
 
 
-pipeline_e_m #(
-    .WIDTH(DATA_WIDTH)
-) pipeline_e_m_inst (
+pipeline_reg_e_m pipeline_e_m_inst (
     // Control Unit
     .clk_i(clk),
     .reg_wr_en_e_i(reg_wr_en_e),
@@ -375,9 +375,7 @@ data_mem data_mem_inst(
 );
 
 
-pipeline_m_w #(
-    .WIDTH(DATA_WIDTH)
-) pipeline_m_w_inst ( 
+pipeline_reg_m_w pipeline_m_w_inst ( 
     // Control Unit
     .clk_i(clk),
     .reg_wr_en_m_i(reg_wr_en_m),

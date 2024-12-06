@@ -10,7 +10,7 @@ module pipeline_reg_d_e #(
     input logic reg_wr_en_d_i,
     input logic result_src_d_i,
     input logic mem_wr_en_d_i,
-    input logic mem_byte_en_d_i,
+    input logic [3:0] mem_byte_en_d_i,
     input logic pc_src_d_i,
     input logic [3:0] alu_control_d_i,
     input logic alu_src_d_i,
@@ -22,7 +22,7 @@ module pipeline_reg_d_e #(
     output logic reg_wr_en_e_o,
     output logic result_src_e_o,
     output logic mem_wr_en_e_o,
-    output logic mem_byte_en_e_o,
+    output logic [3:0] mem_byte_en_e_o,
     output logic pc_src_e_o,
     output logic [3:0] alu_control_e_o,
     output logic alu_src_e_o,
@@ -64,7 +64,7 @@ module pipeline_reg_d_e #(
             pc_src_e_o <= 1'b0;
         end
         
-        result_src_d_i <= result_src_d_i;
+        result_src_e_o <= result_src_d_i;
         mem_byte_en_e_o <= mem_byte_en_d_i;
         alu_control_e_o <= alu_control_d_i;
         alu_src_e_o <= alu_src_d_i;
