@@ -1,4 +1,4 @@
-module pipeline_MEM_WB #(
+module pipeline_m_w #(
     parameter WIDTH = 32
 )(
     input logic clk_i,
