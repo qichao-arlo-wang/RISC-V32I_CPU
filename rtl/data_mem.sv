@@ -16,6 +16,7 @@ module data_mem (
     // reserved mem from 0x0000 0000 to 0x0000 00FF
     localparam DATA_MEM_SIZE = 128 * 1024; // 128KB
     logic [31:0] mem [0:DATA_MEM_SIZE-1];
+    localparam string MEM_FILE  = "data.hex";        // Memory initialization file
 
     // Initialize data_arrary
     initial begin
@@ -23,7 +24,7 @@ module data_mem (
         
         // the default path when running the simulation is the tests directory
         // load data.hex into data_array with an offset of 0x0001 0000
-        $readmemh("data.hex", mem, 32'h00010000); 
+        $readmemh(MEM_FILE, mem, 32'h00010000); 
     end
 
     // Synchronous logic for both store and load
