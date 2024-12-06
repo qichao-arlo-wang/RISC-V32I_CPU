@@ -34,15 +34,15 @@ logic [DATA_WIDTH-1:0] pc_f, pc_d;
 logic [DATA_WIDTH-1:0] pc_next_f;
 logic [DATA_WIDTH-1:0] pc_plus_4_f, pc_plus_4_d, pc_plus_4_e, pc_plus_4_m, pc_plus_4_w;
 logic [DATA_WIDTH-1:0] pc_target_e; // pc target e
-logic pc_src_d, pc_src_e; 
+logic pc_src_e; 
 logic [DATA_WIDTH-1:0] instr_f, instr_d; // instruction signal
 
 // control unit signals - Decode
 logic [24:0] instr_31_7 = instr_d[31:7];
-logic [6:0] op = instr_d[6:0];
-logic [2:0] funct3 = instr_d[14:12];
+logic [6:0] op_d = instr_d[6:0];
+logic [2:0] funct3_d = instr_d[14:12];
 logic [6:0] funct7 = instr_d[31:25];
-logic result_src_d, alu_src_d, alu_src_a_sel_d, signed_bit;
+logic result_src_d, alu_src_d, alu_src_a_sel_d, signed_bit, branch_d;
 logic reg_wr_en_d, mem_wr_en_d, data_mem_or_pc_mem_sel_d;
 logic [2:0] imm_src_d;
 logic [3:0] alu_control_d;
@@ -52,7 +52,9 @@ logic [3:0] mem_byte_en_d;
 logic [DATA_WIDTH-1:0] option_d, option2_d; // for MUX in Execution stage
 
 // control unit signals - Execution
-logic result_src_e, alu_src_e, alu_src_a_sel_e;
+logic [6:0] op_e;
+logic [2:0] funct3_e;
+logic result_src_e, alu_src_e, alu_src_a_sel_e, branch_e, branch_condition_e;
 logic reg_wr_en_e, mem_wr_en_e, data_mem_or_pc_mem_sel_e;
 /* verilator lint_off UNUSED */
 logic [3:0] alu_control_e, mem_byte_en_e;
@@ -86,11 +88,11 @@ logic [DATA_WIDTH-1:0] src_a, src_b;
 logic eq_e; // zero flag
 logic [DATA_WIDTH-1:0] alu_result_e, alu_result_m, alu_result_w; 
 
-// harzard unit
+// hazard unit
 logic [1:0] forward_a_e;
 logic [1:0] forward_b_e;
-logic [DATA_WIDTH-1:0] harzard_mux_a_out;
-logic [DATA_WIDTH-1:0] harzard_mux_b_out;
+logic [DATA_WIDTH-1:0] hazard_mux_a_out;
+logic [DATA_WIDTH-1:0] hazard_mux_b_out;
 
 // data memory siganls 
 logic [DATA_WIDTH-1:0] read_data_m, read_data_w;
@@ -115,7 +117,7 @@ adder pc_plus4_adder(
 // mux used to select between pc_target and pc_plus_4
 mux pc_mux(
     .in0_i(pc_plus_4_f), // PC += 4
-    .in1_i(pc_target_e), // branch
+    .in1_i(pc_target_e), // branch CHECK THIS
     .sel_i(pc_src_e),
 
     .out_o(pc_next_f)
@@ -135,9 +137,7 @@ pc_reg pc_reg_inst (
     .pc_o(pc_f)
 );
 
-pipeline_reg_f_d #(
-    .WIDTH(DATA_WIDTH)
-) pipeline_reg_f_d_inst (
+pipeline_reg_f_d pipeline_reg_f_d_inst (
     .clk_i(clk),
     .stall_i(stall),
     .flush_i(flush),
@@ -157,11 +157,9 @@ pipeline_reg_f_d #(
 /// BLOCK 2: Register file, control unit, and extend /// ///
 // Instantiate Control Unit
 control_unit ctrl (
-    .opcode_i(op),
-    .funct3_i(funct3),
+    .opcode_i(op_d),
+    .funct3_i(funct3_d),
     .funct7_i(funct7),
-    .zero_i(eq_e),
-    .alu_result_i(alu_result_e), // unsure to use e stage /m stage
 
     .reg_wr_en_o(reg_wr_en_d),
     .mem_wr_en_o(mem_wr_en_d),
@@ -169,10 +167,10 @@ control_unit ctrl (
     .alu_src_o(alu_src_d),  
     .result_src_o(result_src_d),  
     .alu_control_o(alu_control_d),
-    .pc_src_o(pc_src_d),
     .byte_en_o(mem_byte_en_d),
     .alu_src_a_sel_o(alu_src_a_sel_d),
-    .signed_o(signed_bit)
+    .signed_o(signed_bit),
+    .branch_o(branch_d)
 );
 
 // Instantiate Sign-Extension Unit
@@ -188,9 +186,9 @@ register_file reg_file_inst (
     .clk(clk),
     .rd_addr1_i(rd_addr1_d),
     .rd_addr2_i(rd_addr2_d),
-    .wr_addr_i(wr_addr_d),
+    .wr_addr_i(wr_addr_w),
     .wr_data_i(result_w),
-    .reg_wr_en_i(reg_wr_en_d),
+    .reg_wr_en_i(reg_wr_en_w),
 
     .rd_data1_o(rd_data1_d),
     .rd_data2_o(rd_data2_d),
@@ -198,14 +196,14 @@ register_file reg_file_inst (
 );
 
 always_comb begin
-    case (op)
+    case (op_d)
         7'b0110111: option_d = 32'b0; // LUI
         default: option_d = pc_d; // AUIPC
     endcase
 end
 
 always_comb begin
-    case (op)
+    case (op_d)
         7'b1100111: begin //JAL
             option2_d = rd_data1_d;
         end
@@ -214,7 +212,7 @@ always_comb begin
 end
 
 always_comb begin
-    case (op)
+    case (op_d)
         7'b1101111: data_mem_or_pc_mem_sel_d = 1;
         7'b1100111: data_mem_or_pc_mem_sel_d = 1;
         default: data_mem_or_pc_mem_sel_d = 0;
@@ -232,25 +230,29 @@ pipeline_reg_d_e pipeline_reg_d_e_inst (
     .result_src_d_i(result_src_d),
     .mem_wr_en_d_i(mem_wr_en_d),
     .mem_byte_en_d_i(mem_byte_en_d),
-    .pc_src_d_i(pc_src_d),
     .alu_control_d_i(alu_control_d),
     .alu_src_d_i(alu_src_d),
     .alu_src_a_sel_d_i(alu_src_a_sel_d),
     .option_d_i(option_d),
     .option2_d_i(option2_d),
     .data_mem_or_pc_mem_sel_d_i(data_mem_or_pc_mem_sel_d),
+    .branch_d_i(branch_d),
+    .opcode_d_i(op_d),
+    .funct3_d_i(funct3_d),
 
     .reg_wr_en_e_o(reg_wr_en_e),
     .result_src_e_o(result_src_e),
     .mem_wr_en_e_o(mem_wr_en_e),
     .mem_byte_en_e_o(mem_byte_en_e),
-    .pc_src_e_o(pc_src_e),
     .alu_control_e_o(alu_control_e),
     .alu_src_e_o(alu_src_e),
     .alu_src_a_sel_e_o(alu_src_a_sel_e),
     .option_e_o(option_e),
     .option2_e_o(option2_e),
     .data_mem_or_pc_mem_sel_e_o(data_mem_or_pc_mem_sel_e),
+    .branch_e_o(branch_e),
+    .opcode_e_o(op_e),
+    .funct3_e_o(funct3_e),
 
     // Data Path Signals
     .rd_data1_d_i(rd_data1_d),
@@ -274,6 +276,15 @@ pipeline_reg_d_e pipeline_reg_d_e_inst (
 // // Stage 3 Execution  -e
 /// BLOCK 3: Control Unit, the Sign-extension Unit and the instruction memory  /// 
 
+// Compute Program Counter Source
+always_comb begin
+    case (op_e)
+        7'b1100111: pc_src_e = branch_e;                  // JALR
+        7'b1101111: pc_src_e = branch_e;                  //JAL
+        default: pc_src_e = branch_e & branch_condition_e;  // B instructions
+    endcase
+end
+
 // ALU unit
 alu alu_inst(
     .src_a_i(src_a),
@@ -284,9 +295,22 @@ alu alu_inst(
     .zero_o(eq_e)
 );
 
+    // Compute Branch Condition
+always_comb begin
+    case (funct3_e)
+        3'b000: branch_condition_e = eq_e;                      // beq: branch if zero is set
+        3'b001: branch_condition_e = ~eq_e;                     // bne: branch if zero is not set
+        //3'b100: branch_condition_e = (alu_result_e < 0);          // blt
+        3'b101: branch_condition_e = eq_e | (alu_result_e > 0); // bge
+        //3'b110: branch_condition_e = (alu_result_e < 0);           //bltu 
+        3'b111: branch_condition_e = eq_e | (alu_result_e > 0);  //bgeu
+        default: branch_condition_e = 1'b0;                       // Other branch types not implemented here
+    endcase
+end
+
 //MUX for src_a (ALU first operand)
 mux alu_src_a_mux(
-    .in0_i(harzard_mux_a_out),// From harzard mux a
+    .in0_i(hazard_mux_a_out),// From hazard mux a
     .in1_i(option_e),         // only for LUi and AUIPC
     .sel_i(alu_src_a_sel_e),  // new control signal for src_a selection
 
@@ -296,7 +320,7 @@ mux alu_src_a_mux(
 
 // MUX for src_b (ALU second operand)
 mux alu_src_b_mux(
-    .in0_i(harzard_mux_b_out),  // From harzard mux b
+    .in0_i(hazard_mux_b_out),  // From hazard mux b
     .in1_i(imm_ext_e),          // Immediate value
     .sel_i(alu_src_e),          // ALU source control signal
 
@@ -320,7 +344,7 @@ mux4 hazard_a (
     .in3_i(0),               // default zero
     .sel_i(forward_a_e),      // forward control signal for src_a
 
-    .out_o(harzard_mux_a_out)          
+    .out_o(hazard_mux_a_out)          
 );
 
 // hazard MUX for writedata 
@@ -331,7 +355,7 @@ mux4 hazard_b (
     .in3_i(0),               // default zero
     .sel_i(forward_b_e),      // forward control signal for writedata
 
-    .out_o(harzard_mux_b_out)    
+    .out_o(hazard_mux_b_out)    
 );
 
 
@@ -424,6 +448,7 @@ hazard_unit hazard_unit_inst (
     .rd_addr2_d_i(rd_addr2_d),
     .wr_addr_e_i(wr_addr_e),
     .mem_byte_en_e_i(mem_byte_en_e),
+    .pc_src_i(pc_src_e),
 
     // Data forwarding signals
     .rd_addr1_e_i(rd_addr1_e),
@@ -432,8 +457,6 @@ hazard_unit hazard_unit_inst (
     .wr_addr_w_i(wr_addr_w),
     .reg_wr_en_m_i(reg_wr_en_m),
     .reg_wr_en_w_i(reg_wr_en_w),
-    .pc_src_i(pc_src_d),
-
     
     .forward_a_e_o(forward_a_e),
     .forward_b_e_o(forward_b_e),
