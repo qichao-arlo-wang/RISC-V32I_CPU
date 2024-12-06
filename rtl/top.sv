@@ -42,6 +42,7 @@ logic [24:0] instr_31_7 = instr_d[31:7];
 logic [6:0] op_d = instr_d[6:0];
 logic [2:0] funct3_d = instr_d[14:12];
 logic [6:0] funct7 = instr_d[31:25];
+logic load_flag_d; // flag for whether or not this instruction is load instruction
 logic result_src_d, alu_src_d, alu_src_a_sel_d, signed_bit, branch_d;
 logic reg_wr_en_d, mem_wr_en_d, data_mem_or_pc_mem_sel_d;
 logic [2:0] imm_src_d;
@@ -54,6 +55,7 @@ logic [DATA_WIDTH-1:0] option_d, option2_d; // for MUX in Execution stage
 // control unit signals - Execution
 logic [6:0] op_e;
 logic [2:0] funct3_e;
+logic load_flag_e;
 logic result_src_e, alu_src_e, alu_src_a_sel_e, branch_e, branch_condition_e;
 logic reg_wr_en_e, mem_wr_en_e, data_mem_or_pc_mem_sel_e;
 /* verilator lint_off UNUSED */
@@ -219,6 +221,14 @@ always_comb begin
     endcase
 end
 
+// Calculate Load _flag
+always_comb begin
+    case (op_d)
+        7'b0000011: load_flag_d = 1; // Load Instructions
+        default: load_flag_d = 0; // Other instructions
+    endcase
+end
+
 pipeline_reg_d_e pipeline_reg_d_e_inst (
 
     .clk_i(clk),
@@ -239,6 +249,7 @@ pipeline_reg_d_e pipeline_reg_d_e_inst (
     .branch_d_i(branch_d),
     .opcode_d_i(op_d),
     .funct3_d_i(funct3_d),
+    .load_flag_d_i(load_flag_d),
 
     .reg_wr_en_e_o(reg_wr_en_e),
     .result_src_e_o(result_src_e),
@@ -253,6 +264,7 @@ pipeline_reg_d_e pipeline_reg_d_e_inst (
     .branch_e_o(branch_e),
     .opcode_e_o(op_e),
     .funct3_e_o(funct3_e),
+    .load_flag_e_o(load_flag_e),
 
     // Data Path Signals
     .rd_data1_d_i(rd_data1_d),
@@ -295,7 +307,7 @@ alu alu_inst(
     .zero_o(eq_e)
 );
 
-    // Compute Branch Condition
+// Compute Branch Condition
 always_comb begin
     case (funct3_e)
         3'b000: branch_condition_e = eq_e;                      // beq: branch if zero is set
@@ -447,7 +459,7 @@ hazard_unit hazard_unit_inst (
     .rd_addr1_d_i(rd_addr1_d),
     .rd_addr2_d_i(rd_addr2_d),
     .wr_addr_e_i(wr_addr_e),
-    .mem_byte_en_e_i(mem_byte_en_e),
+    .load_flag_d_i(load_flag_e),
     .pc_src_i(pc_src_e),
 
     // Data forwarding signals

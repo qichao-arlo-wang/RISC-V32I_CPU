@@ -19,6 +19,7 @@ module pipeline_reg_d_e #(
     input logic branch_d_i,
     input logic [6:0] opcode_d_i,
     input logic [2:0] funct3_d_i,
+    input logic load_flag_d_i,
 
     // Control unit outputs
     output logic reg_wr_en_e_o,
@@ -34,6 +35,7 @@ module pipeline_reg_d_e #(
     output logic branch_e_o,
     output logic [6:0] opcode_e_o,
     output logic [2:0] funct3_e_o,
+    output logic load_flag_e_o,
 
     // Data path inputs
     input logic [WIDTH-1:0] rd_data1_d_i,
@@ -67,6 +69,7 @@ always_ff @(posedge clk_i) begin
         option_e_o <= 0;
         option2_e_o <= 0;
         data_mem_or_pc_mem_sel_e_o <= 0;
+        load_flag_e_o <= 0;
 
         // Flush branch-related signals
         branch_e_o <= 0;
@@ -94,6 +97,7 @@ always_ff @(posedge clk_i) begin
         option_e_o <= option_e_o;
         option2_e_o <= option2_e_o;
         data_mem_or_pc_mem_sel_e_o <= data_mem_or_pc_mem_sel_e_o;
+        load_flag_e_o <= load_flag_e_o;
 
         branch_e_o <= branch_e_o;
         opcode_e_o <= opcode_e_o;
@@ -119,6 +123,7 @@ always_ff @(posedge clk_i) begin
         option_e_o <= option_d_i;
         option2_e_o <= option2_d_i;
         data_mem_or_pc_mem_sel_e_o <= data_mem_or_pc_mem_sel_d_i;
+        load_flag_e_o <= load_flag_d_i;
 
         branch_e_o <= branch_d_i;
         opcode_e_o <= opcode_d_i;
@@ -135,4 +140,3 @@ always_ff @(posedge clk_i) begin
 end
 
 endmodule
-
