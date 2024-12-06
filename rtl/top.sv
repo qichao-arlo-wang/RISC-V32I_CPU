@@ -376,7 +376,7 @@ pipeline_reg_e_m pipeline_e_m_inst (
 
     // Data Path
     .alu_result_e_i(alu_result_e),
-    .rd_data2_e_i(rd_data2_e),
+    .rd_data2_e_i(hazard_mux_b_out),
     .wr_addr_e_i(wr_addr_e),
     .pc_plus_4_e_i(pc_plus_4_e),
 
