@@ -57,35 +57,35 @@ module pipeline_reg_d_e #(
 );
 
 always_ff @(posedge clk_i) begin
-    if (flush_i) begin
-        // Flush all control signals to zero
-        reg_wr_en_e_o <= 0;
-        result_src_e_o <= 0;
+    if (flush_i || stall_i) begin
+        // Flush some control signalbranch-related signals
         mem_wr_en_e_o <= 0;
-        mem_byte_en_e_o <= 0;
-        alu_control_e_o <= 0;
-        alu_src_e_o <= 0;
-        alu_src_a_sel_e_o <= 0;
-        option_e_o <= 0;
-        option2_e_o <= 0;
-        data_mem_or_pc_mem_sel_e_o <= 0;
-        load_flag_e_o <= 0;
-
-        // Flush branch-related signals
+        reg_wr_en_e_o <= 0;
         branch_e_o <= 0;
         opcode_e_o <= 0;
         funct3_e_o <= 0;
+        
 
-        // Flush data path signals
-        rd_data1_e_o <= 0;
-        rd_data2_e_o <= 0;
-        rd_addr1_e_o <= 0;
-        rd_addr2_e_o <= 0;
-        wr_addr_e_o <= 0;
-        imm_ext_e_o <= 0;
-        pc_plus_4_e_o <= 0;
+        // propagate all other control /data path signals
+        result_src_e_o <= result_src_d_i;
+        mem_wr_en_e_o <= mem_wr_en_d_i;
+        alu_control_e_o <= alu_control_d_i;
+        alu_src_e_o <= alu_src_d_i;
+        alu_src_a_sel_e_o <= alu_src_a_sel_d_i;
+        option_e_o <= option_d_i;
+        option2_e_o <= option2_d_i;
+        data_mem_or_pc_mem_sel_e_o <= data_mem_or_pc_mem_sel_d_i;
+        load_flag_e_o <= load_flag_d_i;
 
-    end else if (stall_i) begin
+        rd_data1_e_o <= rd_data1_d_i;
+        rd_data2_e_o <= rd_data2_d_i;
+        rd_addr1_e_o <= rd_addr1_d_i;
+        rd_addr2_e_o <= rd_addr2_d_i;
+        wr_addr_e_o <= wr_addr_d_i;
+        imm_ext_e_o <= imm_ext_d_i;
+        pc_plus_4_e_o <= pc_plus_4_d_i;
+
+    end /*else if (stall_i) begin
         // On stall, hold current outputs (no updates)
         reg_wr_en_e_o <= reg_wr_en_e_o;
         result_src_e_o <= result_src_e_o;
@@ -111,7 +111,7 @@ always_ff @(posedge clk_i) begin
         imm_ext_e_o <= imm_ext_e_o;
         pc_plus_4_e_o <= pc_plus_4_e_o;
 
-    end else begin
+    end */else begin
         // Normal operation: pass signals from Decode stage to Execute stage
         reg_wr_en_e_o <= reg_wr_en_d_i;
         result_src_e_o <= result_src_d_i;
