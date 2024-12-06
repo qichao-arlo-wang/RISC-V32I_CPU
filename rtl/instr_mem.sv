@@ -25,20 +25,6 @@ module instr_mem (
 
     logic [31:0] local_addr;
 
-    // Address error detection logic
-    always_comb begin
-        addr_error = 1'b0; // Default: no error
-        // Address alignment and range checking
-        if (addr_i < BASE_ADDR || addr_i > TOP_ADDR) begin
-            addr_error = 1'b1;
-            $display("Warning: Address out of range: %h.", addr_i);
-        end 
-        else if (addr_i[1:0] != 2'b00) begin
-            addr_error = 1'b1;
-            $display("Warning: Unaligned address detected: %h.", addr_i);
-        end
-    end
-
     // Read logic: fetch instruction
     always_comb begin
         instr_o = 32'hDEADBEEF; // Default value
@@ -48,9 +34,22 @@ module instr_mem (
             instr_o = 32'hDEADBEEF;
         end 
         else begin
-            // Calculate local memory address offset by subtracting BASE_ADDR
-            local_addr = {20'h0, addr_i[11:0]};  // addr_i - BASE_ADDR assumes addr_i is within valid range
-            instr_o = {mem[local_addr + 3], mem[local_addr + 2], mem[local_addr + 1], mem[local_addr]};
+            // local_addr = {20'h0, addr_i[11:0]};
+            instr_o = {mem[addr_i[11:0] + 3], mem[addr_i[11:0] + 2], mem[addr_i[11:0] + 1], mem[addr_i[11:0]]};
         end
     end 
+
+        // // Address error detection logic
+    // always_comb begin
+    //     addr_error = 1'b0; // Default: no error
+    //     // Address alignment and range checking
+    //     if (addr_i < BASE_ADDR || addr_i > TOP_ADDR) begin
+    //         addr_error = 1'b1;
+    //         $display("Warning: Address out of range: %h.", addr_i);
+    //     end 
+    //     else if (addr_i[1:0] != 2'b00) begin
+    //         addr_error = 1'b1;
+    //         $display("Warning: Unaligned address detected: %h.", addr_i);
+    //     end
+    // end
 endmodule
