@@ -459,7 +459,7 @@ hazard_unit hazard_unit_inst (
     .rd_addr1_d_i(rd_addr1_d),
     .rd_addr2_d_i(rd_addr2_d),
     .wr_addr_e_i(wr_addr_e),
-    .load_flag_d_i(load_flag_e),
+    .load_flag_e_i(load_flag_e),
     .pc_src_i(pc_src_e),
 
     // Data forwarding signals

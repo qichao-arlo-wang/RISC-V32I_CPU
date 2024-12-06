@@ -97,7 +97,7 @@ always_ff @(posedge clk_i) begin
         option_e_o <= option_e_o;
         option2_e_o <= option2_e_o;
         data_mem_or_pc_mem_sel_e_o <= data_mem_or_pc_mem_sel_e_o;
-        load_flag_e_o <= load_flag_e_o;
+        load_flag_e_o <= load_flag_d_i;// change this
 
         branch_e_o <= branch_e_o;
         opcode_e_o <= opcode_e_o;
