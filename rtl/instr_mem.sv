@@ -19,7 +19,7 @@ module instr_mem (
         
         // The default path when running the simulation is the tests directory
         // Read memory file with byte-level storage
-        $readmemh("/root/Documents/Group-9-RISC-V/tb/test_out/F1Assembly/program.hex", mem); 
+        $readmemh("program.hex", mem); 
         // for (int i = 0; i < 50; i += 4) begin
         //     $display("MEM[%0d]: %h%h%h%h", i, mem[i+3], mem[i+2], mem[i+1], mem[i]);
         // end
