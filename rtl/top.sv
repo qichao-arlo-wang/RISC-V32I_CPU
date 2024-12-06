@@ -42,7 +42,7 @@ logic [24:0] instr_31_7 = instr_d[31:7];
 logic [6:0] op = instr_d[6:0];
 logic [2:0] funct3 = instr_d[14:12];
 logic [6:0] funct7 = instr_d[31:25];
-logic pc_src_d, result_src_d, alu_src_d, alu_src_a_sel_d, signed_bit;
+logic result_src_d, alu_src_d, alu_src_a_sel_d, signed_bit;
 logic reg_wr_en_d, mem_wr_en_d, data_mem_or_pc_mem_sel_d;
 logic [2:0] imm_src_d;
 logic [3:0] alu_control_d;
@@ -50,7 +50,7 @@ logic [3:0] mem_byte_en_d;
 logic [DATA_WIDTH-1:0] option_d, option2_d; // for MUX in Execution stage
 
 // control unit signals - Execution
-logic pc_src_e, result_src_e, alu_src_e, alu_src_a_sel_e;
+logic result_src_e, alu_src_e, alu_src_a_sel_e;
 logic reg_wr_en_e, mem_wr_en_e, data_mem_or_pc_mem_sel_e;
 logic [3:0] alu_control_e, mem_byte_en_e;
 logic [DATA_WIDTH-1:0] option_e, option2_e; // for MUX in Execution stage
@@ -165,7 +165,7 @@ control_unit ctrl (
     .mem_wr_en_o(mem_wr_en_d),
     .imm_src_o(imm_src_d),
     .alu_src_o(alu_src_d),  
-    .result_src_o(result_src)_d,  
+    .result_src_o(result_src_d),  
     .alu_control_o(alu_control_d),
     .pc_src_o(pc_src_d),
     .byte_en_o(mem_byte_en_d),
@@ -241,7 +241,7 @@ pipeline_reg_d_e #(
     .data_mem_or_pc_mem_sel_d_i(data_mem_or_pc_mem_sel_d),
 
     .reg_wr_en_e_o(reg_wr_en_e),
-    .result_src_e_i(result_src_e),
+    .result_src_e_o(result_src_e),
     .mem_wr_en_e_o(mem_wr_en_e),
     .mem_byte_en_e_o(mem_byte_en_e),
     .pc_src_e_o(pc_src_e),
@@ -390,7 +390,7 @@ pipeline_m_w #(
 
     .reg_wr_en_w_o(reg_wr_en_w),
     .result_src_w_o(result_src_w),
-    .data_mem_or_pc_mem_sel_w_i(data_mem_or_pc_mem_sel_w),
+    .data_mem_or_pc_mem_sel_w_o(data_mem_or_pc_mem_sel_w),
 
     // Data Path
     .alu_result_m_i(alu_result_m),
