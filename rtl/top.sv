@@ -55,23 +55,23 @@ logic reg_wr_en_e, mem_wr_en_e, data_mem_or_pc_mem_sel_e;
 logic [3:0] alu_control_e, mem_byte_en_e;
 logic [DATA_WIDTH-1:0] option_e, option2_e; // for MUX in Execution stage
 
-// control unit signals - Mem
-logic reg_wr_en_m, mem_wr_en_m, result_src_m, data_mem_or_pc_mem_sel_m;
+// control unit signals - Mem & Writeback
+logic reg_wr_en_m, reg_wr_en_w, mem_wr_en_m, result_src_w, result_src_m, data_mem_or_pc_mem_sel_m, data_mem_or_pc_mem_sel_w;
 logic [3:0] mem_byte_en_m;
 
 // Register signals - Decode
-logic [4:0] rd_addr1_d = instr[19:15]; // rd_addr1: instr[19:15]
-logic [4:0] rd_addr2_d = instr[24:20]; // rd_addr2: instr[24:20]
-logic [4:0] wr_addr_d  = instr[11:7];  // wr_addr: instr[11:7]
+logic [4:0] rd_addr1_d = instr_d[19:15]; // rd_addr1: instr[19:15]
+logic [4:0] rd_addr2_d = instr_d[24:20]; // rd_addr2: instr[24:20]
+logic [4:0] wr_addr_d  = instr_d[11:7];  // wr_addr: instr[11:7]
 logic [DATA_WIDTH-1:0] rd_data1_d, rd_data2_d;
 
 // Register signals - Execution
 logic [4:0] rd_addr1_e, rd_addr2_e, wr_addr_e;
 logic [DATA_WIDTH-1:0] rd_data1_e, rd_data2_e;
 
-// Register signals - Mem
+// Register signals - Mem & Writeback 
 logic [DATA_WIDTH-1:0] rd_data2_m;
-logic [4:0] wr_addr_m;
+logic [4:0] wr_addr_m, wr_addr_w;
 
 
 // extend block signal
@@ -80,9 +80,7 @@ logic [DATA_WIDTH-1:0] imm_ext_d, imm_ext_e;
 // ALU signals
 logic [DATA_WIDTH-1:0] src_a, src_b;
 logic eq_e; // zero flag
-logic [3:0] mem_byte_en_e;
-logic [DATA_WIDTH-1:0] alu_result_e; // unsure to use e stage /m stage
-logic [DATA_WIDTH-1:0] alu_result_m;
+logic [DATA_WIDTH-1:0] alu_result_e, alu_result_m, alu_result_w; 
 
 // harzard unit
 logic [1:0] forward_a_e;
@@ -91,7 +89,7 @@ logic [DATA_WIDTH-1:0] harzard_mux_a_out;
 logic [DATA_WIDTH-1:0] harzard_mux_b_out;
 
 // data memory siganls 
-logic [DATA_WIDTH-1:0] read_data_m;
+logic [DATA_WIDTH-1:0] read_data_m, read_data_w;
 logic [31:0] data_to_use;
 logic [DATA_WIDTH-1:0] result_w;
 
@@ -113,7 +111,7 @@ adder pc_plus4_adder(
 // mux used to select between pc_target and pc_plus_4
 mux pc_mux(
     .in0_i(pc_plus_4_f), // PC += 4
-    .in1_i(pc_target), // branch
+    .in1_i(pc_target_e), // branch
     .sel_i(pc_src_e),
 
     .out_o(pc_next_f)
@@ -135,7 +133,7 @@ pc_reg pc_reg_inst (
 
 pipeline_reg_f_d #(
     .WIDTH(DATA_WIDTH)
-) (
+) pipeline_reg_f_d_inst (
     .clk_i(clk),
     .stall_i(stall),
     .flush_i(flush),
@@ -175,7 +173,7 @@ control_unit ctrl (
 
 // Instantiate Sign-Extension Unit
 sign_exten sign_exten_inst (
-    .instr_31_7_i(instr_31_7_d),
+    .instr_31_7_i(instr_31_7),
     .imm_src_i(imm_src_d),
     .signed_i(signed_bit),
 
@@ -221,7 +219,7 @@ end
 
 pipeline_reg_d_e #(
     .WIDTH(DATA_WIDTH)
-) (
+) pipeline_reg_d_e_inst (
 
     .clk_i(clk),
     .flush_i(flush),
@@ -255,7 +253,6 @@ pipeline_reg_d_e #(
     // Data Path Signals
     .rd_data1_d_i(rd_data1_d),
     .rd_data2_d_i(rd_data2_d),
-    .pc_d_i(pc_d),
     .rd_addr1_d_i(rd_addr1_d),
     .rd_addr2_d_i(rd_addr2_d),
     .wr_addr_d_i(wr_addr_d),
@@ -264,7 +261,6 @@ pipeline_reg_d_e #(
 
     .rd_data1_e_o(rd_data1_e),
     .rd_data2_e_o(rd_data2_e),
-    .pc_e_o(pc_e),
     .rd_addr1_e_o(rd_addr1_e),
     .rd_addr2_e_o(rd_addr2_e),
     .wr_addr_e_o(wr_addr_e),
@@ -339,7 +335,7 @@ mux4 harzard_b (
 
 pipeline_e_m #(
     .WIDTH(DATA_WIDTH)
-) (
+) pipeline_e_m_inst (
     // Control Unit
     .clk_i(clk),
     .reg_wr_en_e_i(reg_wr_en_e),
@@ -381,7 +377,7 @@ data_mem data_mem_inst(
 
 pipeline_m_w #(
     .WIDTH(DATA_WIDTH)
-) (
+) pipeline_m_w_inst ( 
     // Control Unit
     .clk_i(clk),
     .reg_wr_en_m_i(reg_wr_en_m),
@@ -416,7 +412,7 @@ mux data_mem_pc_next(
 
 // mux used for data memory
 mux data_mem_mux(
-    .in0_i(alu_result_W),
+    .in0_i(alu_result_w),
     .in1_i(data_to_use),
     .sel_i(result_src_w),
 
@@ -424,8 +420,7 @@ mux data_mem_mux(
 );
 
 
-hazard_unit #(
-) (
+hazard_unit hazard_unit_inst ( 
     // Detect lw for stall
     .rd_addr1_d_i(rd_addr1_d),
     .rd_addr2_d_i(rd_addr2_d),

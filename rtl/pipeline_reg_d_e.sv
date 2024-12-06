@@ -20,7 +20,7 @@ module pipeline_reg_d_e #(
     input logic data_mem_or_pc_mem_sel_d_i,
 
     output logic reg_wr_en_e_o,
-    output logic result_src_e_i,
+    output logic result_src_e_o,
     output logic mem_wr_en_e_o,
     output logic mem_byte_en_e_o,
     output logic pc_src_e_o,
@@ -34,7 +34,6 @@ module pipeline_reg_d_e #(
     // data path
     input logic [WIDTH - 1:0] rd_data1_d_i, // RD1_D in lecture slide
     input logic [WIDTH - 1:0] rd_data2_d_i,
-    input logic [WIDTH - 1:0] pc_d_i,
     input logic [4:0] rd_addr1_d_i, // Rs1_D, source register in lecture slide
     input logic [4:0] rd_addr2_d_i,
     input logic [4:0] wr_addr_d_i, // Rd_D in lecture
@@ -43,7 +42,6 @@ module pipeline_reg_d_e #(
 
     output logic [WIDTH - 1:0] rd_data1_e_o,
     output logic [WIDTH - 1:0] rd_data2_e_o,
-    output logic [WIDTH - 1:0] pc_e_o,
     output logic [4:0] rd_addr1_e_o,
     output logic [4:0] rd_addr2_e_o,
     output logic [4:0] wr_addr_e_o,
@@ -53,7 +51,7 @@ module pipeline_reg_d_e #(
     
 );
 
-    always_ff @(posedge clk) begin
+    always_ff @(posedge clk_i) begin
         // control unit
         if (!flush_i && !stall_i) begin
             reg_wr_en_e_o <= reg_wr_en_d_i;
@@ -78,7 +76,6 @@ module pipeline_reg_d_e #(
         // data path
         rd_data1_e_o <= rd_data1_d_i;
         rd_data2_e_o <= rd_data2_d_i;
-        pc_e_o <= pc_d_i;
         rd_addr1_e_o <= rd_addr1_d_i;
         rd_addr2_e_o <= rd_addr2_d_i;
         wr_addr_e_o <= wr_addr_d_i;
