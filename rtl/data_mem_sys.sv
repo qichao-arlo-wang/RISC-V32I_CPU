@@ -12,6 +12,8 @@ module data_mem_sys (
 );
 
     logic cache_hit;
+    logic [31:0] l1_cache_data;
+    logic [31:0] mem_data;
 
     // Instantiate the L1 Cache
     l1_4way_cache_4kb L1_cache (
@@ -21,7 +23,7 @@ module data_mem_sys (
         .wr_data_i(wr_data_i),
         .byte_en_i(byte_en_i),
 
-        .rd_data_o(rd_data_o),
+        .rd_data_o(l1_cache_data),
         .cache_hit_o(cache_hit)
     );
 
@@ -34,7 +36,8 @@ module data_mem_sys (
         .byte_en_i(byte_en_i),
         .cache_hit_i(cache_hit),
         
-        .rd_data_o(rd_data_o)
+        .rd_data_o(mem_data)
     );
 
+    assign rd_data_o = cache_hit ? l1_cache_data : mem_data;
 endmodule

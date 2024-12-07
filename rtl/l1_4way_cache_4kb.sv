@@ -8,7 +8,9 @@ module l1_4way_cache_4kb #(
     input logic                   clk,                  // Clock signal
     // input logic                   rst,                  // Reset signal
     input logic                   wr_en_i,                // Write enable
+    /* verilator lint_off UNUSED */
     input logic [ADDR_WIDTH-1:0]  addr_i,                 // Memory address
+    /* verilator lint_on UNUSED */
     input logic [DATA_WIDTH-1:0]  wr_data_i,            // Data to write
     input logic [3:0]             byte_en_i,            // byte enable
 
@@ -51,6 +53,15 @@ module l1_4way_cache_4kb #(
     // Internal signals
     logic [NUM_WAYS-1:0] way_hit_flag;
     logic hit_detected;
+
+    initial begin
+        for (int s = 0; s < NUM_SETS; s++) begin
+            for (int w = 0; w < NUM_WAYS; w++) begin
+                valid_array[s][w] = 1'b0;
+                lru_bits[s][w] = '0;
+            end
+        end
+    end
 
     // Cache lookup and read logic 
     always_comb begin

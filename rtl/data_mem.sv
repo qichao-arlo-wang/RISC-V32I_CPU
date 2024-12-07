@@ -76,5 +76,8 @@ module data_mem (
                 default: rd_data_o = 32'hDEADBEEF;
             endcase
         end
+        else begin
+            rd_data_o = 32'h0;
+        end
     end
 endmodule
