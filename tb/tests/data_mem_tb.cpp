@@ -32,6 +32,7 @@ TEST_F(DataMemTestbench, FullWordReadTest1)
     initializeInputs();
     top->byte_en_i = 0b1111;
     top->addr_i = 0x00010004;
+    top->addr_i = 0x00010004;
     top->eval();
     toggleClock();
 
@@ -43,6 +44,7 @@ TEST_F(DataMemTestbench, FullWordReadTest2)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
+    top->addr_i = 0x00010008;
     top->addr_i = 0x00010008;
     top->eval();
     toggleClock();
@@ -57,6 +59,7 @@ TEST_F(DataMemTestbench, FullWordReadTest3)
     initializeInputs();
     top->byte_en_i = 0b1111;
     top->addr_i = 0x0001000C;
+    top->addr_i = 0x0001000C;
     top->eval();
     toggleClock();
 
@@ -70,6 +73,7 @@ TEST_F(DataMemTestbench, FullWordReadTest4)
     initializeInputs();
     top->byte_en_i = 0b1111;
     top->addr_i = 0x0001001C;
+    top->addr_i = 0x0001001C;
     top->eval();
     toggleClock();
 
@@ -82,6 +86,7 @@ TEST_F(DataMemTestbench, HalfWordReadTest)
     initializeInputs();
     top->byte_en_i = 0b0011;
     top->addr_i = 0x0001001C;
+    top->addr_i = 0x0001001C;
     top->eval();
     toggleClock();
 
@@ -93,6 +98,7 @@ TEST_F(DataMemTestbench, ByteWordReadTest)
 {
     initializeInputs();
     top->byte_en_i = 0b0001;
+    top->addr_i = 0x0001001C;
     top->addr_i = 0x0001001C;
     top->eval();
     toggleClock();
@@ -140,6 +146,7 @@ TEST_F(DataMemTestbench, HalfWordDataMemPartialByteWriteTest)
 
     // Write lower two bytes
     top->addr_i = 0x00010008;
+    top->addr_i = 0x00010008;
     top->wr_en_i = 1;
     top->byte_en_i = 0b0011;    // Enable lower two bytes
     top->wr_data_i = 0x000EEFF;
@@ -158,6 +165,7 @@ TEST_F(DataMemTestbench, ByteDataMemPartialByteWriteTest)
 {
     initializeInputs();
 
+    top->addr_i = 0x00010008;
     top->addr_i = 0x00010008;
     top->wr_en_i = 1;
     top->byte_en_i = 0b0001;    // Enable lower two bytes
