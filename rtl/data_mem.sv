@@ -6,7 +6,6 @@ module data_mem (
     input  logic        wr_en_i,   // mem write enable
     input  logic [31:0] wr_data_i, // mem write data
     input  logic [3:0]  byte_en_i, // byte enable
-    input  logic        cache_hit_i, // Indicates a cache hit
 
     output logic [31:0] rd_data_o  // mem read data
 );
@@ -68,16 +67,11 @@ module data_mem (
 
     // Asynchronous read logic
     always_comb begin
-        if (!cache_hit_i) begin
-            case (byte_en_i)
-                4'b0001: rd_data_o = {24'b0, mem[addr_i][7:0]};
-                4'b0011: rd_data_o = {16'b0, mem[addr_i][15:0]};
-                4'b1111: rd_data_o = mem[addr_i][31:0];
-                default: rd_data_o = 32'hDEADBEEF;
-            endcase
-        end
-        else begin
-            rd_data_o = 32'h0;
-        end
+        case (byte_en_i)
+            4'b0001: rd_data_o = {24'b0, mem[addr_i][7:0]};
+            4'b0011: rd_data_o = {16'b0, mem[addr_i][15:0]};
+            4'b1111: rd_data_o = mem[addr_i][31:0];
+            default: rd_data_o = 32'hDEADBEEF;
+        endcase
     end
 endmodule
