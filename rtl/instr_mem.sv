@@ -1,5 +1,7 @@
 module instr_mem (
+    /* verilator lint_off UNUSED */
     input  logic [31:0] addr_i,   // Address (Program Counter)
+    /* verilator lint_on UNUSED */
     output logic [31:0] instr_o   // Fetched instruction
 );
 
