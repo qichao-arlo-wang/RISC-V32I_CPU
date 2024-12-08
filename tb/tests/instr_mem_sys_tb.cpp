@@ -21,12 +21,6 @@ protected:
     } 
 };
 
-// Basic test cases. We rely on the known instructions in 'program.hex'.
-// Just like in your original `instr_mem_tb.cpp`, we assume the same addresses
-// and expected instructions. On the first cycle after setting addr, 
-// the instruction should appear. The cache will store it internally, 
-// but from the testbench perspective, we always see correct instructions anyway.
-
 // first normal test case
 TEST_F(InstrMemSysTestbench, InstrMemWorksTest1) {
     initializeInputs();
