@@ -99,6 +99,14 @@ TEST_F(CpuTestbench, TestAndXorOr)
     EXPECT_EQ(top_->a0, 0x1A6);
 }
 
+TEST_F(CpuTestbench, TestLoadStore)
+{
+    setupTest("11_load_store");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x9BE22467);
+}
+
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
