@@ -1,6 +1,6 @@
 # Group-9-RISC-V Team Project
 
-## RISC-V RV32I Processor (Part 1)
+## RISC-V RV32I Processor (Basic Part 1)
   
 ![part 1 task allocation](/images/overall_structure.jpg)
 
@@ -15,10 +15,12 @@
 - Fill in / Edit the contribution table
 - Add test commant & explaination
 - Add personal statement link
+- 
 ## Team 9 Statement
 
 | Arlo Wang (repo master) | Enxing | Zecheng | Zitong |
-|-|-|-|-|
+|-------------------------|--------|---------|--------|
+|Personal Statement Path-|Personal Statement Path-|Personal Statement Path|Personal Statement Path|
 
 ## Final submission
 
@@ -58,6 +60,7 @@ cd tb
 | Command                               | Explanation                           |
 | ------------------------------------- |-------------------------------------- |
 | `./doit.sh`                           | Test all.                             |
+| `./doit.sh verify.cpp`                | Test all instruction implemented      |
 | `./doit.sh TEST FILE NAME`            | Test the entire instruction testbench |
 | `./doit.sh test/TEST FILE NAME`       | Test the F1 lights testbench (stdout) |
 | `./doit.sh test/TEST FILE NAME`       | Test the F1 lights testbench (vBuddy) |
@@ -161,15 +164,15 @@ Noisy
 |              | Sign Extend                   |                    |                  |                          |              |
 |              | Testbench                     |                    |               |                          |                  |
 | Single Cycle | Data Memory                   |                  |                  |                      |               |
-|              | Program Counter (refactor)    |                    |               |                          |                  |
-|              | ALU (refactor)                |                    |               |                          |              |
-|              | Register File (refactor)      |                    |                  |                        |                  |
-|              | Instruction Memory (refactor) |                 |               |                          |                  |
-|              | Control Unit (refactor)       |                 |                |                       |             |
-|              | Sign Extend (refactor)        |                    |               |                          |                 |
+|              | Program Counter    |                    |               |                          |                  |
+|              | ALU               |                    |               |                          |              |
+|              | Register File       |                    |                  |                        |                  |
+|              | Instruction Memory  |                 |               |                          |                  |
+|              | Control Unit      |                 |                |                       |             |
+|              | Sign Extend       |                    |               |                          |                 |
 | Pipeline     | Pipeline register     |                 |                |                          |                  |
 |              | Hazard unit                   |                |               |                          |                  |
-| Cache        | Memory (refactor)             |                 |               |                          |                  |
+| Cache        | Memory             |                 |               |                          |                  |
 |              | Direct mapped cache           |                |               |                       |                |
 |              | Two-way set associative cache |                 |              |                       |                |
 
