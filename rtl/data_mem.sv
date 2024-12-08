@@ -25,7 +25,7 @@ module data_mem (
         
         // the default path when running the simulation is the tests directory
         // load data.hex into data_array with an offset of 0x0001 0000
-        $readmemh(MEM_FILE, mem, 32'h00010000); 
+        $readmemh(MEM_FILE, mem, 32'h00010000); //for testing change mem_file to "data.mem"
     end
 
     // Synchronous logic for both store and load

@@ -15,7 +15,7 @@ HEX_FILE="$TB_DIR/program.hex"
 # Compile Verilog files with Verilator
 verilator -Wall --cc --trace $RTL_DIR/top.sv \
           -y $RTL_DIR \
-          --exe $TB_DIR/top_tb.cpp \
+          --exe $TB_DIR/f1_tb.cpp \
           --prefix Vdut \
           -CFLAGS "-I/usr/include/gtest" \
           -LDFLAGS "-L/usr/lib -lgtest -lgtest_main -lpthread"
