@@ -51,8 +51,6 @@ TEST_F(CpuTestbench, TestPdf)
     EXPECT_EQ(top_->a0, 15363);
 }
 
-#define CYCLES 10000
-
 TEST_F(CpuTestbench, TestF1)
 {
     setupTest("F1Assembly");
@@ -61,14 +59,29 @@ TEST_F(CpuTestbench, TestF1)
     EXPECT_EQ(top_->a0, 0x254);
 }
 
-// TEST_F(CpuTestbench, Testpdf)
-// {
-//     setupTest("pdf Test");
-//     initSimulation();
-//     runSimulation(CYCLES);
-//     EXPECT_EQ(top_->a0, 0x169);
-// }
+TEST_F(CpuTestbench, TestSLL)
+{
+    setupTest("6_sll");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 410);
+}
 
+TEST_F(CpuTestbench, TestSLT)
+{
+    setupTest("7_slt");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 2);
+}
+
+TEST_F(CpuTestbench, TestSLTU)
+{
+    setupTest("8_sltu");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 2);
+}
 
 int main(int argc, char **argv)
 {
