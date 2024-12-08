@@ -6,7 +6,7 @@ module instr_mem (
     localparam        MEM_SIZE  = 4 * 1024;             // Memory size in bytes (0xBFC00000 to 0xBFC00FFF -> 4KB)
     localparam [31:0] BASE_ADDR = 32'hBFC00000;         // Base address of instruction memory
     localparam [31:0] TOP_ADDR  = BASE_ADDR + MEM_SIZE -1;         // Top address of instruction memory
-    localparam string MEM_FILE  = "/root/Documents/Group-9-RISC-V/tb/test_out/1_addi_bne/program.hex";        // Memory initialization file
+    localparam string MEM_FILE  = "/root/Documents/Group-9-RISC-V/tb/program.hex";        // Memory initialization file
 
     // 4 x 1024 bytes memory
     logic [7:0] mem [0:MEM_SIZE-1];
@@ -24,16 +24,16 @@ module instr_mem (
     end
 
     // Read logic: fetch instruction
-    always_comb begin
+   // always_comb begin
         // instr_o = 32'hDEADBEEF; // Default value
         // if (addr_error) begin
         //     // Return error value if address is invalid
         //     instr_o = 32'hDEADBEEF;
         // end 
         // else begin
-            instr_o = {mem[addr_i[11:0] + 3], mem[addr_i[11:0] + 2], mem[addr_i[11:0] + 1], mem[addr_i[11:0]]};
+           // instr_o = {mem[addr_i[11:0] + 3], mem[addr_i[11:0] + 2], mem[addr_i[11:0] + 1], mem[addr_i[11:0]]};
         // end
-    end 
+    //end 
 
          // Address error detection logic
     always_comb begin

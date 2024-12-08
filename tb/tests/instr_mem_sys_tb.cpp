@@ -25,8 +25,10 @@ protected:
 TEST_F(InstrMemSysTestbench, InstrMemWorksTest1) {
     initializeInputs();
     top->addr_i = 0xBFC00000;
-    top->eval();
+    for (int i=0; i<5; i++) {
     toggleClock();
+    }
+    top->eval();
 
     // Expected instruction from original instr_mem tests
     EXPECT_EQ(top->instr_o, 0x0ff00313);
@@ -36,8 +38,10 @@ TEST_F(InstrMemSysTestbench, InstrMemWorksTest1) {
 TEST_F(InstrMemSysTestbench, InstrMemWorksTest2) {
     initializeInputs();
     top->addr_i = 0xBFC00004;
-    top->eval();
+    for (int i=0; i<5; i++) {
     toggleClock();
+    }
+    top->eval();
 
     EXPECT_EQ(top->instr_o, 0x00000513);
 }
@@ -46,8 +50,10 @@ TEST_F(InstrMemSysTestbench, InstrMemWorksTest2) {
 TEST_F(InstrMemSysTestbench, InstrMemWorksTest3) {
     initializeInputs();
     top->addr_i = 0xBFC00008;
-    top->eval();
+    for (int i=0; i<5; i++) {
     toggleClock();
+    }
+    top->eval();
 
     EXPECT_EQ(top->instr_o, 0x00000593);
 }
@@ -81,7 +87,7 @@ int main(int argc, char **argv)
 
     Verilated::traceEverOn(true);
     top->trace(tfp, 99);
-    tfp->open("instr_mem_sys_waveform.vcd");
+    tfp->open("Vdut.vcd");
 
     testing::InitGoogleTest(&argc, argv);
     auto res = RUN_ALL_TESTS();

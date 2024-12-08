@@ -1,8 +1,8 @@
-module l1_4way_instr_cache_4kb #(
+module l3_4way_instr_cache_64kb #(
     parameter ADDR_WIDTH = 32,     // Address width
     parameter DATA_WIDTH = 32,     // Data width (instruction size)
     parameter NUM_SETS = 256,      // Number of sets for 4KB / 4 ways / 4 bytes per line
-    parameter NUM_WAYS = 4         // Number of ways per set
+    parameter NUM_WAYS = 8         // Number of ways per set
 ) (
     input  logic                   clk,               // Clock signal
     /* verilator lint_off UNUSED */

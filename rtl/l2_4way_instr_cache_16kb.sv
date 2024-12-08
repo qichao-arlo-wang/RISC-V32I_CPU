@@ -1,4 +1,4 @@
-module l1_4way_instr_cache_4kb #(
+module l2_4way_instr_cache_16kb #(
     parameter ADDR_WIDTH = 32,     // Address width
     parameter DATA_WIDTH = 32,     // Data width (instruction size)
     parameter NUM_SETS = 256,      // Number of sets for 4KB / 4 ways / 4 bytes per line
@@ -8,6 +8,7 @@ module l1_4way_instr_cache_4kb #(
     /* verilator lint_off UNUSED */
     input logic [ADDR_WIDTH-1:0] addr_i,
     /* verilator lint_on UNUSED */
+
     input  logic [DATA_WIDTH-1:0]  main_mem_instr,    // Instruction word from main memory
 
     output logic [DATA_WIDTH-1:0]  instr_o,           // Instruction read out
@@ -111,7 +112,7 @@ module l1_4way_instr_cache_4kb #(
                 if (i == evict_way) begin
                     lru_bits[set_index][i] <= '0;
                 end else begin
-                    if (int'(lru_bits[set_index][i]) < int'(NUM_WAYS-1))
+                    if (int'(lru_bits[set_index][i]) < int'(NUM_WAYS-1)) 
                         lru_bits[set_index][i] <= lru_bits[set_index][i] + 1;
                 end
             end
