@@ -79,7 +79,7 @@ module l1_4way_cache_4kb #(
                     4'b0001: rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
                     4'b0011: rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
                     4'b1111: rd_data_o = data_array[sets_index][i][31:0];
-                    default: rd_data_o = rd_data_o;
+                    default: rd_data_o = data_array[sets_index][i][31:0];
                 endcase
             end
         end
