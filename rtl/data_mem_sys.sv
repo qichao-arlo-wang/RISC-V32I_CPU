@@ -24,7 +24,7 @@ module data_mem_sys (
         .byte_en_i(byte_en_i),
         .main_mem_data(main_mem_data),
 
-        .rd_data_o(l1_cache_data),
+        .l1_rd_data_o(l1_cache_data),
         .cache_hit_o(cache_hit)
     );
 
@@ -36,7 +36,7 @@ module data_mem_sys (
         .wr_data_i(wr_data_i),
         .byte_en_i(byte_en_i),
         
-        .rd_data_o(main_mem_data)
+        .main_mem_rd_data_o(main_mem_data)
     );
 
     assign rd_data_o = cache_hit ? l1_cache_data : main_mem_data;
