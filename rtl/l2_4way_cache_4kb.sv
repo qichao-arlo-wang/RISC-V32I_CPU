@@ -1,4 +1,4 @@
-module l1_4way_cache_4kb #(
+module l2_4way_cache_4kb #(
     parameter ADDR_WIDTH = 32,     // Address width
     parameter DATA_WIDTH = 32,     // Data width
     // parameter BLOCK_SIZE = 4,      // Cache block size (4 bytes)
@@ -13,10 +13,10 @@ module l1_4way_cache_4kb #(
     /* verilator lint_on UNUSED */
     input logic [DATA_WIDTH-1:0]  wr_data_i,            // Data to write
     input logic [3:0]             byte_en_i,            // byte enable
-    input logic [DATA_WIDTH-1:0]  l2_cache_data_i,      // Data from main memory    
+    input logic [DATA_WIDTH-1:0]  l3_cache_data_i,      // Data from main memory    
 
-    output logic [DATA_WIDTH-1:0] l1_rd_data_o,         // Data read
-    output logic                  l1_cache_hit_o        // Indicates a cache hit
+    output logic [DATA_WIDTH-1:0] l2_rd_data_o,         // Data read
+    output logic                  l2_cache_hit_o        // Indicates a cache hit
 );
 
     /* 4-way set-associative cache 
@@ -68,7 +68,7 @@ module l1_4way_cache_4kb #(
     always_comb begin
         hit_detected = 1'b0;      // Default: no cache hit
         way_hit_flag = '0;        // Default: no way is hit
-        l1_rd_data_o = '0;        // Default: no data output
+        l2_rd_data_o = '0;        // Default: no data output
 
         for (int i = 0; i < NUM_WAYS; i++) begin
             // Check if the cache line is valid and the tags match
@@ -76,18 +76,18 @@ module l1_4way_cache_4kb #(
                 hit_detected = 1'b1;                 // Mark as a hit
                 way_hit_flag[i] = 1'b1;              // Mark the hit way
                 case (byte_en_i)
-                    4'b0001: l1_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
-                    4'b0011: l1_rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
-                    4'b1111: l1_rd_data_o = data_array[sets_index][i][31:0];
-                    default: l1_rd_data_o = data_array[sets_index][i][31:0];
+                    4'b0001: l2_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
+                    4'b0011: l2_rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
+                    4'b1111: l2_rd_data_o = data_array[sets_index][i][31:0];
+                    default: l2_rd_data_o = data_array[sets_index][i][31:0];
                 endcase
             end
         end
     end
     
-    assign l1_cache_hit_o = hit_detected;
+    assign l2_cache_hit_o = hit_detected;
 
-    logic [DATA_WIDTH-1:0] l2_cache_data_reg;
+    logic [DATA_WIDTH-1:0] l3_cache_data_reg;
     logic miss_flag;
 
     always_ff @(posedge clk) begin
@@ -95,7 +95,7 @@ module l1_4way_cache_4kb #(
         miss_flag <= ~hit_detected;
         if (~hit_detected) begin
             // On a miss cycle, register the l2_cache_data
-            l2_cache_data_reg <= l2_cache_data_i;
+            l3_cache_data_reg <= l3_cache_data_i;
         end
     end
 
@@ -143,7 +143,7 @@ module l1_4way_cache_4kb #(
 
                 // Replace the evicted line
                 tag_array[sets_index][evict_way]   <= tag;
-                data_array[sets_index][evict_way]  <= l2_cache_data_reg;
+                data_array[sets_index][evict_way]  <= l3_cache_data_reg;
                 valid_array[sets_index][evict_way] <= 1'b1;
 
                 // Update LRU bits: new line is most recently used = 0

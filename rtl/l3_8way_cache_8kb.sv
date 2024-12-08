@@ -1,9 +1,9 @@
-module l1_4way_cache_4kb #(
+module l3_8way_cache_8kb #(
     parameter ADDR_WIDTH = 32,     // Address width
     parameter DATA_WIDTH = 32,     // Data width
     // parameter BLOCK_SIZE = 4,      // Cache block size (4 bytes)
-    parameter NUM_SETS = 256,      // Number of sets (calculated from 4096 bytes / 4-way)
-    parameter NUM_WAYS = 4         // Number of ways per set
+    parameter NUM_SETS = 256,      // Number of sets (calculated from 8192 bytes / 8-way)
+    parameter NUM_WAYS = 8         // Number of ways per set
 ) (
     input logic                   clk,                  // Clock signal
     // input logic                   rst,               // Reset signal
@@ -13,17 +13,17 @@ module l1_4way_cache_4kb #(
     /* verilator lint_on UNUSED */
     input logic [DATA_WIDTH-1:0]  wr_data_i,            // Data to write
     input logic [3:0]             byte_en_i,            // byte enable
-    input logic [DATA_WIDTH-1:0]  l2_cache_data_i,      // Data from main memory    
+    input logic [DATA_WIDTH-1:0]  main_mem_data,        // Data from main memory    
 
-    output logic [DATA_WIDTH-1:0] l1_rd_data_o,         // Data read
-    output logic                  l1_cache_hit_o        // Indicates a cache hit
+    output logic [DATA_WIDTH-1:0] l3_rd_data_o,         // Data read
+    output logic                  l3_cache_hit_o        // Indicates a cache hit
 );
 
     /* 4-way set-associative cache 
         Cache structure:
-        |       way1        |       way2        |       way3        |       way4        |            
-        |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data | 
-        | [1] | [22] | [32] | [1] | [22] | [32] | [1] | [22] | [32] | [1] | [22] | [32] |
+        |       way1        |       way2        |       way3        |       way4        |       way5        |       way6        |       way7        |       way8        |         
+        |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data |
+        | [1] | [22] | [32] | [1] | [22] | [32] | [1] | [22] | [32] | [1] | [22] | [32] | [1] | [22] | [32] | [1] | [22] | [32] | [1] | [22] | [32] | [1] | [22] | [32] |
         
         Memory address (32 bits):
             | tag      | set index | byte offset |
@@ -35,6 +35,8 @@ module l1_4way_cache_4kb #(
     localparam BYTE_OFFSET_BITS = 2; // bottom 2 bits of the address, which are 00
     localparam SETS_INDEX_BITS = $clog2(NUM_SETS);   // log2(256) = 8 bits
     localparam TAG_BITS = ADDR_WIDTH - SETS_INDEX_BITS - BYTE_OFFSET_BITS; // 22 bits
+    localparam int LRU_MAX_INT = NUM_WAYS - 1;
+    localparam [2:0] LRU_MAX   = LRU_MAX_INT[2:0]; // get the 3 LSBs
     
     // Cache structures
     logic [TAG_BITS-1:0] tag_array[NUM_SETS-1:0][NUM_WAYS-1:0];
@@ -68,7 +70,7 @@ module l1_4way_cache_4kb #(
     always_comb begin
         hit_detected = 1'b0;      // Default: no cache hit
         way_hit_flag = '0;        // Default: no way is hit
-        l1_rd_data_o = '0;        // Default: no data output
+        l3_rd_data_o = '0;        // Default: no data output
 
         for (int i = 0; i < NUM_WAYS; i++) begin
             // Check if the cache line is valid and the tags match
@@ -76,18 +78,18 @@ module l1_4way_cache_4kb #(
                 hit_detected = 1'b1;                 // Mark as a hit
                 way_hit_flag[i] = 1'b1;              // Mark the hit way
                 case (byte_en_i)
-                    4'b0001: l1_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
-                    4'b0011: l1_rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
-                    4'b1111: l1_rd_data_o = data_array[sets_index][i][31:0];
-                    default: l1_rd_data_o = data_array[sets_index][i][31:0];
+                    4'b0001: l3_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
+                    4'b0011: l3_rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
+                    4'b1111: l3_rd_data_o = data_array[sets_index][i][31:0];
+                    default: l3_rd_data_o = data_array[sets_index][i][31:0];
                 endcase
             end
         end
     end
     
-    assign l1_cache_hit_o = hit_detected;
+    assign l3_cache_hit_o = hit_detected;
 
-    logic [DATA_WIDTH-1:0] l2_cache_data_reg;
+    logic [DATA_WIDTH-1:0] main_mem_data_reg;
     logic miss_flag;
 
     always_ff @(posedge clk) begin
@@ -95,7 +97,7 @@ module l1_4way_cache_4kb #(
         miss_flag <= ~hit_detected;
         if (~hit_detected) begin
             // On a miss cycle, register the l2_cache_data
-            l2_cache_data_reg <= l2_cache_data_i;
+            main_mem_data_reg <= main_mem_data;
         end
     end
 
@@ -111,7 +113,7 @@ module l1_4way_cache_4kb #(
                 end
                 else begin
                     // Increment LRU count for others (only if less than NUM_WAYS-1)
-                    if (lru_bits[sets_index][i] < (NUM_WAYS-1))
+                    if (lru_bits[sets_index][i] < LRU_MAX)
                         lru_bits[sets_index][i] <= lru_bits[sets_index][i] + 1;
                 end
             end
@@ -143,7 +145,7 @@ module l1_4way_cache_4kb #(
 
                 // Replace the evicted line
                 tag_array[sets_index][evict_way]   <= tag;
-                data_array[sets_index][evict_way]  <= l2_cache_data_reg;
+                data_array[sets_index][evict_way]  <= main_mem_data_reg;
                 valid_array[sets_index][evict_way] <= 1'b1;
 
                 // Update LRU bits: new line is most recently used = 0
@@ -151,7 +153,7 @@ module l1_4way_cache_4kb #(
                     if (i == evict_way) begin
                         lru_bits[sets_index][i] <= 0;
                     end else begin
-                        if (lru_bits[sets_index][i] < (NUM_WAYS-1))
+                        if (lru_bits[sets_index][i] < LRU_MAX)
                             lru_bits[sets_index][i] <= lru_bits[sets_index][i] + 1;
                     end
                 end

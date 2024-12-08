@@ -7,7 +7,7 @@ module data_mem (
     input  logic [31:0] wr_data_i, // mem write data
     input  logic [3:0]  byte_en_i, // byte enable
 
-    output logic [31:0] rd_data_o  // mem read data
+    output logic [31:0] main_mem_rd_data_o  // mem read data
 );
 
     // total memory size 128KB from 0x0000 0000 to 0x0001 FFFF
@@ -54,23 +54,23 @@ module data_mem (
             
         // case (byte_en_i)
         //     // byte (8 bits)
-        //     4'b0001: rd_data_o <= {24'b0, mem[addr_i][7:0]};
+        //     4'b0001: main_mem_rd_data_o <= {24'b0, mem[addr_i][7:0]};
         //     // half word (16 bits)
-        //     4'b0011: rd_data_o <= {16'b0, mem[addr_i][15:0]};
+        //     4'b0011: main_mem_rd_data_o <= {16'b0, mem[addr_i][15:0]};
         //     // word (32 bits)
-        //     4'b1111: rd_data_o <= {mem[addr_i][31:0]};
+        //     4'b1111: main_mem_rd_data_o <= {mem[addr_i][31:0]};
         //     // default case
-        //     default: rd_data_o <= rd_data_o;
+        //     default: main_mem_rd_data_o <= main_mem_rd_data_o;
         // endcase
     end
 
     // Asynchronous read logic
     always_comb begin
         case (byte_en_i)
-            4'b0001: rd_data_o = {24'b0, mem[addr_i]};
-            4'b0011: rd_data_o = {16'b0, mem[addr_i+1], mem[addr_i]};
-            4'b1111: rd_data_o = {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]};
-            default: rd_data_o = 32'hDEADBEEF;
+            4'b0001: main_mem_rd_data_o = {24'b0, mem[addr_i]};
+            4'b0011: main_mem_rd_data_o = {16'b0, mem[addr_i+1], mem[addr_i]};
+            4'b1111: main_mem_rd_data_o = {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]};
+            default: main_mem_rd_data_o = 32'hDEADBEEF;
         endcase
     end
 endmodule
