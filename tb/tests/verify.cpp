@@ -115,6 +115,30 @@ TEST_F(CpuTestbench, TestLoad)
     EXPECT_EQ(top_->a0, 0x12365678);
 }
 
+TEST_F(CpuTestbench, TestBEQ)
+{
+    setupTest("13_sub_beq");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0xBEF9);
+}
+
+TEST_F(CpuTestbench, TestBGEBLT)
+{
+    setupTest("14_bge_blt");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x1AEFC);
+}
+
+TEST_F(CpuTestbench, TestBGEUBLTU)
+{
+    setupTest("15_bgeu_bltu");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x1AEFC);
+}
+
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
