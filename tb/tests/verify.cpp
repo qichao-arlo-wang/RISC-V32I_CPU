@@ -99,12 +99,20 @@ TEST_F(CpuTestbench, TestAndXorOr)
     EXPECT_EQ(top_->a0, 0x1A6);
 }
 
-TEST_F(CpuTestbench, TestLoadStore)
+TEST_F(CpuTestbench, TestStore)
 {
-    setupTest("11_load_store");
+    setupTest("11_sh_sw");
     initSimulation();
     runSimulation(CYCLES);
     EXPECT_EQ(top_->a0, 0x9BE22467);
+}
+
+TEST_F(CpuTestbench, TestLoad)
+{
+    setupTest("12_lh_lw_lhu");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x12365678);
 }
 
 int main(int argc, char **argv)

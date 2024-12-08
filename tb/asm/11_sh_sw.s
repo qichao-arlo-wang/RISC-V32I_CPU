@@ -10,15 +10,15 @@ main:
     li t5, 0x8001        # t5 = 0x8001 (halfword, unsigned)
 
     # Store the values directly into registers for testing
-    # Test LW (load word)
+    # Test SW (load word)
     sw t0, 0(t6)         # Store word at address 0 (t0 = 0x12345678)
     sw t1, 4(t6)         # Store word at address 4 (t1 = 0x89ABCDEF)
 
-    # Test LH (load halfword, signed)
+    # Test SH (load halfword, signed)
     sh t2, 8(t6)         # Store halfword at address 8 (t2 = 0x7FFF, signed)
     sh t3, 10(t6)        # Store halfword at address 10 (t3 = 0x8001, signed)
 
-    # Test LHU (load halfword, unsigned)
+    # Test SH (load halfword, unsigned)
     sh t4, 12(t6)        # Store halfword at address 12 (t4 = 0x7FFF, unsigned)
     sh t5, 14(t6)        # Store halfword at address 14 (t5 = 0x8001, unsigned)
 
