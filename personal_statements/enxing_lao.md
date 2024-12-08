@@ -24,3 +24,7 @@ However, as seen in the image above, although src_a = 0xA, src_b = 0x20 and alu_
 
 ### SLT
 ![output of SLT test](/images/SLTtest.png)
+
+### SLTU
+![waveform of SLTU test](/images/SLTUwaveform.png)
+As seen in this image, at the second clock cycle, a0 remains = 0x1 as the output is 0 because the unsigned comparison of 10 and -10 is such that -10 is larger. Thus, there is no addition. At the third clock cycle, a0 increases by 1. This is the opposite at the SLT waveform.

@@ -64,7 +64,7 @@ TEST_F(CpuTestbench, TestSLL)
     setupTest("6_sll");
     initSimulation();
     runSimulation(CYCLES);
-    EXPECT_EQ(top_->a0, 410);
+    EXPECT_EQ(top_->a0, 0x00000320);
 }
 
 TEST_F(CpuTestbench, TestSLT)
@@ -72,7 +72,7 @@ TEST_F(CpuTestbench, TestSLT)
     setupTest("7_slt");
     initSimulation();
     runSimulation(CYCLES);
-    EXPECT_EQ(top_->a0, 2);
+    EXPECT_EQ(top_->a0, 4);
 }
 
 TEST_F(CpuTestbench, TestSLTU)
@@ -80,7 +80,23 @@ TEST_F(CpuTestbench, TestSLTU)
     setupTest("8_sltu");
     initSimulation();
     runSimulation(CYCLES);
-    EXPECT_EQ(top_->a0, 2);
+    EXPECT_EQ(top_->a0, 3);
+}
+
+TEST_F(CpuTestbench, TestSRLSRA)
+{
+    setupTest("9_srl_sra");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 1073741824);
+}
+
+TEST_F(CpuTestbench, TestAndXorOr)
+{
+    setupTest("10_and_xor_or");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x1A6);
 }
 
 int main(int argc, char **argv)
