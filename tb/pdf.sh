@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Attach Vbuddy
-# ./attach_usb.sh
+./attach_usb.sh
 
 # Cleanup previous build files
 rm -rf obj_dir
