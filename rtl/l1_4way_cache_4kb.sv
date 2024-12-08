@@ -86,7 +86,19 @@ module l1_4way_cache_4kb #(
     end
     
     assign cache_hit_o = hit_detected;
-    
+
+    logic [DATA_WIDTH-1:0] main_mem_data_reg;
+    logic miss_flag;
+
+    always_ff @(posedge clk) begin
+        // miss_flag indicates whether the previous cycle was a miss
+        miss_flag <= ~hit_detected;
+        if (~hit_detected) begin
+            // On a miss cycle, register the main_mem_data
+            main_mem_data_reg <= main_mem_data;
+        end
+    end
+
     // Synchronous update of cache arrays, LRU and handle miss fill
     always_ff @(posedge clk) begin
         // // IF HIT DETECTED // //
@@ -117,45 +129,43 @@ module l1_4way_cache_4kb #(
                     end
                 end
             end
-        end 
-        
-        // // IF MISS // //
-        else begin
-            // Cache miss: Replace the LRU line
-            int evict_way = 0;
-            int max_lru = lru_bits[sets_index][0];
-            for (int i = 1; i < NUM_WAYS; i++) begin
-                if (lru_bits[sets_index][i] > max_lru) begin
-                    max_lru = lru_bits[sets_index][i];
-                    evict_way = i;
+                    // // IF MISS // //
+            else if (miss_flag) begin
+                // Cache miss: Replace the LRU line
+                int evict_way = 0;
+                logic [2:0] max_lru = lru_bits[sets_index][0];
+                for (int i = 1; i < NUM_WAYS; i++) begin
+                    if (lru_bits[sets_index][i] > max_lru) begin
+                        max_lru = lru_bits[sets_index][i];
+                        evict_way = i;
+                    end
                 end
-            end
 
-            // Replace the evicted line
-            tag_array[sets_index][evict_way]   <= tag;
-            data_array[sets_index][evict_way]  <= main_mem_data;
-            valid_array[sets_index][evict_way] <= 1'b1;
+                // Replace the evicted line
+                tag_array[sets_index][evict_way]   <= tag;
+                data_array[sets_index][evict_way]  <= main_mem_data_reg;
+                valid_array[sets_index][evict_way] <= 1'b1;
 
-            // Update LRU bits: new line is most recently used = 0
-            for (int i = 0; i < NUM_WAYS; i++) begin
-                if (i == evict_way) begin
-                    lru_bits[sets_index][i] <= 0;
-                end else begin
-                    if (lru_bits[sets_index][i] < (NUM_WAYS-1))
-                        lru_bits[sets_index][i] <= lru_bits[sets_index][i] + 1;
+                // Update LRU bits: new line is most recently used = 0
+                for (int i = 0; i < NUM_WAYS; i++) begin
+                    if (i == evict_way) begin
+                        lru_bits[sets_index][i] <= 0;
+                    end else begin
+                        if (lru_bits[sets_index][i] < (NUM_WAYS-1))
+                            lru_bits[sets_index][i] <= lru_bits[sets_index][i] + 1;
+                    end
                 end
-            end
 
-            // Write-allocate: Write data if wr_en_i
-            if (wr_en_i) begin
-                case (byte_en_i)
-                    4'b0001: data_array[sets_index][evict_way][7:0]   <= wr_data_i[7:0];
-                    4'b0011: data_array[sets_index][evict_way][15:0]  <= wr_data_i[15:0];
-                    4'b1111: data_array[sets_index][evict_way]        <= wr_data_i;
-                    default: $display("Warning: Unrecognized byte enable: %b. No data written.", byte_en_i);
-                endcase
-            end
-
+                // Write-allocate: Write data if wr_en_i
+                if (wr_en_i) begin
+                    case (byte_en_i)
+                        4'b0001: data_array[sets_index][evict_way][7:0]   <= wr_data_i[7:0];
+                        4'b0011: data_array[sets_index][evict_way][15:0]  <= wr_data_i[15:0];
+                        4'b1111: data_array[sets_index][evict_way]        <= wr_data_i;
+                        default: $display("Warning: Unrecognized byte enable: %b. No data written.", byte_en_i);
+                    endcase
+                end
+            end 
         end
     end
 
