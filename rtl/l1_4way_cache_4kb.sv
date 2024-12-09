@@ -44,11 +44,11 @@ module l1_4way_cache_4kb #(
     logic [2:0] lru_bits[NUM_SETS-1:0][NUM_WAYS-1:0]; // LRU(least recently used) bits
 
     // Address decomposition
-    logic [TAG_BITS-1:0] tag; // 21 bits
+    logic [TAG_BITS-1:0] tag; // 22 bits
     logic [SETS_INDEX_BITS-1:0] sets_index; // 8 bits
     
     // Extract the set index and tag from the address
-    assign tag        = addr_i[ADDR_WIDTH-1 : SETS_INDEX_BITS + BYTE_OFFSET_BITS]; // 31:10 (21 bits)
+    assign tag        = addr_i[ADDR_WIDTH-1 : SETS_INDEX_BITS + BYTE_OFFSET_BITS]; // 31:10 (22 bits)
     assign sets_index = addr_i[SETS_INDEX_BITS + BYTE_OFFSET_BITS - 1 : BYTE_OFFSET_BITS]; // 9:2 (8 bits)
     
     // Internal signals
@@ -71,21 +71,26 @@ module l1_4way_cache_4kb #(
     always_comb begin
         hit_detected = 1'b0;      // Default: no cache hit
         way_hit_flag = '0;        // Default: no way is hit
-        l1_rd_data_o = '0;           // Default: no data output
+        l1_rd_data_o = '0;        // Default: no data output
 
-        // find the way that was hit
-        for (int i = 0; i < NUM_WAYS; i++) begin
-            // Check if the cache line is valid and the tags match
-            if (valid_array[sets_index][i] && tag_array[sets_index][i] == tag) begin
-                hit_detected = 1'b1;                 // Mark as a hit
-                way_hit_flag[i] = 1'b1;              // Mark the hit way
-                // read the data from the hit way
-                case (byte_en_i)
-                    4'b0001: l1_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
-                    4'b0011: l1_rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
-                    4'b1111: l1_rd_data_o = data_array[sets_index][i][31:0];
-                    default: l1_rd_data_o = 32'hDEADBEEF;
-                endcase
+        if (main_mem_data == 32'hDEADBEEF) begin
+            hit_detected = 1'b0;
+        end
+        else begin
+            // find the way that was hit
+            for (int i = 0; i < NUM_WAYS; i++) begin
+                // Check if the cache line is valid and the tags match
+                if (!hit_detected && valid_array[sets_index][i] && tag_array[sets_index][i] == tag) begin
+                    hit_detected = 1'b1;      // Mark as a hit
+                    way_hit_flag[i] = 1'b1;   // Mark the hit way
+                    // read the data from the hit way
+                    case (byte_en_i)
+                        4'b0001: l1_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
+                        4'b0011: l1_rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
+                        4'b1111: l1_rd_data_o = data_array[sets_index][i][31:0];
+                        default: l1_rd_data_o = 32'b0;
+                    endcase
+                end
             end
         end
     end
@@ -116,9 +121,9 @@ module l1_4way_cache_4kb #(
                     // write the data to the hit way
                     if (way_hit_flag[i]) begin
                         case (byte_en_i)
-                            4'b0001: data_array[sets_index][i][7:0]   <= wr_data_i[7:0];
-                            4'b0011: data_array[sets_index][i][15:0]  <= wr_data_i[15:0];
-                            4'b1111: data_array[sets_index][i]        <= wr_data_i;
+                            4'b0001: data_array[sets_index][i][7:0]  <= wr_data_i[7:0];
+                            4'b0011: data_array[sets_index][i][15:0] <= wr_data_i[15:0];
+                            4'b1111: data_array[sets_index][i]       <= wr_data_i;
                             default: $display("Warning: Unrecognized byte enable: %b. No data written.", byte_en_i);
                         endcase
                     end
@@ -127,11 +132,11 @@ module l1_4way_cache_4kb #(
         end
 
         // // // IF MISS // // //
-        else begin
+        else if (main_mem_data != 32'hDEADBEEF) begin
             // Cache miss: Replace the LRU line
             int evict_way = 0;
             logic [2:0] max_lru = lru_bits[sets_index][0];
-            
+
             // Find the way with the highest LRU count
             for (int i = 1; i < NUM_WAYS; i++) begin
                 // Find the way with the highest LRU count
@@ -143,8 +148,21 @@ module l1_4way_cache_4kb #(
 
             // Replace the evicted line
             tag_array[sets_index][evict_way]   <= tag;
-            data_array[sets_index][evict_way]  <= main_mem_data;
             valid_array[sets_index][evict_way] <= 1'b1;
+            if (wr_en_i) begin
+                // Write with byte masking
+                case (byte_en_i)
+                    4'b0001: data_array[sets_index][evict_way] <= {data_array[sets_index][evict_way][31:8], wr_data_i[7:0]};
+                    4'b0011: data_array[sets_index][evict_way] <= {data_array[sets_index][evict_way][31:16], wr_data_i[15:0]};
+                    4'b1111: data_array[sets_index][evict_way] <= wr_data_i;
+                    default: $display("Warning: Unrecognized byte enable: %b. No data written.", byte_en_i);
+                endcase
+            end 
+            // Read operation: Load main memory data when not writing
+            else begin
+                data_array[sets_index][evict_way] <= main_mem_data;
+            end
+
 
             // Update LRU bits: new line is most recently used = 0
             for (int i = 0; i < NUM_WAYS; i++) begin
@@ -157,16 +175,6 @@ module l1_4way_cache_4kb #(
                         lru_bits[sets_index][i] <= lru_bits[sets_index][i] + 1;
                 end
             end
-
-            // Write-allocate: Write data if wr_en_i
-            if (wr_en_i) begin
-                case (byte_en_i)
-                    4'b0001: data_array[sets_index][evict_way][7:0]   <= wr_data_i[7:0];
-                    4'b0011: data_array[sets_index][evict_way][15:0]  <= wr_data_i[15:0];
-                    4'b1111: data_array[sets_index][evict_way]        <= wr_data_i;
-                    default: $display("Warning: Unrecognized byte enable: %b. No data written.", byte_en_i);
-                endcase
-            end
-        end 
+        end
     end
 endmodule
