@@ -72,12 +72,14 @@ module l2_4way_cache_4kb #(
         hit_detected = 1'b0;      // Default: no cache hit
         way_hit_flag = '0;        // Default: no way is hit
         l2_rd_data_o = '0;        // Default: no data output
-        l2_rd_data_o = '0;        // Default: no data output
 
         if (l3_cache_data_i == 32'hDEADBEEF) begin
+            // No data from L3 cache
             hit_detected = 1'b0;
+            l2_rd_data_o = '0;
         end
-        else begin
+
+        else if (byte_en_i != 0) begin
             // find the way that was hit
             for (int i = 0; i < NUM_WAYS; i++) begin
                 // Check if the cache line is valid and the tags match
@@ -89,7 +91,7 @@ module l2_4way_cache_4kb #(
                         4'b0001: l2_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
                         4'b0011: l2_rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
                         4'b1111: l2_rd_data_o = data_array[sets_index][i][31:0];
-                        default: l2_rd_data_o = 32'hDEADBEEF;
+                        default: $display("Warning: Unrecognized byte enable: %b. No data read.", byte_en_i);
                     endcase
                 end
             end

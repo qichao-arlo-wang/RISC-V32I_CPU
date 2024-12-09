@@ -19,11 +19,11 @@ module l3_8way_cache_8kb #(
     output logic                  l3_cache_hit_o        // Indicates a cache hit
 );
 
-    /* 4-way set-associative cache 
+    /* 8-way set-associative cache 
         Cache structure:
-        |       way1        |       way2        |       way3        |       way4        |            
-        |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data | 
-        | [1] | [24] | [32] | [1] | [24] | [32] | [1] | [24] | [32] | [1] | [24] | [32] |
+        |       way1        |       way2        |       way3        |       way4        |   ... ...    
+        |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data |   ... ...
+        | [1] | [24] | [32] | [1] | [24] | [32] | [1] | [24] | [32] | [1] | [24] | [32] |   ... ...
         
         Memory address (32 bits):
             | higher tag bits | set index | lower tag bits |
@@ -72,12 +72,11 @@ module l3_8way_cache_8kb #(
         hit_detected = 1'b0;      // Default: no cache hit
         way_hit_flag = '0;        // Default: no way is hit
         l3_rd_data_o = '0;        // Default: no data output
-        l3_rd_data_o = '0;        // Default: no data output
 
         if (main_mem_data_i == 32'hDEADBEEF) begin
             hit_detected = 1'b0;
         end
-        else begin
+        else if (byte_en_i != 0) begin
             // find the way that was hit
             for (int i = 0; i < NUM_WAYS; i++) begin
                 // Check if the cache line is valid and the tags match
@@ -89,7 +88,7 @@ module l3_8way_cache_8kb #(
                         4'b0001: l3_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
                         4'b0011: l3_rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
                         4'b1111: l3_rd_data_o = data_array[sets_index][i][31:0];
-                        default: l3_rd_data_o = 32'hDEADBEEF;
+                        default: $display("Warning: Unrecognized byte enable: %b. No data read.", byte_en_i);
                     endcase
                 end
             end
@@ -110,7 +109,7 @@ module l3_8way_cache_8kb #(
                 end
                 else begin
                     // Increment LRU count for others (only if less than NUM_WAYS-1)
-                    if (lru_bits[sets_index][i] < (NUM_WAYS-1))
+                    if (lru_bits[sets_index][i] < 3'(NUM_WAYS-1))
                         lru_bits[sets_index][i] <= lru_bits[sets_index][i] + 1;
                 end
             end
@@ -172,7 +171,7 @@ module l3_8way_cache_8kb #(
                 end 
                 // Increment LRU count for others (only if less than NUM_WAYS-1)
                 else begin
-                    if (lru_bits[sets_index][i] < (NUM_WAYS-1))
+                    if (lru_bits[sets_index][i] < 3'(NUM_WAYS-1))
                         lru_bits[sets_index][i] <= lru_bits[sets_index][i] + 1;
                 end
             end
