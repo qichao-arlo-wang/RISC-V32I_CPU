@@ -53,7 +53,7 @@ module data_mem_sys (
         .addr_i(addr_i),
         .wr_data_i(wr_data_i),
         .byte_en_i(byte_en_i),
-        .main_mem_data(main_mem_data),
+        .main_mem_data_i(main_mem_data),
 
         .l3_cache_hit_o(l3_cache_hit),
         .l3_rd_data_o(l3_cache_data)
@@ -74,5 +74,5 @@ module data_mem_sys (
     assign rd_data_o = l1_cache_hit ? l1_cache_data :
                        l2_cache_hit ? l2_cache_data :
                        l3_cache_hit ? l3_cache_data :
-                       main_mem_data; // Default to memory
+                       main_mem_data;
 endmodule

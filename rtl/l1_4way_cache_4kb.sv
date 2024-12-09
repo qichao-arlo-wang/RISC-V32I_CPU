@@ -13,7 +13,7 @@ module l1_4way_cache_4kb #(
     /* verilator lint_on UNUSED */
     input logic [DATA_WIDTH-1:0]  wr_data_i,            // Data to write
     input logic [3:0]             byte_en_i,            // byte enable
-    input logic [DATA_WIDTH-1:0]  l2_cache_data_i,      // Data from main memory    
+    input logic [DATA_WIDTH-1:0]  l2_cache_data_i,      // Data from l2 cache 
 
     output logic [DATA_WIDTH-1:0] l1_rd_data_o,         // Data read
     output logic                  l1_cache_hit_o        // Indicates a cache hit
@@ -74,29 +74,24 @@ module l1_4way_cache_4kb #(
         l1_rd_data_o = '0;        // Default: no data output
         l1_rd_data_o = '0;        // Default: no data output
 
-        if (main_mem_data == 32'hDEADBEEF) begin
-            hit_detected = 1'b0;
-        end
-        else begin
-            // find the way that was hit
-            for (int i = 0; i < NUM_WAYS; i++) begin
-                // Check if the cache line is valid and the tags match
-                if (!hit_detected && valid_array[sets_index][i] && tag_array[sets_index][i] == tag) begin
-                    hit_detected = 1'b1;      // Mark as a hit
-                    way_hit_flag[i] = 1'b1;   // Mark the hit way
-                    // read the data from the hit way
-                    case (byte_en_i)
-                        4'b0001: l1_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
-                        4'b0011: l1_rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
-                        4'b1111: l1_rd_data_o = data_array[sets_index][i][31:0];
-                        default: l1_rd_data_o = 32'b0;
-                    endcase
-                end
+        // find the way that was hit
+        for (int i = 0; i < NUM_WAYS; i++) begin
+            // Check if the cache line is valid and the tags match
+            if (!hit_detected && valid_array[sets_index][i] && tag_array[sets_index][i] == tag) begin
+                hit_detected = 1'b1;      // Mark as a hit
+                way_hit_flag[i] = 1'b1;   // Mark the hit way
+                // read the data from the hit way
+                case (byte_en_i)
+                    4'b0001: l1_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
+                    4'b0011: l1_rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
+                    4'b1111: l1_rd_data_o = data_array[sets_index][i][31:0];
+                    default: l1_rd_data_o = 32'hDEADBEEF;
+                endcase
             end
         end
     end
     
-    assign cache_hit_o = hit_detected;
+    assign l1_cache_hit_o = hit_detected;
 
     // Synchronous update of cache arrays, LRU and handle miss fill
     always_ff @(posedge clk) begin
@@ -133,7 +128,7 @@ module l1_4way_cache_4kb #(
         end
 
         // // // IF MISS // // //
-        else if (main_mem_data != 32'hDEADBEEF) begin
+        else if (l2_cache_data_i != 32'hDEADBEEF) begin
             // Cache miss: Replace the LRU line
             int evict_way = 0;
             logic [2:0] max_lru = lru_bits[sets_index][0];
@@ -161,7 +156,7 @@ module l1_4way_cache_4kb #(
             end 
             // Read operation: Load main memory data when not writing
             else begin
-                data_array[sets_index][evict_way] <= main_mem_data;
+                data_array[sets_index][evict_way] <= l2_cache_data_i;
             end
 
 
