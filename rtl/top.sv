@@ -135,6 +135,7 @@ pc_reg pc_reg_inst (
     .clk(clk & trigger_latched),
     .rst(rst),
     .pc_next_i(pc_next_f),
+    .stall(stall),
 
     .pc_o(pc_f)
 );
