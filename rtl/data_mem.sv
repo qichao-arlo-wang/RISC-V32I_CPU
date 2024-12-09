@@ -15,7 +15,7 @@ module data_mem (
     // pdf_array from 0x0000 0100 to 0x0000 01FF
     // reserved mem from 0x0000 0000 to 0x0000 00FF
     localparam DATA_MEM_SIZE = 128 * 1024; // 128KB
-    logic [7:0] mem [DATA_MEM_SIZE-1:0];
+    logic [7:0] mem [0:DATA_MEM_SIZE-1];
     localparam string MEM_FILE  = "data.hex";        // Memory initialization file
     // localparam string MEM_FILE  = "data_mem_test.hex";        // Memory initialization file
 
@@ -28,9 +28,8 @@ module data_mem (
         $readmemh(MEM_FILE, mem, 32'h00010000); 
     end
 
-    // Synchronous logic for both store and load
     always_ff @(posedge clk) begin
-        // store logic
+        // synchronous store logic
         if (wr_en_i) begin
             case (byte_en_i)
                 // byte (8 bits)
@@ -52,6 +51,7 @@ module data_mem (
         end
             // $display("%h", {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]});
             
+        // // by pass read logic
         // case (byte_en_i)
         //     // byte (8 bits)
         //     4'b0001: main_mem_rd_data_o <= {24'b0, mem[addr_i][7:0]};
