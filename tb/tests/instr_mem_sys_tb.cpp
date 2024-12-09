@@ -81,7 +81,7 @@ int main(int argc, char **argv)
 
     Verilated::traceEverOn(true);
     top->trace(tfp, 99);
-    tfp->open("instr_mem_sys_waveform.vcd");
+    tfp->open("Vdut.vcd");
 
     testing::InitGoogleTest(&argc, argv);
     auto res = RUN_ALL_TESTS();
