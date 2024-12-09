@@ -59,6 +59,15 @@ TEST_F(CpuTestbench, TestPdf)
 //     EXPECT_EQ(top_->a0, 0x254);
 // }
 
+// TEST_F(CpuTestbench, Testpdf)
+// {
+//     setupTest("pdf Test");
+//     initSimulation();
+//     runSimulation(CYCLES);
+//     EXPECT_EQ(top_->a0, 0x169);
+// }
+
+
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
