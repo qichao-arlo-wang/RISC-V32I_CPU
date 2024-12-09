@@ -73,24 +73,19 @@ module l1_4way_cache_4kb #(
         way_hit_flag = '0;        // Default: no way is hit
         l1_rd_data_o = '0;        // Default: no data output
 
-        if (main_mem_data == 32'hDEADBEEF) begin
-            hit_detected = 1'b0;
-        end
-        else begin
-            // find the way that was hit
-            for (int i = 0; i < NUM_WAYS; i++) begin
-                // Check if the cache line is valid and the tags match
-                if (!hit_detected && valid_array[sets_index][i] && tag_array[sets_index][i] == tag) begin
-                    hit_detected = 1'b1;      // Mark as a hit
-                    way_hit_flag[i] = 1'b1;   // Mark the hit way
-                    // read the data from the hit way
-                    case (byte_en_i)
-                        4'b0001: l1_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
-                        4'b0011: l1_rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
-                        4'b1111: l1_rd_data_o = data_array[sets_index][i][31:0];
-                        default: l1_rd_data_o = 32'b0;
-                    endcase
-                end
+        // find the way that was hit
+        for (int i = 0; i < NUM_WAYS; i++) begin
+            // Check if the cache line is valid and the tags match
+            if (!hit_detected && valid_array[sets_index][i] && tag_array[sets_index][i] == tag) begin
+                hit_detected = 1'b1;      // Mark as a hit
+                way_hit_flag[i] = 1'b1;   // Mark the hit way
+                // read the data from the hit way
+                case (byte_en_i)
+                    4'b0001: l1_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
+                    4'b0011: l1_rd_data_o = {16'b0, data_array[sets_index][i][15:0]};
+                    4'b1111: l1_rd_data_o = data_array[sets_index][i][31:0];
+                    default: l1_rd_data_o = 32'b0;
+                endcase
             end
         end
     end
