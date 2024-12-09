@@ -23,16 +23,16 @@ module l1_4way_cache_4kb #(
         Cache structure:
         |       way1        |       way2        |       way3        |       way4        |            
         |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data | 
-        | [1] | [22] | [32] | [1] | [22] | [32] | [1] | [22] | [32] | [1] | [22] | [32] |
+        | [1] | [24] | [32] | [1] | [24] | [32] | [1] | [24] | [32] | [1] | [24] | [32] |
         
         Memory address (32 bits):
-            | tag      | set index | byte offset |
-            |   [22]   |    [8]    |     [2]     |
-            | a[31:10] |   a[9:2]  |     00      |
+            | higher tag bits | set index | lower tag bits |
+            |       [22]      |    [8]    |        [2]     |
+            |  addr_i[31:10]  |   a[9:2]  |      a[1:0]    |
     */
 
     // Derived parameters
-    localparam LOWER_TAG_BITS = 2; // bottom 2 bits of the address, which are 00
+    localparam LOWER_TAG_BITS = 2; //  take lower 2 bits of the address as lower 2 tag bits
     localparam SETS_INDEX_BITS = $clog2(NUM_SETS);   // log2(256) = 8 bits
     localparam TAG_BITS = ADDR_WIDTH - SETS_INDEX_BITS; // 22 bits + 2 lower bits = 24 bits
     
@@ -44,12 +44,12 @@ module l1_4way_cache_4kb #(
     logic [2:0] lru_bits[NUM_SETS-1:0][NUM_WAYS-1:0]; // LRU(least recently used) bits
 
     // Address decomposition
-    logic [TAG_BITS-1:0] tag; // 22 bits
+    logic [TAG_BITS-1:0] tag; // 24 bits
     logic [SETS_INDEX_BITS-1:0] sets_index; // 8 bits
     
     // Extract the set index and tag from the address
-    assign tag        = {addr_i[ADDR_WIDTH-1 : SETS_INDEX_BITS + LOWER_TAG_BITS], addr_i[LOWER_TAG_BITS-1:0]}; // 31:10 (22 bits)
-    assign sets_index = addr_i[SETS_INDEX_BITS + LOWER_TAG_BITS - 1 : LOWER_TAG_BITS]; // 9:2 (8 bits)
+    assign tag        = {addr_i[ADDR_WIDTH-1 : SETS_INDEX_BITS + LOWER_TAG_BITS], addr_i[LOWER_TAG_BITS-1:0]}; // [31:10] + [1:0] (24 bits)
+    assign sets_index = addr_i[SETS_INDEX_BITS + LOWER_TAG_BITS - 1 : LOWER_TAG_BITS]; // [9:2] (8 bits)
     
     // Internal signals
     logic [NUM_WAYS-1:0] way_hit_flag;
