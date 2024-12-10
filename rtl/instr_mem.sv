@@ -1,5 +1,7 @@
 module instr_mem (
+    /* verilator lint_off UNUSED */
     input  logic [31:0] addr_i,   // Address (Program Counter)
+    /* verilator lint_on UNUSED */
     output logic [31:0] instr_o   // Fetched instruction
 );
 
@@ -13,7 +15,7 @@ module instr_mem (
     logic [7:0] mem [0:MEM_SIZE-1];
 
     // Internal signal for address error detection
-    logic addr_error;
+    // logic addr_error;
 
     // Initialize memory
     initial begin
@@ -34,7 +36,7 @@ module instr_mem (
         // else begin
             instr_o = {mem[addr_i[11:0] + 3], mem[addr_i[11:0] + 2], mem[addr_i[11:0] + 1], mem[addr_i[11:0]]};
         // end
-    end 
+    end
 
     // // Address error detection logic
     // always_comb begin
