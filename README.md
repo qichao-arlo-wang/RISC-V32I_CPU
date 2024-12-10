@@ -137,22 +137,22 @@ To be updated
 
 F1 lights
 
-**/root/Documents/Group-9-RISC-V/images/TestEvidence/f1testingvid.mp4**
+**<video controls src="https://github.com/arlo-wang/Group-9-RISC-V/blob/9bec4edaada61815e805d215d8d00f31166c538f/images/TestEvidence/f1testingvid.mp4"></video>**
 
 Gaussian
 
-**/root/Documents/Group-9-RISC-V/images/TestEvidence/gaussian.mp4**
+**<video controls src="https://github.com/arlo-wang/Group-9-RISC-V/blob/66e9283f0160c8348bc2cc0caaa28a72f53757b4/images/TestEvidence/gaussian.mp4"></video>**
 
 Sine
 
-**/root/Documents/Group-9-RISC-V/images/TestEvidence/sine.jpg**
+**![/root/Documents/Group-9-RISC-V/images/TestEvidence/sine.jpg](https://github.com/arlo-wang/Group-9-RISC-V/blob/66e9283f0160c8348bc2cc0caaa28a72f53757b4/images/TestEvidence/sine.jpg)**
 
 Triangle
-**/root/Documents/Group-9-RISC-V/images/TestEvidence/triangle.jpg**
+**![/root/Documents/Group-9-RISC-V/images/TestEvidence/triangle.jpg](https://github.com/arlo-wang/Group-9-RISC-V/blob/66e9283f0160c8348bc2cc0caaa28a72f53757b4/images/TestEvidence/triangle.jpg)**
 
 Noisy
 
-**/root/Documents/Group-9-RISC-V/images/TestEvidence/noisy.mp4**
+**<video control src="https://github.com/arlo-wang/Group-9-RISC-V/blob/66e9283f0160c8348bc2cc0caaa28a72f53757b4/images/TestEvidence/noisy.mp4"></video>**
 
 
 ## Team Contribution
