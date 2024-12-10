@@ -39,6 +39,6 @@ end:
     add a0, a0, t5   # a0 += t5 (result of BGE)
 
     # Infinite loop to finish program
-finish:     # Result in a0 will be 0xF024
+finish:     # Result in a0 will be 0xF124
     bne     a0, zero, finish     # loop forever
 

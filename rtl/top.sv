@@ -325,12 +325,11 @@ always_comb begin
         3'b000: branch_condition_e = eq_e;                      // beq: branch if zero is set
         3'b001: branch_condition_e = ~eq_e;                     // bne: branch if zero is not set
         3'b100: branch_condition_e = ($signed(alu_result_e) < 0);          // blt
-        3'b101: branch_condition_e = eq_e | ($signed(alu_result_e) < 0); // bge
+        3'b101: branch_condition_e = eq_e | ($signed(alu_result_e) > 0); // bge
         /* verilator lint_off UNSIGNED */
         3'b110: branch_condition_e = (alu_result_e < 0);           //bltu 
         /* verilator lint_on UNSIGNED */
         3'b111: branch_condition_e = eq_e | (alu_result_e > 0);  //bgeu
-        /* verilator lint_on UNSIGNED */
         default: branch_condition_e = 1'b0;                       // Other branch types not implemented here
     endcase
 end
