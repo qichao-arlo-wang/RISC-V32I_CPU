@@ -58,7 +58,7 @@ mux pc_mux(
 );
 
 // Instantiate Instruction Memory
-instr_mem_sys instr_mem_sys_inst (
+instr_cache_hierarchy instr_mem_sys_inst (
     .clk(clk),
     .addr_i(pc),
     .instr_o(instr)

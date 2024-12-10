@@ -6,7 +6,7 @@ module instr_mem (
     localparam        MEM_SIZE  = 4 * 1024;             // Memory size in bytes (0xBFC00000 to 0xBFC00FFF -> 4KB)
     localparam [31:0] BASE_ADDR = 32'hBFC00000;         // Base address of instruction memory
     localparam [31:0] TOP_ADDR  = BASE_ADDR + MEM_SIZE -1;         // Top address of instruction memory
-    localparam string MEM_FILE  = "/root/Documents/Group-9-RISC-V/tb/program.hex";        // Memory initialization file
+    localparam string MEM_FILE  = "/root/Documents/Group-9-RISC-V/tb/test_out/1_addi_bne/program.hex";        // Memory initialization file
 
     // 4 x 1024 bytes memory
     logic [7:0] mem [0:MEM_SIZE-1];
