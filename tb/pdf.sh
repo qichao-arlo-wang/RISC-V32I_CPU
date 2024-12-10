@@ -39,7 +39,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Copy the chosen data memory file as data.mem
-cp "${MEM_PATH}" "./data.mem"
+cp "${MEM_PATH}" "./data.hex"
 if [ $? -ne 0 ]; then
     echo "Error: Failed to copy ${MEM_FILE} from ${MEM_PATH}"
     exit 1

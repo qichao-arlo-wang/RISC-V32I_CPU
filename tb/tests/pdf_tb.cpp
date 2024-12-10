@@ -33,21 +33,21 @@ TEST_F(CpuTestBench, StateTest) {
     for (int i = 0; i < 1'000'000; ++i) {
         runSimulation(1);
         
-        // Debugging PC and Instruction
-        std::cout << "Cycle: " << ticks 
-                  << " | PC: 0x" << std::hex << top->pc
-                  << " | Instr: 0x" << top->instr 
-                  << " | A0: 0x" << top->a0
-                  << std::dec << std::endl;
+        //// Debugging PC and Instruction
+        // std::cout << "Cycle: " << ticks 
+        //           << " | PC: 0x" << std::hex << top->pc
+        //           << " | Instr: 0x" << top->instr 
+        //           << " | A0: 0x" << top->a0
+        //           << std::dec << std::endl;
 
-        // Check if the program has reached the display loop
-        if (!pdf_build_done && (top->pc == DISPLAY_LOOP_PC)) {
-            pdf_build_done = true;
-            std::cout << "PDF build is complete. Starting to plot A0 values." << std::endl;
-        }
+        //// Check if the program has reached the display loop
+        //if (!pdf_build_done && (top->pc == DISPLAY_LOOP_PC)) {
+        //   pdf_build_done = true;
+        //    std::cout << "PDF build is complete. Starting to plot A0 values." << std::endl;
+        //}
 
         // Only plot after PDF build is complete
-        if (pdf_build_done && top->a0 != 0) {
+        if (top->a0 != 0) {
             vbdPlot(int(top->a0), 0, 255);
         }
     }
