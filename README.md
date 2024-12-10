@@ -10,10 +10,10 @@
 - Enxing: testing
 
 # RISC-V RV32I Processor
-# THings needed
+# Things needed
 - Picture & Image for the pdf plotting on Vbuddy
 - Fill in / Edit the contribution table
-- Add test commant & explaination
+- Add test command & explaination
 - Add personal statement link
 - 
 ## Team 9 Statement
@@ -27,12 +27,12 @@
 Our team has successfully completed and verified the following for our RV32I 
   processor:
 
-| Tag                                                                                                  | Statement |
-| ---------------------------------------------------------------------------------------------------- |-------------------------------------------|
-| [Lab4](https://github.com/arlo-wang/Group-9-RISC-V/tree/lab4)                                        | [lab4.md](link) | 
-| [Single-Cycle(full RISC Design)](https://github.com/arlo-wang/Group-9-RISC-V/tree/full-rv32i-design) | [single_cycle_full_design.md](link) |
-| [Pipeline](https://github.com/arlo-wang/Group-9-RISC-V/tree/pipeline)                                | [pipeline.md](link) |
-| [Cache](https://github.com/arlo-wang/Group-9-RISC-V/tree/data_cache)                                 | [cache.md](link) |
+| Tag                                                                                                  |
+| ---------------------------------------------------------------------------------------------------- |
+| [Lab4](https://github.com/arlo-wang/Group-9-RISC-V/tree/lab4)                                        | 
+| [Single-Cycle(full RISC Design)](https://github.com/arlo-wang/Group-9-RISC-V/tree/full-rv32i-design) | 
+| [Pipeline](https://github.com/arlo-wang/Group-9-RISC-V/tree/pipeline)                                | 
+| [Cache](https://github.com/arlo-wang/Group-9-RISC-V/tree/data_cache)                                 |
 
 
 ## Personal statements
@@ -126,6 +126,8 @@ To be updated
 
 ## Working Evidence
 
+### Test result evidence
+- [`test evidence`]([/images/TestEvidence))
 
 ### Graphs
 | Dataset | Graph | Dataset | Graph |
