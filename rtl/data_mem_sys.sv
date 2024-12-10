@@ -20,6 +20,10 @@ module data_mem_sys (
     logic [31:0] l3_cache_data;
     logic [31:0] main_mem_data;
 
+    logic l2_cache_valid;
+    logic l3_cache_valid;
+    logic main_mem_valid;
+
     // Instantiate the L1 Cache
     l1_4way_cache_4kb l1_cache (
         .clk(clk),
@@ -27,6 +31,7 @@ module data_mem_sys (
         .addr_i(addr_i),
         .wr_data_i(wr_data_i),
         .byte_en_i(byte_en_i),
+        .l2_cache_valid_i(l2_cache_valid),
         .l2_cache_data_i(l2_cache_data),
 
         .l1_cache_hit_o(l1_cache_hit),
@@ -40,8 +45,10 @@ module data_mem_sys (
         .addr_i(addr_i),
         .wr_data_i(wr_data_i),
         .byte_en_i(byte_en_i),
-        .l3_cache_data_i(l3_cache_data),
+        .l3_cache_valid_i(l3_cache_valid),
+        .l3_cache_data_i(main_mem_data),
 
+        .l2_cache_valid_o(l2_cache_valid),
         .l2_cache_hit_o(l2_cache_hit),
         .l2_rd_data_o(l2_cache_data)
     );
@@ -53,8 +60,10 @@ module data_mem_sys (
         .addr_i(addr_i),
         .wr_data_i(wr_data_i),
         .byte_en_i(byte_en_i),
+        .main_mem_valid_i(main_mem_valid),
         .main_mem_data_i(main_mem_data),
 
+        .l3_cache_valid_o(l3_cache_valid),
         .l3_cache_hit_o(l3_cache_hit),
         .l3_rd_data_o(l3_cache_data)
     );
@@ -67,6 +76,7 @@ module data_mem_sys (
         .wr_data_i(wr_data_i),
         .byte_en_i(byte_en_i),
         
+        .main_mem_valid_o(main_mem_valid),
         .main_mem_rd_data_o(main_mem_data)
     );
 

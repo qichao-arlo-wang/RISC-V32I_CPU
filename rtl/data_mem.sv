@@ -1,12 +1,13 @@
 module data_mem (
     input  logic        clk,
     /* verilator lint_off UNUSED */
-    input  logic [31:0] addr_i,    // mem address
+    input  logic [31:0] addr_i,             // mem address
     /* verilator lint_on UNUSED */
-    input  logic        wr_en_i,   // mem write enable
-    input  logic [31:0] wr_data_i, // mem write data
-    input  logic [3:0]  byte_en_i, // byte enable
+    input  logic        wr_en_i,            // mem write enable
+    input  logic [31:0] wr_data_i,          // mem write data
+    input  logic [3:0]  byte_en_i,          // byte enable
 
+    output logic        main_mem_valid_o,   // mem read valid
     output logic [31:0] main_mem_rd_data_o  // mem read data
 );
 
@@ -66,11 +67,18 @@ module data_mem (
 
     // Asynchronous read logic
     always_comb begin
-        case (byte_en_i)
-            4'b0001: main_mem_rd_data_o = {24'b0, mem[addr_i]};
-            4'b0011: main_mem_rd_data_o = {16'b0, mem[addr_i+1], mem[addr_i]};
-            4'b1111: main_mem_rd_data_o = {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]};
-            default: main_mem_rd_data_o = 32'hDEADBEEF;
-        endcase
+        if (byte_en_i == 4'b0000) begin
+            main_mem_valid_o = 1'b0;
+            main_mem_rd_data_o = 32'hDEADBEEF;
+        end
+        else begin
+            main_mem_valid_o = 1'b1;
+            case (byte_en_i)
+                4'b0001: main_mem_rd_data_o = {24'b0, mem[addr_i]};
+                4'b0011: main_mem_rd_data_o = {16'b0, mem[addr_i+1], mem[addr_i]};
+                4'b1111: main_mem_rd_data_o = {mem[addr_i+3], mem[addr_i+2], mem[addr_i+1], mem[addr_i]};
+                default: main_mem_rd_data_o = 32'hDEADBEEF;
+            endcase
+        end
     end
 endmodule

@@ -13,8 +13,10 @@ module l3_8way_cache_8kb #(
     /* verilator lint_on UNUSED */
     input logic [DATA_WIDTH-1:0]  wr_data_i,            // Data to write
     input logic [3:0]             byte_en_i,            // byte enable
+    input logic                   main_mem_valid_i,     // Main memory data valid
     input logic [DATA_WIDTH-1:0]  main_mem_data_i,      // Data from main memory
 
+    output logic                  l3_cache_valid_o,     // Indicates a cache hit
     output logic [DATA_WIDTH-1:0] l3_rd_data_o,         // Data read
     output logic                  l3_cache_hit_o        // Indicates a cache hit
 );
@@ -72,17 +74,20 @@ module l3_8way_cache_8kb #(
         hit_detected = 1'b0;      // Default: no cache hit
         way_hit_flag = '0;        // Default: no way is hit
         l3_rd_data_o = '0;        // Default: no data output
+        l3_cache_valid_o = 1'b0;   // Default: no valid data
 
-        if (main_mem_data_i == 32'hDEADBEEF) begin
+        if (!main_mem_valid_i) begin
             hit_detected = 1'b0;
         end
-        else if (byte_en_i != 0) begin
+        else begin
+        // else if (byte_en_i != 0) begin
             // find the way that was hit
             for (int i = 0; i < NUM_WAYS; i++) begin
                 // Check if the cache line is valid and the tags match
                 if (!hit_detected && valid_array[sets_index][i] && tag_array[sets_index][i] == tag) begin
                     hit_detected = 1'b1;      // Mark as a hit
                     way_hit_flag[i] = 1'b1;   // Mark the hit way
+                    l3_cache_valid_o = 1'b1;  // Mark the data as valid
                     // read the data from the hit way
                     case (byte_en_i)
                         4'b0001: l3_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
@@ -132,7 +137,7 @@ module l3_8way_cache_8kb #(
         end
 
         // // // IF MISS // // //
-        else if (main_mem_data_i != 32'hDEADBEEF) begin
+        else if (main_mem_valid_i) begin
             // Cache miss: Replace the LRU line
             int evict_way = 0;
             logic [2:0] max_lru = lru_bits[sets_index][0];

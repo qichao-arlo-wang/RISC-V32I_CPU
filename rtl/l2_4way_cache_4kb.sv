@@ -13,10 +13,12 @@ module l2_4way_cache_4kb #(
     /* verilator lint_on UNUSED */
     input logic [DATA_WIDTH-1:0]  wr_data_i,            // Data to write
     input logic [3:0]             byte_en_i,            // byte enable
+    input logic                   l3_cache_valid_i,     // L3 cache data valid
     input logic [DATA_WIDTH-1:0]  l3_cache_data_i,      // Data from l3 cache 
 
-    output logic [DATA_WIDTH-1:0] l2_rd_data_o,         // Data read
-    output logic                  l2_cache_hit_o        // Indicates a cache hit
+    output logic                  l2_cache_valid_o,     // L2 cache data valid
+    output logic                  l2_cache_hit_o,       // Indicates a cache hit
+    output logic [DATA_WIDTH-1:0] l2_rd_data_o          // Data read
 );
 
     /* 4-way set-associative cache 
@@ -72,20 +74,24 @@ module l2_4way_cache_4kb #(
         hit_detected = 1'b0;      // Default: no cache hit
         way_hit_flag = '0;        // Default: no way is hit
         l2_rd_data_o = '0;        // Default: no data output
+        l2_cache_valid_o = 1'b0;   // Default: no valid data
 
-        if (l3_cache_data_i == 32'hDEADBEEF) begin
+        if (!l3_cache_valid_i) begin
             // No data from L3 cache
             hit_detected = 1'b0;
             l2_rd_data_o = '0;
         end
 
-        else if (byte_en_i != 0) begin
+        else begin
+        // else if (byte_en_i != 0) begin
             // find the way that was hit
             for (int i = 0; i < NUM_WAYS; i++) begin
                 // Check if the cache line is valid and the tags match
                 if (!hit_detected && valid_array[sets_index][i] && tag_array[sets_index][i] == tag) begin
                     hit_detected = 1'b1;      // Mark as a hit
                     way_hit_flag[i] = 1'b1;   // Mark the hit way
+                    l2_cache_valid_o = 1'b1;   // Mark the data as valid
+
                     // read the data from the hit way
                     case (byte_en_i)
                         4'b0001: l2_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
@@ -135,7 +141,7 @@ module l2_4way_cache_4kb #(
         end
 
         // // // IF MISS // // //
-        else if (l3_cache_data_i != 32'hDEADBEEF) begin
+        else if (l3_cache_valid_i) begin
             // Cache miss: Replace the LRU line
             int evict_way = 0;
             logic [2:0] max_lru = lru_bits[sets_index][0];

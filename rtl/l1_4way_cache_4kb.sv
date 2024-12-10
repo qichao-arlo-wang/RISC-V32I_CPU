@@ -13,6 +13,7 @@ module l1_4way_cache_4kb #(
     /* verilator lint_on UNUSED */
     input logic [DATA_WIDTH-1:0]  wr_data_i,            // Data to write
     input logic [3:0]             byte_en_i,            // byte enable
+    input logic                   l2_cache_valid_i,     // L2 cache data valid
     input logic [DATA_WIDTH-1:0]  l2_cache_data_i,      // Data from l2 cache 
 
     output logic [DATA_WIDTH-1:0] l1_rd_data_o,         // Data read
@@ -73,11 +74,12 @@ module l1_4way_cache_4kb #(
         way_hit_flag = '0;        // Default: no way is hit
         l1_rd_data_o = '0;        // Default: no data output
 
-        if (l2_cache_data_i == 32'hDEADBEEF) begin
+        if (!l2_cache_valid_i) begin
             // No data from L2 cache
             hit_detected = 1'b0;
         end
-        else if (byte_en_i != 0) begin
+        else begin
+        // else if (byte_en_i != 0) begin
             // find the way that was hit
             for (int i = 0; i < NUM_WAYS; i++) begin
                 // Check if the cache line is valid and the tags match
@@ -133,7 +135,7 @@ module l1_4way_cache_4kb #(
         end
 
         // // // IF MISS // // //
-        else if (l2_cache_data_i != 32'hDEADBEEF) begin
+        else if (l2_cache_valid_i) begin
             // Cache miss: Replace the LRU line
             int evict_way = 0;
             logic [2:0] max_lru = lru_bits[sets_index][0];
