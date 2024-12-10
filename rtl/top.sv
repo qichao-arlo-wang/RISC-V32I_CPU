@@ -4,7 +4,9 @@ module top #(
     input   logic clk,     // clock signal
     input   logic trigger,
     input   logic rst,
-    output  logic [DATA_WIDTH-1:0] a0
+    output  logic [DATA_WIDTH-1:0] a0  // Already declared
+    // output  logic [DATA_WIDTH-1:0] pc,  // Add this
+    // output  logic [DATA_WIDTH-1:0] instr // Add this
 );
 
 logic trigger_latched;
@@ -403,7 +405,7 @@ pipeline_reg_e_m pipeline_e_m_inst (
 
 // // Stage 4 Memory  -m
 
-data_mem data_mem_inst(
+data_mem_sys data_mem_sys_inst(
     .clk(clk),
     .addr_i(alu_result_m),
     .wr_data_i(rd_data2_m),
