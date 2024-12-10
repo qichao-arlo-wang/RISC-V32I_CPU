@@ -30,6 +30,5 @@ main:
     add a0, a0, t0     # a0 += t0 (-2 signed from SRAI)
 
     # Infinite loop to finish program
-finish:
-    j finish
-
+finish:     # expected result is 1073741824
+    bne     a0, zero, finish     # loop forever

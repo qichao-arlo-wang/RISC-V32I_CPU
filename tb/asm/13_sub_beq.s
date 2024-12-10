@@ -27,6 +27,6 @@ end:
     add a0, a0, t4   # a0 += t4
 
     # Infinite loop to finish program
-finish:
-    j finish
+finish:     # expected result is 0xBEF9
+    bne     a0, zero, finish     # loop forever
 

@@ -139,6 +139,14 @@ TEST_F(CpuTestbench, TestBGEUBLTU)
     EXPECT_EQ(top_->a0, 0x1AEFC);
 }
 
+TEST_F(CpuTestbench, TestAUIPC)
+{
+    setupTest("16_auipc");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x200C);
+}
+
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
