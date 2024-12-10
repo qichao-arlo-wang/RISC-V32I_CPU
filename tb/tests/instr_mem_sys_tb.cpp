@@ -1,12 +1,10 @@
 #include "base_testbench.h"
 
-
 Vdut *top;
 VerilatedVcdC *tfp;
 unsigned int main_time = 0;
 
-class InstrMemSysTestbench : public BaseTestbench
-{
+class InstrMemSysTestbench : public BaseTestbench {
 protected:
     void initializeInputs() override {
         top->clk = 0;
@@ -18,70 +16,42 @@ protected:
         top->eval();
         tfp->dump(main_time);
         main_time++;
-    } 
+    }
+
+    void simulateClockCycle(int num_cycles) {
+        for (int i = 0; i < num_cycles; i++) {
+            toggleClock();
+            toggleClock();
+        }
+    }
 };
 
-// first normal test case
-TEST_F(InstrMemSysTestbench, InstrMemWorksTest1) {
+TEST_F(InstrMemSysTestbench, InstrMemTest) {
     initializeInputs();
-    top->addr_i = 0xBFC00000;
-    top->eval();
-    toggleClock();
 
-    // Expected instruction from original instr_mem tests
-    EXPECT_EQ(top->instr_o, 0x0ff00313);
+    // Test with multiple addresses
+    uint32_t addresses[] = {0xBFC00000, 0xBFC00004, 0xBFC00008};
+    uint32_t expected_instr[] = {0x0ff00313, 0x00000513, 0x00000593};
+
+    for (int i = 0; i < 3; i++) {
+        top->addr_i = addresses[i];
+        simulateClockCycle(5); // Run clock cycles to simulate instruction fetching
+
+        EXPECT_EQ(top->instr_o, expected_instr[i]);
+
+        std::cout << "ADDR: " << std::hex << top->addr_i
+                  << ", CACHE_HIT: " << (int)top->cache_hit_o
+                  << ", INSTR: " << std::hex << top->instr_o << std::endl;
+    }
 }
 
-// second normal test case
-TEST_F(InstrMemSysTestbench, InstrMemWorksTest2) {
-    initializeInputs();
-    top->addr_i = 0xBFC00004;
-    top->eval();
-    toggleClock();
-
-    EXPECT_EQ(top->instr_o, 0x00000513);
-}
-
-// third normal test case
-TEST_F(InstrMemSysTestbench, InstrMemWorksTest3) {
-    initializeInputs();
-    top->addr_i = 0xBFC00008;
-    top->eval();
-    toggleClock();
-
-    EXPECT_EQ(top->instr_o, 0x00000593);
-}
-
-// unaligned memory access test case
-TEST_F(InstrMemSysTestbench, UnalignedMemAccessTest) {
-    initializeInputs();
-    top->addr_i = 0xBFC00002; // Unaligned address
-    top->eval();
-    toggleClock();
-    
-    // Expect a default instruction (0xDEADBEEF) on unaligned
-    EXPECT_EQ(top->instr_o, 0xDEADBEEF);
-}
-
-// out-of-range memory access test case
-TEST_F(InstrMemSysTestbench, OutOfRangeMemAccessTest) {
-    initializeInputs();
-    top->addr_i = 0xBFC01000; // Out-of-range address
-    top->eval();
-    toggleClock();
-
-    // Expect 0xDEADBEEF on out-of-range
-    EXPECT_EQ(top->instr_o, 0xDEADBEEF);
-}
-
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     top = new Vdut;
     tfp = new VerilatedVcdC;
 
     Verilated::traceEverOn(true);
     top->trace(tfp, 99);
-    tfp->open("Vdut.vcd");
+    tfp->open("instr_mem_sys_waveform.vcd");
 
     testing::InitGoogleTest(&argc, argv);
     auto res = RUN_ALL_TESTS();

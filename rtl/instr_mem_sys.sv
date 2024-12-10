@@ -1,10 +1,10 @@
 module instr_mem_sys (
     input  logic        clk,
-    input  logic [31:0] addr_i,     // Instruction address
-    output logic [31:0] instr_o     // Instruction output
+    input  logic [31:0] addr_i,
+    output logic [31:0] instr_o,
+    output logic        cache_hit_o
 );
 
-    logic cache_hit_o;
     logic [31:0] instr_cache_data;
     logic [31:0] main_mem_instr;
 
