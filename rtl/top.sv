@@ -4,9 +4,7 @@ module top #(
     input   logic clk,     // clock signal
     input   logic trigger,
     input   logic rst,
-    output  logic [DATA_WIDTH-1:0] a0  // Already declared
-    // output  logic [DATA_WIDTH-1:0] pc,  // Add this
-    // output  logic [DATA_WIDTH-1:0] instr // Add this
+    output  logic [DATA_WIDTH-1:0] a0
 );
 
 logic trigger_latched;
@@ -128,7 +126,8 @@ mux pc_mux(
 );
 
 // Instantiate Instruction Memory
-instr_mem instr_mem_inst (
+instr_mem_sys instr_mem_sys_inst (
+    .clk(clk),
     .addr_i(pc_f),
     .instr_o(instr_f)
 );
