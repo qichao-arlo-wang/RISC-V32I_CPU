@@ -53,7 +53,6 @@ Note: before **ANY** test (including the first time script), execute this comman
 cd tb
 ```
 
-
 ### Using the testbench
 
 
@@ -62,15 +61,24 @@ cd tb
 | `./doit.sh`                           | Test all.                             |
 | `./doit.sh verify.cpp`                | Test all instruction implemented      |
 | `./doit.sh TEST FILE NAME`            | Test the entire instruction testbench |
-| `./doit.sh test/TEST FILE NAME`       | Test the F1 lights testbench (stdout) |
-| `./doit.sh test/TEST FILE NAME`       | Test the F1 lights testbench (vBuddy) |
-| `./doit.sh test/TEST FILE NAME`       | Test the PDF testbench* (stdout)      |
-| `./doit.sh test/TEST FILE NAME`       | Test the PDF testbench* (vBuddy)      |
+| `./f1.sh test/TEST FILE NAME`         | Test the F1 lights testbench (stdout) |
+| `./f1.sh test/TEST FILE NAME`         | Test the F1 lights testbench (vBuddy) |
+
 
 * may add specifc command
 
-\* Note: to run the PDF testbench, you need to load the data memory. 
-Run only ONE of the following commands BEFORE `doit.sh`.
+### Using `pdf.sh` Script
+The `pdf.sh` script allows you to load different `.mem` files depending on the user input. Use the following commands to specify the desired dataset:
+
+#### Relevant Commands
+| Command            | Explanation                           |
+|--------------------|---------------------------------------|
+| `./pdf.sh sine`    | Loads the `sine.mem` dataset.         |
+| `./pdf.sh triangle`| Loads the `triangle.mem` dataset.     |
+| `./pdf.sh gaussian`| Loads the `gaussian.mem` dataset.     |
+| `./pdf.sh noisy`   | Loads the `noisy.mem` dataset.        |
+
+Each command automatically configures the data memory for the PDF testbench. Refer to the testbench documentation for further details.
 
 Gaussian:
 
@@ -129,22 +137,22 @@ To be updated
 
 F1 lights
 
-**PATH for Video**
+**/root/Documents/Group-9-RISC-V/images/TestEvidence/f1testingvid.mp4**
 
 Gaussian
 
-**PATH for Video**
+**/root/Documents/Group-9-RISC-V/images/TestEvidence/gaussian.mp4**
 
 Sine
 
-**PATH for Video**
+**/root/Documents/Group-9-RISC-V/images/TestEvidence/sine.jpg**
 
 Triangle
-**PATH for Video**
+**/root/Documents/Group-9-RISC-V/images/TestEvidence/triangle.jpg**
 
 Noisy
 
-**PATH for Video**
+**/root/Documents/Group-9-RISC-V/images/TestEvidence/noisy.mp4**
 
 
 ## Team Contribution
