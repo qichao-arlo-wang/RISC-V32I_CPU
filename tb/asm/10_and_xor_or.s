@@ -35,5 +35,5 @@ main:
     add a0, a0, t2     # a0 += t2 (0x000000FF)
 
     # Infinite loop to finish program
-finish:
-    j finish
+finish:     # expected result is 0x1A6
+    bne     a0, zero, finish     # loop forever

@@ -33,7 +33,7 @@ main:
     mv a0, t0         # a0 = t0 (final result)
 
     # Infinite loop to finish program
-finish:
-    j finish
+    finish:     # expected result is 0x320
+        bne     a0, zero, finish     # loop forever
 
 

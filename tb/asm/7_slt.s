@@ -35,7 +35,7 @@ main:
     add a0, a0, t3    # a0 += t3 (0)
 
     # Infinite loop to finish program
-finish:
-    j finish
+finish:     # expected result is 0x4
+    bne     a0, zero, finish     # loop forever
 
 

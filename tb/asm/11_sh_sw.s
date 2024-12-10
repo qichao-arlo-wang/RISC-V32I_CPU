@@ -32,6 +32,6 @@ main:
     add a0, a0, t5       # a0 += t5 (unsigned 0x8001 -> 32769)
 
     # Infinite loop to finish program
-finish:
-    j finish
+finish:     # expected result is 0x9BE22467
+    bne     a0, zero, finish     # loop forever
 

@@ -12,3 +12,19 @@
 
 ## Project
 - sign_exten_tb.cpp
+
+# Extension
+## Other RISC-V instructions in ALU
+### SLL
+![Abnormality of SLL](/images/personal_statements_images/enxing_lao_images/SLL.png)
+
+When SLL is tested with an overflow where t0 = 0xA is tested with an overflow of 32, 0xA << 32 should be equal to 0 since there is an overflow to 33 bits.
+However, as seen in the image above, although src_a = 0xA, src_b = 0x20 and alu_control = 0x2 which correlates to the signed left logical shift in the ALU, the output of the ALU in alu_result = 0xA instead of 0x0. This contributes to the value in a0 (which is the sum of output values) to be higher than expected value of 410 by 10.
+![output of SLL test](/images/personal_statements_images/enxing_lao_images/SLLtest.png)
+
+### SLT
+![output of SLT test](/images/personal_statements_images/enxing_lao_images/SLTtest.png)
+
+### SLTU
+![waveform of SLTU test](/images/personal_statements_images/enxing_lao_images/SLTUwaveform.png)
+As seen in this image, at the second clock cycle, a0 remains = 0x1 as the output is 0 because the unsigned comparison of 10 and -10 is such that -10 is larger. Thus, there is no addition. At the third clock cycle, a0 increases by 1. This is the opposite at the SLT waveform.
