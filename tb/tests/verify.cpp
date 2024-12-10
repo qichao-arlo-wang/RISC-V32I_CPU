@@ -44,7 +44,6 @@ TEST_F(CpuTestbench, TestJalRet)
 TEST_F(CpuTestbench, TestPdf)
 {
     setupTest("5_pdf");
-    system("pwd");
     setData("../reference/gaussian.mem");
     initSimulation();
     runSimulation(CYCLES * 100);

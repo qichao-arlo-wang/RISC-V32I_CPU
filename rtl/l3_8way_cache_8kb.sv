@@ -74,13 +74,9 @@ module l3_8way_cache_8kb #(
         hit_detected = 1'b0;      // Default: no cache hit
         way_hit_flag = '0;        // Default: no way is hit
         l3_rd_data_o = '0;        // Default: no data output
-        l3_cache_valid_o = 1'b0;   // Default: no valid data
+        l3_cache_valid_o = 1'b0;  // Default: no valid data
 
-        if (!main_mem_valid_i) begin
-            hit_detected = 1'b0;
-        end
-        else begin
-        // else if (byte_en_i != 0) begin
+        if (byte_en_i != 0) begin
             // find the way that was hit
             for (int i = 0; i < NUM_WAYS; i++) begin
                 // Check if the cache line is valid and the tags match
@@ -157,8 +153,8 @@ module l3_8way_cache_8kb #(
             if (wr_en_i) begin
                 // Write with byte masking
                 case (byte_en_i)
-                    4'b0001: data_array[sets_index][evict_way] <= {data_array[sets_index][evict_way][31:8], wr_data_i[7:0]};
-                    4'b0011: data_array[sets_index][evict_way] <= {data_array[sets_index][evict_way][31:16], wr_data_i[15:0]};
+                    4'b0001: data_array[sets_index][evict_way] <= {main_mem_data_i[31:8], wr_data_i[7:0]};
+                    4'b0011: data_array[sets_index][evict_way] <= {main_mem_data_i[31:16], wr_data_i[15:0]};
                     4'b1111: data_array[sets_index][evict_way] <= wr_data_i;
                     default: $display("Warning: Unrecognized byte enable: %b. No data written.", byte_en_i);
                 endcase

@@ -31,6 +31,7 @@ module data_mem_sys (
         .addr_i(addr_i),
         .wr_data_i(wr_data_i),
         .byte_en_i(byte_en_i),
+
         .l2_cache_valid_i(l2_cache_valid),
         .l2_cache_data_i(l2_cache_data),
 
@@ -45,8 +46,9 @@ module data_mem_sys (
         .addr_i(addr_i),
         .wr_data_i(wr_data_i),
         .byte_en_i(byte_en_i),
+
         .l3_cache_valid_i(l3_cache_valid),
-        .l3_cache_data_i(main_mem_data),
+        .l3_cache_data_i(l3_cache_data),
 
         .l2_cache_valid_o(l2_cache_valid),
         .l2_cache_hit_o(l2_cache_hit),
@@ -60,6 +62,7 @@ module data_mem_sys (
         .addr_i(addr_i),
         .wr_data_i(wr_data_i),
         .byte_en_i(byte_en_i),
+
         .main_mem_valid_i(main_mem_valid),
         .main_mem_data_i(main_mem_data),
 
@@ -82,7 +85,7 @@ module data_mem_sys (
 
     // Check L1, L2, L3 cache hit sequentially
     assign rd_data_o = l1_cache_hit ? l1_cache_data :
-                       l2_cache_hit ? l2_cache_data :
-                       l3_cache_hit ? l3_cache_data :
-                       main_mem_data;
+                    (l2_cache_hit && l2_cache_valid) ? l2_cache_data :
+                    (l3_cache_hit && l3_cache_valid) ? l3_cache_data :
+                    (main_mem_valid) ? main_mem_data : 32'h0;
 endmodule

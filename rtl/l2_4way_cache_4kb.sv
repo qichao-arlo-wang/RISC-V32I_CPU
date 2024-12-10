@@ -74,24 +74,16 @@ module l2_4way_cache_4kb #(
         hit_detected = 1'b0;      // Default: no cache hit
         way_hit_flag = '0;        // Default: no way is hit
         l2_rd_data_o = '0;        // Default: no data output
-        l2_cache_valid_o = 1'b0;   // Default: no valid data
+        l2_cache_valid_o = 1'b0;  // Default: no valid data
 
-        if (!l3_cache_valid_i) begin
-            // No data from L3 cache
-            hit_detected = 1'b0;
-            l2_rd_data_o = '0;
-        end
-
-        else begin
-        // else if (byte_en_i != 0) begin
+        if (byte_en_i != 0) begin
             // find the way that was hit
             for (int i = 0; i < NUM_WAYS; i++) begin
                 // Check if the cache line is valid and the tags match
                 if (!hit_detected && valid_array[sets_index][i] && tag_array[sets_index][i] == tag) begin
                     hit_detected = 1'b1;      // Mark as a hit
                     way_hit_flag[i] = 1'b1;   // Mark the hit way
-                    l2_cache_valid_o = 1'b1;   // Mark the data as valid
-
+                    l2_cache_valid_o = 1'b1;  // Mark the data as valid
                     // read the data from the hit way
                     case (byte_en_i)
                         4'b0001: l2_rd_data_o = {24'b0, data_array[sets_index][i][7:0]};
@@ -161,8 +153,8 @@ module l2_4way_cache_4kb #(
             if (wr_en_i) begin
                 // Write with byte masking
                 case (byte_en_i)
-                    4'b0001: data_array[sets_index][evict_way] <= {data_array[sets_index][evict_way][31:8], wr_data_i[7:0]};
-                    4'b0011: data_array[sets_index][evict_way] <= {data_array[sets_index][evict_way][31:16], wr_data_i[15:0]};
+                    4'b0001: data_array[sets_index][evict_way] <= {l3_cache_data_i[31:8], wr_data_i[7:0]};
+                    4'b0011: data_array[sets_index][evict_way] <= {l3_cache_data_i[31:16], wr_data_i[15:0]};
                     4'b1111: data_array[sets_index][evict_way] <= wr_data_i;
                     default: $display("Warning: Unrecognized byte enable: %b. No data written.", byte_en_i);
                 endcase

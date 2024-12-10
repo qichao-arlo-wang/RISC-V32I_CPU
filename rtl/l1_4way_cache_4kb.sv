@@ -74,12 +74,7 @@ module l1_4way_cache_4kb #(
         way_hit_flag = '0;        // Default: no way is hit
         l1_rd_data_o = '0;        // Default: no data output
 
-        if (!l2_cache_valid_i) begin
-            // No data from L2 cache
-            hit_detected = 1'b0;
-        end
-        else begin
-        // else if (byte_en_i != 0) begin
+        if (byte_en_i != 0) begin
             // find the way that was hit
             for (int i = 0; i < NUM_WAYS; i++) begin
                 // Check if the cache line is valid and the tags match
@@ -155,23 +150,22 @@ module l1_4way_cache_4kb #(
             if (wr_en_i) begin
                 // Write with byte masking
                 case (byte_en_i)
-                    4'b0001: data_array[sets_index][evict_way] <= {data_array[sets_index][evict_way][31:8], wr_data_i[7:0]};
-                    4'b0011: data_array[sets_index][evict_way] <= {data_array[sets_index][evict_way][31:16], wr_data_i[15:0]};
+                    4'b0001: data_array[sets_index][evict_way] <= {l2_cache_data_i[31:8], wr_data_i[7:0]};
+                    4'b0011: data_array[sets_index][evict_way] <= {l2_cache_data_i[31:16], wr_data_i[15:0]};
                     4'b1111: data_array[sets_index][evict_way] <= wr_data_i;
                     default: $display("Warning: Unrecognized byte enable: %b. No data written.", byte_en_i);
                 endcase
-            end 
+            end
             // Read operation: Load main memory data when not writing
             else begin
                 data_array[sets_index][evict_way] <= l2_cache_data_i;
             end
 
-
             // Update LRU bits: new line is most recently used = 0
             for (int i = 0; i < NUM_WAYS; i++) begin
                 if (i == evict_way) begin
                     lru_bits[sets_index][i] <= 0;
-                end 
+                end
                 // Increment LRU count for others (only if less than NUM_WAYS-1)
                 else begin
                     if (lru_bits[sets_index][i] < (NUM_WAYS-1))
