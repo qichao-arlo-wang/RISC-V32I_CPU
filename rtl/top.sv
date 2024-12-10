@@ -5,6 +5,8 @@ module top #(
     input   logic trigger,
     input   logic rst,
     output  logic [DATA_WIDTH-1:0] a0
+//    output  logic [DATA_WIDTH-1:0] pc, 
+//    output  logic [DATA_WIDTH-1:0] instr 
 );
 
 logic trigger_latched;
@@ -107,6 +109,15 @@ logic [DATA_WIDTH-1:0] result_w;
 // // Stage 1 Fetch - f
 
 /// BLOCK 1: instruction memory, pc_plus4_adder, pc_reg and pc_mux /// ///
+
+
+// Internal connections
+//logic [DATA_WIDTH-1:0] internal_pc, internal_instr;
+//logic [DATA_WIDTH-1:0] instr_mem_addr;
+// Connect internal signals to top-level outputs
+// assign pc = internal_pc;
+// assign instr = internal_instr;
+// assign instr_mem_addr = pc + 32'hBFC00000; //translate pc to instr mem addr
 
 // adder used to +4
 adder pc_plus4_adder(

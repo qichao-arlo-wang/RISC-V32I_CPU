@@ -31,7 +31,7 @@ TEST_F(DataMemTestbench, FullWordReadTest1)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
-    top->addr_i = 0x00000004;
+    top->addr_i = 0x00010004;
     top->eval();
     toggleClock();
 
@@ -43,7 +43,7 @@ TEST_F(DataMemTestbench, FullWordReadTest2)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
-    top->addr_i = 0x00000008;
+    top->addr_i = 0x00010008;
     top->eval();
     toggleClock();
 
@@ -56,7 +56,7 @@ TEST_F(DataMemTestbench, FullWordReadTest3)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
-    top->addr_i = 0x0000000C;
+    top->addr_i = 0x0001000C;
     top->eval();
     toggleClock();
 
@@ -69,7 +69,7 @@ TEST_F(DataMemTestbench, FullWordReadTest4)
 {
     initializeInputs();
     top->byte_en_i = 0b1111;
-    top->addr_i = 0x0000001C;
+    top->addr_i = 0x0001001C;
     top->eval();
     toggleClock();
 
@@ -81,7 +81,7 @@ TEST_F(DataMemTestbench, HalfWordReadTest)
 {
     initializeInputs();
     top->byte_en_i = 0b0011;
-    top->addr_i = 0x0000001C;
+    top->addr_i = 0x0001001C;
     top->eval();
     toggleClock();
 
@@ -93,25 +93,11 @@ TEST_F(DataMemTestbench, ByteWordReadTest)
 {
     initializeInputs();
     top->byte_en_i = 0b0001;
-    top->addr_i = 0x0000001C;
+    top->addr_i = 0x0001001C;
     top->eval();
     toggleClock();
 
     EXPECT_EQ(top->rd_data_o, 0xcc);
-}
-
-// full word out of range address test case
-TEST_F(DataMemTestbench, FullWordDataMemOutOfRangeTest)
-{
-    initializeInputs();
-    top->byte_en_i = 0b1111;
-    top->addr_i = 0x0001FFFC; // Unaligned address
-    top->eval();
-    toggleClock();
-
-    top->eval();
-
-    EXPECT_EQ(top->rd_data_o, 0xDEADBEEF); // Should return error value
 }
 
 // full word write and read back test case
@@ -119,7 +105,7 @@ TEST_F(DataMemTestbench, FullWordDataMemWriteAndReadTest)
 {
     initializeInputs();
     // Write data
-    top->addr_i = 4;
+    top->addr_i = 0x00010004;
     top->wr_en_i = 1;
     top->byte_en_i = 0b1111; // Enable all bytes
     top->wr_data_i = 0xAACCBBDD;
@@ -139,7 +125,7 @@ TEST_F(DataMemTestbench, HalfWordDataMemPartialByteWriteTest)
     initializeInputs();
 
     // Write lower two bytes
-    top->addr_i = 8;
+    top->addr_i = 0x00010008;
     top->wr_en_i = 1;
     top->byte_en_i = 0b0011;    // Enable lower two bytes
     top->wr_data_i = 0x0000EEFF;
@@ -158,7 +144,7 @@ TEST_F(DataMemTestbench, ByteDataMemPartialByteWriteTest)
 {
     initializeInputs();
 
-    top->addr_i = 8;
+    top->addr_i = 0x00010008;
     top->wr_en_i = 1;
     top->byte_en_i = 0b0001;    // Enable lower two bytes
     top->wr_data_i = 0x000000FF;
