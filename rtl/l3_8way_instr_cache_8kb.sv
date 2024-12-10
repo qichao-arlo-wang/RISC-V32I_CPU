@@ -1,17 +1,17 @@
-module l1_4way_instr_cache_4kb #(
+module l3_8way_instr_cache_8kb #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32,
     parameter NUM_SETS = 256,
-    parameter NUM_WAYS = 4
+    parameter NUM_WAYS = 8
 ) (
     input  logic                   clk,
     input  logic [ADDR_WIDTH-1:0]  addr_i,
 
-    input  logic                   l2_cache_valid_i,
-    input  logic [DATA_WIDTH-1:0]  l2_cache_data_i,
+    input  logic [DATA_WIDTH-1:0]  main_mem_data_i,
 
-    output logic [DATA_WIDTH-1:0]  l1_cache_data_o,
-    output logic                   l1_cache_hit_o
+    output logic [DATA_WIDTH-1:0]  l3_cache_data_o,
+    output logic                   l3_cache_hit_o,
+    output logic                   l3_cache_valid_o
 );
 
 /*
@@ -87,22 +87,24 @@ module l1_4way_instr_cache_4kb #(
     always_comb begin
         hit_detected = 1'b0;
         way_hit_flag = '0;
-        l1_cache_data_o = '0;
+        l3_cache_data_o = '0;
+        l3_cache_valid_o = 1'b0;  // Default to invalid
 
         for (int i = 0; i < NUM_WAYS; i++) begin
                 // Check if the cache line is valid and the tags match
                 if (!hit_detected && valid_array[sets_index][i] && tag_array[sets_index][i] == tag) begin
-                    hit_detected    = 1'b1;      // Mark as a hit
-                    way_hit_flag[i] = 1'b1;   // Mark the hit way
+                    hit_detected     = 1'b1;   // Mark as a hit
+                    way_hit_flag[i]  = 1'b1;   // Mark the hit way
+                    l3_cache_valid_o = 1'b1;   // Mark as valid
 
                     // read the data from the hit way
-                    l1_cache_data_o = data_array[sets_index][i][31:0];
+                    l3_cache_data_o = data_array[sets_index][i][31:0];
 
                 end
             end
     end
 
-    assign l1_cache_hit_o = hit_detected;
+    assign l3_cache_hit_o = hit_detected;
 
     // Syncronous cache update, LRU and miss fill
     always_ff @(posedge clk) begin
@@ -116,14 +118,14 @@ module l1_4way_instr_cache_4kb #(
                 end
                 else begin
                     // Increment LRU count for others (only if less than NUM_WAYS-1)
-                    if (lru_bits[sets_index][i] < (NUM_WAYS-1))
+                    if (lru_bits[sets_index][i] < 3'(NUM_WAYS-1))
                         lru_bits[sets_index][i] <= lru_bits[sets_index][i] + 1;
                 end
             end
         end
 
         // // // IF MISS // // //
-        else if (l2_cache_valid_i) begin
+        else begin
             int evict_way = 0;
             logic [2:0] max_lru = lru_bits[sets_index][0];
 
@@ -137,7 +139,7 @@ module l1_4way_instr_cache_4kb #(
             end
 
             tag_array[sets_index][evict_way]   <= tag;
-            data_array[sets_index][evict_way] <= l2_cache_data_i;
+            data_array[sets_index][evict_way] <= main_mem_data_i;
             valid_array[sets_index][evict_way] <= 1'b1;
 
             // Update LRU bits: new line is most recently used = 0
@@ -147,7 +149,7 @@ module l1_4way_instr_cache_4kb #(
                 end
                 // Increment LRU count for others (only if less than NUM_WAYS-1)
                 else begin
-                    if (lru_bits[sets_index][i] < (NUM_WAYS-1))
+                    if (lru_bits[sets_index][i] < 3'(NUM_WAYS-1))
                         lru_bits[sets_index][i] <= lru_bits[sets_index][i] + 1;
                 end
             end
