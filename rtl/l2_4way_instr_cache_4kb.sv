@@ -5,7 +5,9 @@ module l2_4way_instr_cache_4kb #(
     parameter NUM_WAYS = 4
 ) (
     input  logic                   clk,
+    /* verilator lint_off UNUSED */
     input  logic [ADDR_WIDTH-1:0]  addr_i,
+    /* verilator lint_on UNUSED */
 
     input  logic                   l3_cache_valid_i,
     input  logic [DATA_WIDTH-1:0]  l3_cache_data_i,
@@ -15,44 +17,11 @@ module l2_4way_instr_cache_4kb #(
     output logic                   l2_cache_valid_o
 );
 
-/*
-    Instruction Cache Memory Address Breakdown
-    ==========================================
-    Memory Address (32 bits):
-    |  Tag (22 bits)   | Set Index (8 bits) | Byte Offset (2 bits) |
-    | addr_i[31:10]    | addr_i[9:2]        | addr_i[1:0]          |
 
-    - **Tag (22 bits)**: Used to match the requested memory address with the stored cache data
-    - **Set Index (8 bits)**: Determines the specific cache set
-    - **Byte Offset (2 bits)**: Identifies the byte within a cache line
-
-    Cache Line Structure Per Way
-    ============================
-    - **Valid Bit** (1 bit): Indicates if the cache line contains valid data
-    - **Tag** (22 bits): For cached address
-    - **Instruction (Data)** (32 bits):  Cached instruction word
-    - **LRU** (3 bits): Least Recently Used counter for replacement 
-
-    Example Cache Line for One Way:
-    ---------------------------------
-    | Valid | Tag        | Instruction    | LRU |
-    |   1   | 0xBFC0     | 0x0FF00313     |  0  |
-
-    Cache Set Example (4-Way Associative Cache):
-    --------------------------------------------
-    | Way   | Valid | Tag    | Instruction  | LRU |
-    |-------|-------|--------|--------------|-----|
-    | Way 0 |   1   | 0xBFC0 | 0x0FF00313   |  0  |
-    | Way 1 |   0   | 0x0000 | 0xDEADBEEF   |  3  |
-    | Way 2 |   0   | 0x0000 | 0xDEADBEEF   |  2  |
-    | Way 3 |   0   | 0x0000 | 0xDEADBEEF   |  1  |
-*/
-
-
-// Derived parameters
-    localparam LOWER_TAG_BITS = 2; //  take lower 2 bits of the address as lower 2 tag bits
+    // Derived parameters
+    localparam BYTE_OFFSET_BITS = 2; //  take lower 2 bits of the address as lower 2 tag bits
     localparam SETS_INDEX_BITS = $clog2(NUM_SETS);   // log2(256) = 8 bits
-    localparam TAG_BITS = ADDR_WIDTH - SETS_INDEX_BITS; // 22 bits + 2 lower bits = 24 bits
+    localparam TAG_BITS = ADDR_WIDTH - SETS_INDEX_BITS - BYTE_OFFSET_BITS; // 22 bits
     
     // Cache structures
     logic [TAG_BITS-1:0] tag_array[NUM_SETS-1:0][NUM_WAYS-1:0];
@@ -62,12 +31,12 @@ module l2_4way_instr_cache_4kb #(
     logic [2:0] lru_bits[NUM_SETS-1:0][NUM_WAYS-1:0]; // LRU(least recently used) bits
 
     // Address decomposition
-    logic [TAG_BITS-1:0] tag; // 24 bits
+    logic [TAG_BITS-1:0] tag; // 22 bits
     logic [SETS_INDEX_BITS-1:0] sets_index; // 8 bits
     
     // Extract the set index and tag from the address
-    assign tag        = {addr_i[ADDR_WIDTH-1 : SETS_INDEX_BITS + LOWER_TAG_BITS], addr_i[LOWER_TAG_BITS-1:0]}; // [31:10] + [1:0] (24 bits)
-    assign sets_index = addr_i[SETS_INDEX_BITS + LOWER_TAG_BITS - 1 : LOWER_TAG_BITS]; // [9:2] (8 bits)
+    assign tag        = addr_i[ADDR_WIDTH-1 : SETS_INDEX_BITS + BYTE_OFFSET_BITS]; // [31:10] (22 bits)
+    assign sets_index = addr_i[SETS_INDEX_BITS + BYTE_OFFSET_BITS - 1 : BYTE_OFFSET_BITS]; // [9:2] (8 bits)
 
     // Internal signals
     logic [NUM_WAYS-1:0] way_hit_flag;
