@@ -26,10 +26,10 @@ Our team has successfully completed and verified the following for our RV32I
 
 | Tag                                                                                                  |
 | ---------------------------------------------------------------------------------------------------- |
-| [Lab4](https://github.com/arlo-wang/Group-9-RISC-V/blob/main/images/lab4.jpg)                                        | 
-| [Single-Cycle(full RISC Design)](https://github.com/arlo-wang/Group-9-RISC-V/tree/full-rv32i-design) | 
-| [Pipeline](https://github.com/arlo-wang/Group-9-RISC-V/tree/pipeline)                                | 
-| [Cache](https://github.com/arlo-wang/Group-9-RISC-V/tree/data_cache)                                 |
+| [Lab4](https://github.com/arlo-wang/Group-9-RISC-V/blob/6446b802a61043c4c9276103159d4a91b70c46dc/team_statements/lab4.md.jpg)                                        | 
+| [Single-Cycle(full RISC Design)](https://github.com/arlo-wang/Group-9-RISC-V/blob/6446b802a61043c4c9276103159d4a91b70c46dc/team_statements/single_cycle.md) | 
+| [Pipeline](https://github.com/arlo-wang/Group-9-RISC-V/blob/6446b802a61043c4c9276103159d4a91b70c46dc/team_statements/pipeline.md)                                | 
+| [Cache](https://github.com/arlo-wang/Group-9-RISC-V/blob/6446b802a61043c4c9276103159d4a91b70c46dc/team_statements/cache.md)                                 |
 
 
 ## Personal statements

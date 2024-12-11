@@ -109,13 +109,13 @@ To ensure accuracy and reliability, our team developed comprehensive testbenches
 
 | Component         | Testbench Link                              |
 |--------------------|---------------------------------------------|
-| ALU               | [alu_tb.cpp](../../tb/test/alu_tb.cpp)      |
-| Control Unit       | [control_unit_tb.cpp](../../tb/test/control_unit_tb.cpp) |
-| Data Memory        | [data_mem_tb.cpp](../../tb/test/data_mem_tb.cpp) |
-| Instruction Memory | [instr_mem_tb.cpp](../../tb/test/instr_mem_tb.cpp) |
-| MUX               | [mux_tb.cpp](../../tb/test/mux_tb.cpp)      |
-| PC                | [program_counter_tb.cpp](../../tb/test/program_counter_tb.cpp) |
-| Adder             | [adder_tb.cpp](../../tb/test/adder_tb.cpp)  |
+| ALU Decoder           | [alu_decoder_tb.cpp](https://github.com/arlo-wang/Group-9-RISC-V/blob/324bc3467f4f3e549d0815188c012babf34bc20d/tb/tests/alu_decoder_tb.cpp)      |
+| Control Unit       | [control_unit_tb.cpp](https://github.com/arlo-wang/Group-9-RISC-V/blob/86cf5848d7f4e772fd9e4a8678261f989a5cf68a/tb/tests/control_unit_tb.cpp) |
+| Data Memory        | [data_mem_tb.cpp](https://github.com/arlo-wang/Group-9-RISC-V/blob/4f32ed7df8a7603b5adbb3edb4d536253bae9f51/tb/tests/data_mem_tb.cpp) |
+| Instruction Memory | [instr_mem_tb.cpp](https://github.com/arlo-wang/Group-9-RISC-V/blob/a2d726543c52e057fb0a026248875376f2c68c53/tb/tests/instr_mem_tb.cpp) |
+| MUX               | [mux_tb.cpp](https://github.com/arlo-wang/Group-9-RISC-V/blob/2eb831bd24a64c5b2f4a5a5411ec3d6eb7c8c527/tb/tests/mux_tb.cpp)      |
+| PC                | [pc_reg_tb.cpp](https://github.com/arlo-wang/Group-9-RISC-V/blob/4013c2105f6817d3c1a554274c253f0368746361/tb/tests/pc_reg_tb.cpp) |
+| Adder             | [adder_tb.cpp](https://github.com/arlo-wang/Group-9-RISC-V/blob/f25fd6ecaba17446dcbd4e9806f19cb94ec0f833/tb/tests/adder_tb.cpp)  |
 
 ### Example Testbench Snippet
 
@@ -149,8 +149,9 @@ The testbenches provide real-time feedback, displayed in the terminal using GTes
 
 ### Tools Used
 
-We automated our testing and compilation using scripts:
-- [`compile.sh`](/root/Documents/Group-9-RISC-V/tb/compile.sh): Compiles all test files.
+We automated our testing, assembly and compilation using scripts:
+- [`compile.sh`](https://github.com/arlo-wang/Group-9-RISC-V/blob/cf0309a3ca4fe3aef04c7f250cae50c1fadccee6/tb/compile.sh): Compiles all test files.
+- ['assemble.sh](https://github.com/arlo-wang/Group-9-RISC-V/blob/215fcad2d064c5878c878fff544aca5e000a8df8/tb/assemble.sh): Assemble files in assembly code.
 - [`doit.sh`](https://github.com/arlo-wang/Group-9-RISC-V/blob/4013c2105f6817d3c1a554274c253f0368746361/tb/doit.sh): Runs the entire suite of tests.
 
 We highly recommend referring to [`testing.md`](https://github.com/arlo-wang/Group-9-RISC-V/blob/main/team_statements/testing.md) for a complete understanding of our testing workflow and methodologies.
