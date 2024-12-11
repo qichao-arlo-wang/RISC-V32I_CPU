@@ -48,3 +48,4 @@ main:
     # Infinite loop to finish program
 finish:     # expected result is 0x12365678
     bne     a0, zero, finish     # loop forever
+    
