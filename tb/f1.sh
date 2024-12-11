@@ -10,7 +10,7 @@ rm -f verilated.vcd
 # Set directories
 RTL_DIR="/root/Documents/Group-9-RISC-V/rtl"
 TB_DIR="/root/Documents/Group-9-RISC-V/tb/tests"
-HEX_FILE="$TB_DIR/program.hex"
+HEX_FILE="/root/Documents/Group-9-RISC-V/tb/test_out/F1Assembly/program.hex"
 
 # Compile Verilog files with Verilator
 verilator -Wall --cc --trace $RTL_DIR/top.sv \

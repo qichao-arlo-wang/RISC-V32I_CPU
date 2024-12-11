@@ -1,7 +1,8 @@
 #include "testbench.h"
 #include "../vbuddy.cpp"
-
-#define NAME "f1light"
+#include <cstdlib>
+#include <ctime>
+#include <unistd.h> //unsleep()
 
 Vdut *top;
 VerilatedVcdC *tfp;
@@ -21,27 +22,33 @@ protected:
 TEST_F(CpuTestBench, StartBuddy) {
     int max_cycles = 100000;
 
+    srand(time(0)); //generate random num
+
     if (vbdOpen() != 1) {
         SUCCEED() << "Vbuddy not available.";
     }
     vbdHeader("F1_Lights");
 
+    bool light_on = false;
+    int random_off_timer = 0;
+
     for (int i = 0; i < max_cycles; ++i) {
-        //Print debug information
-        std::cout << "Cycle: " << i
-                  << " | PC: " << std::hex << top->pc
-                  << " | Instruction: " << std::hex << top->instr
-                  << " | a0: " << std::hex << top->a0
-                  << std::endl;
+        if (!light_on){
+            top->trigger = 1; //lights on
+            light_on = true;
+            random_off_timer = rand() % 200 + 50; //random timer
+        } else if (light_on && random_off_timer > 0){
+            random_off_timer--;
+        } else { 
+            top->trigger = 0; //lights off
+            light_on = false;
+        }
 
         // Update Vbuddy bar with a0 value
         vbdBar(top->a0 & 0xFF);
-
         // Run a single simulation cycle
         runSimulation();
-
-        // Sleep to sync with Vbuddy updates
-        //sleep(1);
+        usleep(100000); //delay between each simulation
     }
     SUCCEED();
 }
