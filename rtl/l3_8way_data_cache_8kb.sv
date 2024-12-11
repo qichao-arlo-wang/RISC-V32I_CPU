@@ -1,4 +1,4 @@
-module l3_8way_cache_8kb #(
+module l3_8way_data_cache_8kb #(
     parameter ADDR_WIDTH = 32,     // Address width
     parameter DATA_WIDTH = 32,     // Data width
     // parameter BLOCK_SIZE = 4,      // Cache block size (4 bytes)

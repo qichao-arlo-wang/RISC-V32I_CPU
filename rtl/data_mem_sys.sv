@@ -25,7 +25,7 @@ module data_mem_sys (
     logic main_mem_valid;
 
     // Instantiate the L1 Cache
-    l1_4way_cache_4kb l1_cache (
+    l1_4way_data_cache_4kb l1_cache (
         .clk(clk),
         .wr_en_i(wr_en_i),
         .addr_i(addr_i),
@@ -40,7 +40,7 @@ module data_mem_sys (
     );
 
     // Instantiate the L2 Cache
-    l2_4way_cache_4kb l2_cache (
+    l2_4way_data_cache_4kb l2_cache (
         .clk(clk),
         .wr_en_i(wr_en_i),
         .addr_i(addr_i),
@@ -56,7 +56,7 @@ module data_mem_sys (
     );
 
     // Instantiate the L3 Cache
-    l3_8way_cache_8kb l3_cache (
+    l3_8way_data_cache_8kb l3_cache (
         .clk(clk),
         .wr_en_i(wr_en_i),
         .addr_i(addr_i),

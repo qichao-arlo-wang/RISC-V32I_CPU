@@ -1,4 +1,4 @@
-module l2_4way_cache_4kb #(
+module l2_4way_data_cache_4kb #(
     parameter ADDR_WIDTH = 32,     // Address width
     parameter DATA_WIDTH = 32,     // Data width
     // parameter BLOCK_SIZE = 4,      // Cache block size (4 bytes)
