@@ -1,21 +1,18 @@
+# Things needed
+- Picture & Image for the pdf plotting on Vbuddy
+- Fill in / Edit the contribution table
+- Add test command & explaination
+- Add personal statement link
+
 # Group-9-RISC-V Team Project
 
 ## RISC-V RV32I Processor (Basic Part 1)
   
 ![part 1 task allocation](/images/overall_structure.jpg)
 
-- Arlo: blue part
-- Zecheng: green part
-- Zitong: pink part
-- Enxing: testing
+## RISC-V RV32I Processor Pipeline
+![pipeline structure](/images/pipeline_structure.jpg)
 
-# RISC-V RV32I Processor
-# Things needed
-- Picture & Image for the pdf plotting on Vbuddy
-- Fill in / Edit the contribution table
-- Add test command & explaination
-- Add personal statement link
-- 
 ## Team 9 Statement
 
 | Arlo Wang (repo master) | Enxing | Zecheng | Zitong |
@@ -127,7 +124,7 @@ To be updated
 ## Working Evidence
 
 ### Test result evidence
-- [`test evidence`]([/images/TestEvidence))
+- [`test evidence`]((https://github.com/arlo-wang/Group-9-RISC-V/tree/main/images/TestEvidence))
 
 ### Graphs
 | Dataset | Graph | Dataset | Graph |
@@ -169,20 +166,22 @@ Noisy
 |              | ALU                           |                    |                  |                       |                  |
 |              | Register File                 |                    |                  |                       |                  |
 |              | Instruction Memory            |                    |                  |                          |              |
-|              | Control Unit main_decoder                 |                    |                  |                          |               |
-|              | Control Unit alu_decoder                 |                    |                  |                          |               |
+|              | Control Unit main_decoder     |                    |                  |                          |               |
+|              | Control Unit alu_decoder      |                    |                  |                          |               |
 |              | Sign Extend                   |                    |                  |                          |              |
 |              | Testbench                     |                    |               |                          |                  |
-| Single Cycle | Data Memory                   |                  |                  |                      |               |
-|              | Program Counter    |                    |               |                          |                  |
-|              | ALU               |                    |               |                          |              |
-|              | Register File       |                    |                  |                        |                  |
-|              | Instruction Memory  |                 |               |                          |                  |
-|              | Control Unit      |                 |                |                       |             |
-|              | Sign Extend       |                    |               |                          |                 |
-| Pipeline     | Pipeline register     |                 |                |                          |                  |
+| FULL RISC    | Data Memory                   |                  |                  |                      |               |
+|              | Program Counter               |                    |               |                          |                  |
+|              | ALU                           |                    |               |                          |              |
+|              | Register File                 |                    |                  |                        |                  |
+|              | Instruction Memory            |                 |               |                          |                  |
+|              | Control Unit                  |                 |                |                       |             |
+|              | Sign Extend                   |                    |               |                          |                 |
+|              | Testbench                     |                    |               |                          |                  |
+| Pipeline     | Pipeline register             |                 |                |                          |                  |
 |              | Hazard unit                   |                |               |                          |                  |
-| Cache        | Memory             |                 |               |                          |                  |
+|              | Testbench                     |                    |               |                          |                  |
+| Cache        | Memory                        |                 |               |                          |                  |
 |              | Direct mapped cache           |                |               |                       |                |
 |              | Two-way set associative cache |                 |              |                       |                |
 
