@@ -3,7 +3,8 @@
 #include <iostream>
 #include <cstdlib>
 
-#define DISPLAY_LOOP_PC 0x58  
+#define MAX_SIM_CYC 1000000
+// #define DISPLAY_LOOP_PC 0x58  
 
 Vdut *top;
 VerilatedVcdC *tfp;
@@ -30,7 +31,7 @@ TEST_F(CpuTestBench, StateTest) {
     vbdHeader("PDF TEST");
 
     bool pdf_build_done = false;
-    for (int i = 0; i < 1'000'000; ++i) {
+    for (int i = 0; i < MAX_SIM_CYC; ++i) {
         runSimulation(1);
         
         //// Debugging PC and Instruction
@@ -40,16 +41,13 @@ TEST_F(CpuTestBench, StateTest) {
         //           << " | A0: 0x" << top->a0
         //           << std::dec << std::endl;
 
-        //// Check if the program has reached the display loop
-        //if (!pdf_build_done && (top->pc == DISPLAY_LOOP_PC)) {
-        //   pdf_build_done = true;
-        //    std::cout << "PDF build is complete. Starting to plot A0 values." << std::endl;
-        //}
-
         // Only plot after PDF build is complete
         if (top->a0 != 0) {
             vbdPlot(int(top->a0), 0, 255);
         }
+
+        if (vbdGetkey() == 'q')
+            exit(0);
     }
 
     vbdClose();

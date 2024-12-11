@@ -1,7 +1,8 @@
 #include "testbench.h"
 #include "../vbuddy.cpp"
 
-#define NAME "f1light"
+
+#define MAX_SIM_CYC 100000
 
 Vdut *top;
 VerilatedVcdC *tfp;
@@ -19,20 +20,19 @@ protected:
 };
 
 TEST_F(CpuTestBench, StartBuddy) {
-    int max_cycles = 100000;
 
     if (vbdOpen() != 1) {
         SUCCEED() << "Vbuddy not available.";
     }
     vbdHeader("F1_Lights");
 
-    for (int i = 0; i < max_cycles; ++i) {
-        //Print debug information
-        std::cout << "Cycle: " << i
-                  << " | PC: " << std::hex << top->pc
-                  << " | Instruction: " << std::hex << top->instr
-                  << " | a0: " << std::hex << top->a0
-                  << std::endl;
+    for (int i = 0; i < MAX_SIM_CYC; ++i) {
+        // //Print debug information
+        // std::cout << "Cycle: " << i
+        //           << " | PC: " << std::hex << top->pc
+        //           << " | Instruction: " << std::hex << top->instr
+        //           << " | a0: " << std::hex << top->a0
+        //           << std::endl;
 
         // Update Vbuddy bar with a0 value
         vbdBar(top->a0 & 0xFF);

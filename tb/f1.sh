@@ -1,21 +1,22 @@
 #!/bin/bash
 
-# Attach Vbuddy
-~/Documents/iacLAB-0/lab0-devtools/tools/attach_usb.sh
+# # Attach Vbuddy
+# ~/Documents/iacLAB-0/lab0-devtools/tools/attach_usb.sh
 
 # Cleanup previous build files
 rm -rf obj_dir
 rm -f verilated.vcd
 
 # Set directories
-RTL_DIR="/root/Documents/Group-9-RISC-V/rtl"
-TB_DIR="/root/Documents/Group-9-RISC-V/tb/tests"
-HEX_FILE="$TB_DIR/program.hex"
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+TEST_FOLDER=$(realpath "$SCRIPT_DIR/tests")
+RTL_FOLDER=$(realpath "$SCRIPT_DIR/../rtl")
+HEX_FILE="$TEST_FOLDER/program.hex"
 
 # Compile Verilog files with Verilator
-verilator -Wall --cc --trace $RTL_DIR/top.sv \
-          -y $RTL_DIR \
-          --exe $TB_DIR/top_tb.cpp \
+verilator -Wall --cc --trace $RTL_FOLDER/top.sv \
+          -y $RTL_FOLDER \
+          --exe $TEST_FOLDER/top_tb.cpp \
           --prefix Vdut \
           -CFLAGS "-I/usr/include/gtest" \
           -LDFLAGS "-L/usr/lib -lgtest -lgtest_main -lpthread"
@@ -34,7 +35,7 @@ if [ -f "$HEX_FILE" ]; then
     echo "Copying program.hex to obj_dir..."
     cp "$HEX_FILE" obj_dir/
 else
-    echo "Error: program.hex not found. Ensure it exists in $TB_DIR."
+    echo "Error: program.hex not found. Ensure it exists in $TEST_FOLDER."
     exit 1
 fi
 

@@ -1,3 +1,5 @@
+// This cpu_testbench_2.h file is enxing's version
+// coz enxing's verilator version is not compatible with the original version
 #pragma once
 
 #include <utility>

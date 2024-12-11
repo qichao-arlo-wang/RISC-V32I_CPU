@@ -1,17 +1,30 @@
 #!/bin/bash
 
-# Attach Vbuddy
-./attach_usb.sh
+# This script connect vbuddy and tests the PDF data files
+# Usage: ./pdf.sh [sine|triangle|gaussian|noisy]
+
+# before running this script, make sure you have correct configuration in vbuddy.cfg
+# and correctly connect the vbuddy to the computer
 
 # Cleanup previous build files
 rm -rf obj_dir
 rm -f verilated.vcd program.hex data.mem
 
 # Set directories
-RTL_DIR="/root/Documents/Group-9-RISC-V/rtl"
-TB_DIR="/root/Documents/Group-9-RISC-V/tb/tests"
-PROGRAM_PATH="/root/Documents/Group-9-RISC-V/tb/test_out/5_pdf/program.hex"
-DATA_DIR="/root/Documents/Group-9-RISC-V/tb/reference"
+SCRIPT_DIR=$(dirname "$(realpath "$0")")          # tb directory
+RTL_FOLDER=$(realpath "$SCRIPT_DIR/../rtl")       # rtl directory
+TESTS_DIR=$(realpath "$SCRIPT_DIR/tests")         # tests directory
+PROGRAM_PATH=$(realpath "$TESTS_DIR/program.hex") # program.hex file
+REFERENCE_DIR=$(realpath "$SCRIPT_DIR/reference") # reference data directory
+PDF_FILE="${SCRIPT_DIR}/asm/pdf.s"
+
+
+# Cleanup previous build files
+cd "$TESTS_DIR"
+rm -rf obj_dir
+cd "$SCRIPT_DIR"
+rm -f verilated.vcd program.hex data.mem
+
 
 # Choose data file based on command line argument
 # Usage: ./pdf.sh [sine|triangle|gaussian|noisy]
@@ -22,14 +35,18 @@ if [ -z "$DATA_FILE" ]; then
 fi
 
 MEM_FILE="${DATA_FILE}.mem"
-MEM_PATH="${DATA_DIR}/${MEM_FILE}"
+MEM_PATH="${REFERENCE_DIR}/${MEM_FILE}"
 
 # Check if the chosen mem file exists
 if [ ! -f "${MEM_PATH}" ]; then
-    echo "Error: ${MEM_FILE} not found in ${DATA_DIR}"
+    echo "Error: ${MEM_FILE} not found in ${REFERENCE_DIR}"
     echo "Please choose from: sine, triangle, gaussian, noisy"
     exit 1
 fi
+
+# Assemble the PDF file
+# Default path for generated program.hex is $TESTS_DIR/program.hex
+./assemble.sh "${PDF_FILE}"
 
 # Copy instruction memory (program) hex file to current directory
 cp "$PROGRAM_PATH" ./program.hex
@@ -46,12 +63,12 @@ if [ $? -ne 0 ]; then
 fi
 
 # Compile Verilog files with Verilator
-verilator -Wall --cc --trace $RTL_DIR/top.sv \
-          -y $RTL_DIR \
-          --exe $TB_DIR/pdf_tb.cpp \
+verilator -Wall --cc --trace $RTL_FOLDER/top.sv \
+          -y $RTL_FOLDER \
+          --exe $TESTS_DIR/pdf_tb.cpp \
           --prefix Vdut \
-          -CFLAGS "-I/usr/include/gtest" \
-          -LDFLAGS "-L/usr/lib -lgtest -lgtest_main -lpthread"
+          -CFLAGS "-isystem /opt/homebrew/Cellar/googletest/1.15.2/include"\
+          -LDFLAGS "-L/opt/homebrew/Cellar/googletest/1.15.2/lib -lgtest -lgtest_main -lpthread" \
 
 # Build the simulation executable
 make -j -C obj_dir -f Vdut.mk Vdut
@@ -64,3 +81,8 @@ fi
 
 # Run the simulation
 ./obj_dir/Vdut
+
+cd "$TESTS_DIR"
+rm -f program.hex data.hex
+cd "$SCRIPT_DIR"
+rm -f program.hex data.hex
