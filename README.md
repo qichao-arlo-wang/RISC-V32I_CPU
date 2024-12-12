@@ -1,8 +1,8 @@
 # Group-9-RISC-V Team Project
 
 ## RISC-V RV32I Processor Pipeline
-![pipeline structure](/images/pipeline_structure.jpg)
 
+![pipeline structure](/images/pipeline_structure.jpg)
 
 ## Joint statement
 
@@ -15,7 +15,6 @@ Our team successfully completed a full RV32I design, implementing all base RV32I
 | [Pipeline](https://github.com/arlo-wang/Group-9-RISC-V/blob/6446b802a61043c4c9276103159d4a91b70c46dc/team_statements/pipeline.md)                                | 
 | [Cache](https://github.com/arlo-wang/Group-9-RISC-V/blob/6446b802a61043c4c9276103159d4a91b70c46dc/team_statements/cache.md)                                 |
 
-
 ## Personal statements
 
 | Member    | Personal statement |
@@ -25,14 +24,15 @@ Our team successfully completed a full RV32I design, implementing all base RV32I
 | Zecheng  | [Personal statement](./personal_statements/zecheng_zhu.md) |
 | Zitong   | [Personal statement](./personal_statements/zitong_hon.md) |
 
-
 ## Quick Start
 
 ### Things to note before ANY test:
+
 - makes sure you are in **tb** folder
 - if u r testing with vbuddy, please configure vbuddy.cfg file and properly connect your vbuddy to your computer
 
 ### Using the testbench
+
 The `pdf.sh` script allows you to load different `.mem` files depending on the user input. Each command automatically configures the data memory for the PDF testbench. Refer to the testbench documentation for further details. Use the following commands to specify the desired dataset:
 
 
@@ -45,27 +45,14 @@ The `pdf.sh` script allows you to load different `.mem` files depending on the u
 | `./pdf.sh triangle`| Loads the `triangle.mem` dataset.     |
 | `./f1.sh`  | Test the F1 lights testbench (vBuddy) |
 
-
-## Team Workflow
-
-### Repo management (using `git`)
-
-- The functions of `git` were fully utilised in this project
-- `Branches` were created  to implement different functions to avoid conflict / overlap
-- `Tags` were created for each completed version of the RV32I processor
-
-### Folder Explaination 
-
-- [`images`](images/): images for [`test evidence, schematic, to beadded`](docs/)
-- [`rtl`](rtl/): RV32I processor modules
-- [`tb`](tb/): Testbench and scripts
-
 ## Working Evidence
 
 ### Test result evidence
+
 - [`test evidence`](./images/TestEvidence/)
 
 ### PDF & F1 videos
+
 | Dataset | Videos | Dataset | Videos |
 |-|-|-|-|
 | Gaussian | [gaussian_vbuddy](./images/TestEvidence/gaussian.mp4) | Sine | [sine_vbuddy](./images/TestEvidence/sine.jpg) |
@@ -125,17 +112,43 @@ The `pdf.sh` script allows you to load different `.mem` files depending on the u
 
 ---
 
+## File structure
 
-As a team, we all agree that the above table and commits do not accurately 
-measure the contribution of team members due to the following reasons:
+.
+├──README.md
+├── images/
+│   ├── TestEvidence/
+├── personal_statements/
+│   ├── arlo_wang.md
+│   ├── enxing_lao.md
+│   ├── zecheng_zhu.md
+│   └── zitong_hon.md
+├── rtl/
+├── structure.md
+├── tb/
+│   ├── asm/
+│   ├── reference/
+│   ├── tests/
+│   ├── assemble.sh
+│   ├── attach_usb.sh
+│   ├── compile.sh
+│   ├── doit.sh
+│   ├── f1.sh
+│   ├── pdf.sh
+│   ├── vbuddy.cfg
+│   ├── vbuddy.cpp
+│   └── verification.md
+└── team_statements/
+    ├── cache.md
+    ├── lab4.md
+    ├── pipeline.md
+    ├── single_cycle.md
+    └── testing.md
 
-  1. When working together in Library / Student hub / meeting on Google Meet (online), some of us may working one of the laptops, so some commits made by team members are 
-  often a combined effort of two or more members.
+As a team, we all agree that the above table and commits do not accurately measure the contribution of team members due to the following reasons:
 
-  1. The effort revolving around debugging is often highly overlooked - commits 
-  with simple fixes often took hours / days of effort from two or more members 
-  to debug a small mistake.
+  1. When working together in Library / Student hub / meeting on Google Meet (online), some of us may working one of the laptops, so some commits made by team members are often a combined effort of two or more members.
 
-  1. Testbench building and writing played a huge role in streamlining our 
-  process, and multiple tests were written to specifically do debugging and 
-  isolate problematic parts / instructions.
+  1. The effort revolving around debugging is often highly overlooked - commits with simple fixes often took hours / days of effort from two or more members to debug a small mistake.
+
+  1. Testbench building and writing played a huge role in streamlining our process, and multiple tests were written to specifically do debugging and isolate problematic parts / instructions.
