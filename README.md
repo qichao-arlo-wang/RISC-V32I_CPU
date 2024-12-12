@@ -10,10 +10,10 @@ Our team successfully completed a **full RV32I design**, implementing **all base
 
 | Tag                                                                                                  |
 | ---------------------------------------------------------------------------------------------------- |
-| [Lab4](https://github.com/arlo-wang/Group-9-RISC-V/blob/6446b802a61043c4c9276103159d4a91b70c46dc/team_statements/lab4.md.jpg)                                        | 
-| [Single-Cycle(full RISC Design)](https://github.com/arlo-wang/Group-9-RISC-V/blob/6446b802a61043c4c9276103159d4a91b70c46dc/team_statements/single_cycle.md) | 
+| [Lab4](./team_statements/lab4.md.jpg)                                        | 
+| [Single-Cycle(full RISC Design)](./team_statements/single_cycle.md) | 
 | [Pipeline](./team_statements/pipeline.md)                                | 
-| [Cache](https://github.com/arlo-wang/Group-9-RISC-V/blob/6446b802a61043c4c9276103159d4a91b70c46dc/team_statements/cache.md)                                 |
+| [Cache](./team_statements/cache.md)                                 |
 
 ## Personal statements
 
@@ -38,12 +38,12 @@ The `pdf.sh` script allows you to load different `.mem` files depending on the u
 
 | Command                               | Explanation                           |
 | ------------------------------------- |-------------------------------------- |
-| `./doit.sh verify.cpp`        | Test all instruction implemented      |
-| `./pdf.sh gaussian`| Loads the `gaussian.mem` dataset.     |
-| `./pdf.sh noisy`   | Loads the `noisy.mem` dataset.        |
-| `./pdf.sh sine`    | Loads the `sine.mem` dataset.         |
-| `./pdf.sh triangle`| Loads the `triangle.mem` dataset.     |
-| `./f1.sh`  | Test the F1 lights testbench (vBuddy) |
+| `./doit.sh verify.cpp`                | Test all instruction implemented      |
+| `./pdf.sh gaussian`                   | Loads the `gaussian.mem` dataset.     |
+| `./pdf.sh noisy`                      | Loads the `noisy.mem` dataset.        |
+| `./pdf.sh sine`                       | Loads the `sine.mem` dataset.         |
+| `./pdf.sh triangle`                   | Loads the `triangle.mem` dataset.     |
+| `./f1.sh`                             | Test the F1 lights testbench (vBuddy) |
 
 ## Working Evidence
 
