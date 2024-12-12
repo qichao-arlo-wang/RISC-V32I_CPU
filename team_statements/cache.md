@@ -1,14 +1,5 @@
 # Cache Implementation and Extensions
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Cache Design](#cache-design)
-- [Direct-Mapped Cache](#direct-mapped-cache)
-- [Two-Way Set Associative Cache](#two-way-set-associative-cache)
-- [Extended Goals](#extended-goals)
-
----
-
 ## Introduction
 
 As part of our team project, we integrated cache memory into the system to improve performance by leveraging the concepts of **temporal locality** and **spatial locality**. These optimizations significantly reduce memory access time by prioritizing frequently or recently accessed data.
@@ -94,13 +85,20 @@ The two-way set associative cache contains two blocks per set and implements an 
 | `DATA`     | Holds the actual cached data.                   |
 | `LRU`      | Tracks the least recently used block for replacement.|
 
-### Relevant Code
 
 ```systemverilog
-/* Cache Structure
-|  v  | tag    | data     | lru |
-| [1] | [27]   | [32]     | [2] |
-*/
+   /* 4-way set-associative cache 
+        Cache structure:
+        |       way1        |       way2        |       way3        |       way4        |            
+        |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data |  v  | tag  | data | 
+        | [1] | [24] | [32] | [1] | [24] | [32] | [1] | [24] | [32] | [1] | [24] | [32] |
+        
+        Memory address (32 bits):
+            | higher tag bits | set index | lower tag bits |
+            |       [22]      |    [8]    |        [2]     |
+            |  addr_i[31:10]  |   a[9:2]  |      a[1:0]    |
+    */
+
 ```
 
 The cache efficiently handles data placement and replacement using an `LRU` mechanism to minimize conflicts.
@@ -133,4 +131,4 @@ These multi-level caches improve performance by reducing main memory access freq
 
 ## Conclusion
 
-Our cache implementation, including direct-mapped, two-way set associative, and instruction caches, significantly enhances memory performance. Additionally, the inclusion of multi-level caches (L1, L2, L3) demonstrates the potential of hierarchical caching in real-world applications. This project provided valuable insights into designing efficient memory systems while preparing for further exploration of advanced caching techniques.
+Our cache implementation, including direct-mapped, two-way set associative, and instruction caches, significantly enhances memory performance. Additionally, the inclusion of multi-level caches (L1, L2, L3) demonstrates the potential of hierarchical caching in real-world applications.

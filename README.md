@@ -110,47 +110,83 @@ Noisy
 - `*` (one star) refers to **minor contribution**
 - `**` (two stars) refers to **major contribution**
 
-|              |                                          | Arlo (arlo-wang)   | Enxing  git name | Zecheng Zhu (Keven Zhu & Zecheng)| Zitong (git name) |
-| ------------ | ---------------------------------------- | ------------------ | ---------------- | -------------------------------- | ---------------- |
-| Lab 4        | Program Counter                          |        **          |                  |                          |                  |
-|              | ALU                                      |                    |                  |                       |                  |
-|              | Register File                            |        **          |                  |                       |                  |
-|              | Instruction Memory                       |        **          |                  |                          |              |
-|              | Control Unit main_decoder                |                    |                  |                          |               |
-|              | Control Unit alu_decoder                 |                    |                  |                          |               |
-|              | Sign Extend                              |                    |                  |                          |              |
-|              | Top                                      |        **          |                  |                          |                  |
-|              | Testbench                                |        **          |                  |                          |                  |
-| Single cycle | Data Memory                              |        **          |                  |                      |               |
-|              | Program Counter (refactor)               |        **          |                  |                          |                  |
-|              | ALU                                      |                    |                  |                          |              |
-|              | Register File (refactor)                 |        **          |                  |                        |                  |
-|              | Instruction Memory (refactor)            |        **          |               |                          |                  |
-|              | Control Unit (refactor)                  |                    |                  |                       |             |
-|              | Sign Extend (refactor)                   |                    |               |                          |                 |
-|              | Unit Testbeches                          |        **          |               |                          |                  |
-|              | Top                                      |        **          |               |                          |                  |
-|              | F1 starting light program                |                    |               |                          |                  |
-| Pipeline     | Pipeline flip-flop stages                |                    |                |                          |                  |
-|              | Control unit (refactor)                  |                    |               |                          |                  |
-|              | Hazard unit                              |                    |               |                          |                  |
-|              | Top                                      |                    |               |                          |                  |
-|              | Testbench                                |                    |               |                          |                  |
-|              | PDF testing                              |                    |               |                          |                  |
-| Instr Cache  | Main instruction memory (refactor)       |        **          |               |                          |                  |
-|              | L1 four-way set associative instr_cache  |        **          |               |                       |                |
-|              | L2 four-way set associative instr_cache  |        **          |               |                       |                |
-|              | L3 eight-way set associative instr_cache |        **          |               |                       |                |
-|              | Instruction memory top                   |        **          |               |                       |                |
-| Data Cache   | Main instruction memory (refactor)       |        **          |               |                          |                  |
-|              | L1 four-way set associative data_cache   |        **          |               |                       |                |
-|              | L2 four-way set associative data_cache   |        **          |               |                       |                |
-|              | L3 eight-way set associative data_cache  |        **          |               |                       |                |
-|              | Data memory top                          |        **          |               |                       |                |
-| Shell scripts| pdf.sh                                   |        **          |               |                          |                  |
-|              | f1.sh                                    |        **          |               |                          |                  |
-| Other extended works| Full RISCV instructions testing   |                    |               |                          |                  |
-|              | FPGA                                     |        **          |               |                          |                  |
+# Arlo Matchmaking - Team Contributions and Work Breakdown
+
+## Team Members and GitHub Handles
+| Team Member   | GitHub Handle  |
+|---------------|----------------|
+| Arlo          | arlo-wang      |
+| Keven         | zzczjh9        |
+| En Xing       | lex734         |
+| Zi Tong       | zth2           |
+
+---
+
+## Task Assignments
+
+| Lab 4                    | Arlo | Keven | En Xing | Zi Tong |
+|--------------------------|------|-------|---------|---------|
+| Program Counter          |  *   |       |         |         |
+| ALU                      |      |       |         |    *    |
+| MUX                      |      |       |         |    *    |
+| Register File            |  *   |       |         |    *    |
+| Instruction Memory       |  *   |       |         |         |
+| Control Unit             |      |   *   |    *    |         |
+| Sign Extend              |      |   *   |         |         |
+| Testbench                |  *   |       |    *    |         |
+| Top                      |  *   |       |    *    |         |
+|--------------------------|------|-------|---------|---------|
+| Single Cycle             |                                  |
+|--------------------------|------|-------|---------|---------|
+| Data Memory              |  *   |       |         |         |
+| Program Counter (refactor)|  *  |   *   |    *    |         |
+| ALU (refactor)            |     |   *   |         |    *    |
+| Register File (refactor)  |   * |       |         |         |
+| Instruction Memory (refactor)|  |       |         |         |
+| Control Unit (refactor)   |     |   *   |      *  |         |
+| Sign Extend (refactor)    |     |  *    |         |         |
+| Top                       |  *  |       |   *     |         |
+| Unit Test benches         |   * |       |         |     *   |
+| F1 Starting Light program |     |       |         |     *   |
+| PDF Testing               |     |       |         |     *   |
+|---------------------------|-----|-------|---------|---------|
+| Pipeline                  |                                 |
+|---------------------------|-----|-------|---------|---------|
+| Pipeline Flip-Flop Stages |     |   *   |    *    |         |
+| Control unit (refactor)   |     |   *   |    *    |         |
+| Hazard Unit               |     |   *   |    *    |         |
+| Top                       |     |   *   |    *    |         |
+| PDF Testing               |     |   *   |    *    |    *    |
+|---------------------------|-----|-------|---------|---------|
+| Instruction Cache         |                                 |
+|----------------------- ---|-----|-------|---------|---------|
+| Main Instruction memory (refactor)|  *  |    |    |    *    |
+| L1 Four-Way Set Associative|   *   |      |       |     *   |
+| L2 Four-Way Set Associative|   *   |      |       |    *    |
+| L3 Eight-Way Set Associative|  *   |      |       |    *    |
+| Instruction Memory Top      |   *  |      |       |     *   |
+|---------------------------|-----|-------|---------|---------|
+| Instruction Cache         |                                 |
+|----------------------- ---|-----|-------|---------|---------|
+| Main data memory (refactor)|  * |       |         |         |
+| L1 Four-Way Set Associative | * |       |         |         |
+| L2 Four-Way Set Associative | * |       |         |         |
+| L3 Eight-Way Set Associative| * |       |         |         |
+| Data Memory Top             | * |       |         |         |
+|---------------------------|-----|-------|---------|---------|
+| Shell scripts             |                                 |
+|---------------------------|-----|-------|---------|---------|
+| `pdf.sh`                  |  *  |       |         |    *    |
+| `f1.sh`                   |     |       |         |    *    |
+|---------------------------|---------------------------------|
+| Extended Work             |                                 |
+|---------------------------|---------------------------------|
+| Full RISC-V Instructions Testing|   |  * |     *  |         |
+| Instruction Cache         |      |       |        |   *     |
+| FPGA Implementation       |      |   *   |        |         |
+
+---
+
 
 As a team, we all agree that the above table and commits do not accurately 
 measure the contribution of team members due to the following reasons:
