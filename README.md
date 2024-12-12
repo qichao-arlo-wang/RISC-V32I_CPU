@@ -1,3 +1,6 @@
+# to do list:
+- update the branch link after we change the default branch
+
 # Group-9-RISC-V Team Project
 
 ## RISC-V RV32I Processor Pipeline
@@ -8,12 +11,24 @@
 
 Our team successfully completed a **full RV32I design**, implementing **all base RV32I instructions** except for FENCE, ECALL/EBREAK, and CSR instructions. We carried out thorough ASM testing on the newly added instructions, implemented a **pipeline with hazard handling**, and developed **4-way and 8-way L1, L2, and L3 data and instruction caches**. Finally, we made significant efforts to deploy our design on an **FPGA**, and although we were unable to fully achieve success, we learned a great deal through the process.
 
-| Tag                                                                 |
-| --------------------------------------------------------------------|
-| [Lab4](./team_statements/lab4.md.jpg)                               |
-| [Single-Cycle(full RISC Design)](./team_statements/single_cycle.md) |
-| [Pipeline](./team_statements/pipeline.md)                           | 
-| [Cache](./team_statements/cache.md)                                 |
+Our project is mainly organized into three branches, each representing a significant milestone in our RISC-V processor design:
+
+**//////// update the branch link after we change the default branch //////////**
+
+1. [**main branch**]():
+   
+   This branch builds upon the foundation of Lab4. It implements a single-cycle version of the full RV32I design without including any pipelining and cache structures.
+
+2. [**pipeline branch**](https://github.com/arlo-wang/Group-9-RISC-V/tree/pipeline)：
+   
+   This branch focuses on the pipeline implementation. It successfully integrates all RV32I instructions with hazard handling.
+
+3. [**full-rv32i-design branch**]():
+   
+   This branch contains the complete implementation of the full RV32I design, incorporating all the features mentioned above, including the pipeline with hazard handling, 4-way and 8-way L1, L2 and L3 instruction and data caches.
+
+In addition to these main branches, you can also find other branches on our GitHub repository, including [lab4](https://github.com/arlo-wang/Group-9-RISC-V/tree/lab4), [data_cache](https://github.com/arlo-wang/Group-9-RISC-V/tree/data_cache), [data-cache-multilevel](https://github.com/arlo-wang/Group-9-RISC-V/tree/data-cache-multilevel), [instr_cache](https://github.com/arlo-wang/Group-9-RISC-V/tree/instr_cache) and [instr-cache-multilevel](https://github.com/arlo-wang/Group-9-RISC-V/tree/instr_cache_multilevel). Each of these branches was created to implement specific functionalities, such as data and instruction caches or to track progress from earlier stages of development.
+
 
 ## Personal statements
 
@@ -142,6 +157,8 @@ The `pdf.sh` script allows you to load different `.mem` files depending on the u
   ├── single_cycle.md
   └── testing.md
 ```
+
+-----
 
 As a team, we all agree that the above table and commits do not accurately measure the contribution of team members due to the following reasons:
 
