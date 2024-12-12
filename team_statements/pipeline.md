@@ -5,8 +5,8 @@
 
 The provided diagram includes color-coded annotations for clarity:
 - **Blue**: control signals for registers and hazard unit.
-- **Red**: additional signal muxes for execution stage
-- **Green**: add on signals to writeback stage.
+- **Red**: additional mux signals for execution stage
+- **Green**: addon signals to writeback stage.
 
 ## 5 stage
 
@@ -50,9 +50,10 @@ Manages data and control hazards:
   - **Forward_a/b**: Selects the correct operand to to forward signals from each stage based on wr_en at m/w stages.
     ```
             // MUX for forward_b_e_o
-            // 00 : rd_addr2_e : same as no pipeline
-            // 01 : result_w : forwarding from W state after a MUX in lecture slides(after data memory)
-            // 10 : alu_result_m : forwarding from M state(after ALU)
+            // 10 : alu_result_m : forwarding from M state when refister writen_en on at M stage and register same as E stage
+            // 01 : result_w : forwarding from W state when refister writen_en on at W stage and register same as E stage
+            // 00 : rd_addr2_e : same as no pipeline for all other condition
+
     ```
   
 - **Control Hazards**:
