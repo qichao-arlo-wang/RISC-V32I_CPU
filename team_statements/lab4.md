@@ -7,7 +7,7 @@
 #### Arlo: Block 1 & Repo
 - `adder.sv`
 - `pc_reg.sv`
-- `test_top_1.sv`
+- `top.sv`
 
 #### Zitong: Block 2
 - `alu.sv`
@@ -21,7 +21,8 @@
 - `top_control.sv`
 
 #### Enxing: Testing & Verification
-
+- `sign_exten_tb.cpp`
+- `control_unit.sv`, `main_decoder.sv`, `alu_decoder.sv`
 
 ### Additional Notes
 - Contributions and changes are tracked in individual logbooks.

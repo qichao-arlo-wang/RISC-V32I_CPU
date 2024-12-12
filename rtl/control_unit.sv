@@ -52,9 +52,11 @@ module control_unit (
         case (funct3_i)
             3'b000: branch_condition = zero_i;                      // beq: branch if zero is set
             3'b001: branch_condition = ~zero_i;                     // bne: branch if zero is not set
-            3'b100: branch_condition = (alu_result_i < 0);          // blt
-            3'b101: branch_condition = zero_i | (alu_result_i > 0); // bge
+            3'b100: branch_condition = ($signed(alu_result_i) < 0);          // blt
+            3'b101: branch_condition = zero_i | ($signed(alu_result_i) > 0); // bge
+            /* verilator lint_off UNSIGNED */
             3'b110: branch_condition = (alu_result_i < 0);           //bltu 
+            /* verilator lint_on UNSIGNED */
             3'b111: branch_condition = zero_i | (alu_result_i > 0);  //bgeu
             default: branch_condition = 1'b0;                       // Other branch types not implemented here
         endcase
