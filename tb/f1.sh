@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# # Attach Vbuddy
-# ~/Documents/iacLAB-0/lab0-devtools/tools/attach_usb.sh
+# # Attach Vbuddy for windows user
+# ./attach_usb.sh
 
 # Cleanup previous build files
 rm -rf obj_dir
 rm -f verilated.vcd
 
 # Set directories
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
+SCRIPT_DIR=$(dirname "$(realpath "$0")") # tb directory
 TEST_FOLDER=$(realpath "$SCRIPT_DIR/tests")
 RTL_FOLDER=$(realpath "$SCRIPT_DIR/../rtl")
 HEX_FILE="$TEST_FOLDER/program.hex"
@@ -18,8 +18,8 @@ verilator -Wall --cc --trace $RTL_FOLDER/top.sv \
           -y $RTL_FOLDER \
           --exe $TEST_FOLDER/top_tb.cpp \
           --prefix Vdut \
-          -CFLAGS "-I/usr/include/gtest" \
-          -LDFLAGS "-L/usr/lib -lgtest -lgtest_main -lpthread"
+          -CFLAGS "-isystem /opt/homebrew/Cellar/googletest/1.15.2/include"\
+          -LDFLAGS "-L/opt/homebrew/Cellar/googletest/1.15.2/lib -lgtest -lgtest_main -lpthread" \
 
 # Build the simulation executable
 make -j -C obj_dir -f Vdut.mk Vdut

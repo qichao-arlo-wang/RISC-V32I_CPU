@@ -14,10 +14,18 @@ rm -f verilated.vcd program.hex data.mem
 SCRIPT_DIR=$(dirname "$(realpath "$0")")          # tb directory
 RTL_FOLDER=$(realpath "$SCRIPT_DIR/../rtl")       # rtl directory
 TESTS_DIR=$(realpath "$SCRIPT_DIR/tests")         # tests directory
-PROGRAM_PATH=$(realpath "$TESTS_DIR/program.hex") # program.hex file
 REFERENCE_DIR=$(realpath "$SCRIPT_DIR/reference") # reference data directory
 PDF_FILE="${SCRIPT_DIR}/asm/pdf.s"
 
+# Assemble the PDF file
+# Default path for generated program.hex is $TESTS_DIR/program.hex
+./assemble.sh "${PDF_FILE}"
+if [ $? -ne 0 ]; then
+    echo "Error: assemble.sh failed to execute."
+    exit 1
+fi
+
+PROGRAM_PATH=$(realpath "$TESTS_DIR/program.hex") # program.hex file path
 
 # Cleanup previous build files
 cd "$TESTS_DIR"
@@ -43,10 +51,6 @@ if [ ! -f "${MEM_PATH}" ]; then
     echo "Please choose from: sine, triangle, gaussian, noisy"
     exit 1
 fi
-
-# Assemble the PDF file
-# Default path for generated program.hex is $TESTS_DIR/program.hex
-./assemble.sh "${PDF_FILE}"
 
 # Copy instruction memory (program) hex file to current directory
 cp "$PROGRAM_PATH" ./program.hex
