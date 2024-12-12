@@ -5,18 +5,28 @@
 
 # Cleanup previous build files
 rm -rf obj_dir
-rm -f verilated.vcd
+rm -f verilated.vcd program.hex data.mem
 
 # Set directories
 SCRIPT_DIR=$(dirname "$(realpath "$0")") # tb directory
-TEST_FOLDER=$(realpath "$SCRIPT_DIR/tests")
 RTL_FOLDER=$(realpath "$SCRIPT_DIR/../rtl")
-HEX_FILE="$TEST_FOLDER/program.hex"
+TEST_FOLDER=$(realpath "$SCRIPT_DIR/tests")
+F1_FILE="${SCRIPT_DIR}/asm/F1Assembly.s"
+
+# Assemble the PDF file
+# Default path for generated program.hex is $TESTS_DIR/program.hex
+./assemble.sh "${F1_FILE}"
+if [ $? -ne 0 ]; then
+    echo "Error: assemble.sh failed to execute."
+    exit 1
+fi
+
+PROGRAM_PATH=$(realpath "$TESTS_DIR/program.hex") # program.hex file path
 
 # Compile Verilog files with Verilator
 verilator -Wall --cc --trace $RTL_FOLDER/top.sv \
           -y $RTL_FOLDER \
-          --exe $TEST_FOLDER/top_tb.cpp \
+          --exe $TEST_FOLDER/f1_tb.cpp \
           --prefix Vdut \
           -CFLAGS "-isystem /opt/homebrew/Cellar/googletest/1.15.2/include"\
           -LDFLAGS "-L/opt/homebrew/Cellar/googletest/1.15.2/lib -lgtest -lgtest_main -lpthread" \
@@ -30,10 +40,17 @@ if [ ! -f obj_dir/Vdut ]; then
     exit 1
 fi
 
+# Copy instruction memory (program) hex file to current directory
+cp "$PROGRAM_PATH" ./program.hex
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to copy program.hex from $PROGRAM_PATH"
+    exit 1
+fi
+
 # Copy the program.hex file to obj_dir
-if [ -f "$HEX_FILE" ]; then
+if [ -f "$PROGRAM_PATH" ]; then
     echo "Copying program.hex to obj_dir..."
-    cp "$HEX_FILE" obj_dir/
+    cp "$PROGRAM_PATH" obj_dir/
 else
     echo "Error: program.hex not found. Ensure it exists in $TEST_FOLDER."
     exit 1
