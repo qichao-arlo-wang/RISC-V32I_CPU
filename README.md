@@ -8,11 +8,11 @@
 
 Our team successfully completed a **full RV32I design**, implementing **all base RV32I instructions** except for FENCE, ECALL/EBREAK, and CSR instructions. We carried out thorough ASM testing on the newly added instructions, implemented a **pipeline with hazard handling**, and developed **4-way and 8-way L1, L2, and L3 data and instruction caches**. Finally, we made significant efforts to deploy our design on an **FPGA**, and although we were unable to fully achieve success, we learned a great deal through the process.
 
-| Tag                                                                                                  |
-| ---------------------------------------------------------------------------------------------------- |
-| [Lab4](./team_statements/lab4.md.jpg)                                        | 
-| [Single-Cycle(full RISC Design)](./team_statements/single_cycle.md) | 
-| [Pipeline](./team_statements/pipeline.md)                                | 
+| Tag                                                                 |
+| --------------------------------------------------------------------|
+| [Lab4](./team_statements/lab4.md.jpg)                               |
+| [Single-Cycle(full RISC Design)](./team_statements/single_cycle.md) |
+| [Pipeline](./team_statements/pipeline.md)                           | 
 | [Cache](./team_statements/cache.md)                                 |
 
 ## Personal statements
@@ -57,7 +57,7 @@ The `pdf.sh` script allows you to load different `.mem` files depending on the u
 |-|-|-|-|
 | Gaussian | [gaussian_vbuddy](./images/TestEvidence/gaussian.mp4) | Sine | [sine_vbuddy](./images/TestEvidence/sine.jpg) |
 | Triangle | [triangle_vbuddy](./images/TestEvidence/triangle.jpg) | Noisy| [noisy_vbuddy](./images/TestEvidence/noisy.mp4) |
-| F1 light | [F1_vbuddy](./images/TestEvidence/f1testingvid.mp4)
+| F1 light | [F1_vbuddy](./images/TestEvidence/f1_light.mp4)
 
 
 ## Team Contribution Table
