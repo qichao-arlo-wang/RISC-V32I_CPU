@@ -28,8 +28,7 @@ The provided diagram includes color-coded annotations for clarity:
             else begin
                 pc_o <= pc_next_i;
             end
-        end
- ```
+        end```
 
 ### 2. Decode 
 - if flush or stall --> clear all wr_en and branch signals but all other signals propagate as previous
@@ -59,8 +58,7 @@ Manages data and control hazards:
         end 
         else begin
             forward_a_e_o = 2'b00;
-        end
- ```
+        end```
 - **Control Hazards**:
   - Flushes: if branch occurs
   - stalls: if load instruction 's register overlap with register in execution stage
