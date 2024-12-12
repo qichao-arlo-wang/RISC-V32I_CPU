@@ -1,23 +1,15 @@
-# Things needed
-- Picture & Image for the pdf plotting on Vbuddy
+# Things need to be noticed
+- **USE THE RELATIVE PATH**
+- Picture & Image for the pdf plotting on Vbuddy !!! video need to be updated
 - Fill in / Edit the contribution table
 - Add test command & explaination
-- Add personal statement link
+- update repo struction diagram
 
 # Group-9-RISC-V Team Project
-
-## RISC-V RV32I Processor (Basic Part 1)
-  
-![part 1 task allocation](/images/overall_structure.jpg)
 
 ## RISC-V RV32I Processor Pipeline
 ![pipeline structure](/images/pipeline_structure.jpg)
 
-## Team 9 Statement
-
-| Arlo Wang (repo master) | Enxing | Zecheng | Zitong |
-|-------------------------|--------|---------|--------|
-|Personal Statement Path-|Personal Statement Path-|Personal Statement Path|Personal Statement Path|
 
 ## Final submission
 
@@ -36,76 +28,32 @@ Our team has successfully completed and verified the following for our RV32I
 
 | Member    | Personal statement |
 |-----------|--------------------|
-| Arlo     | [Personal statement](/personal_statements/?.md) |
-| Enxing   | [Personal statement](/personal_statements/?.md) |
-| Zecheng  | [Personal statement](/personal_statements/?.md) |
-| Zitong   | [Personal statement](/personal_statements/?.md) |
+| Arlo     | [Personal statement](./personal_statements/arlo_wang.md) |
+| Enxing   | [Personal statement](./personal_statements/enxing_lao.md) |
+| Zecheng  | [Personal statement](./personal_statements/zecheng_zhu.md) |
+| Zitong   | [Personal statement](./personal_statements/zitong_hon.md) |
 
 
 ## Quick Start
 
-Note: before **ANY** test (including the first time script), execute this command.
-
-```bash
-cd tb
-```
+### Things to note before ANY test:
+- makes sure you are in **tb** folder
+- if u r testing with vbuddy, please configure vbuddy.cfg file and properly connect your vbuddy to your computer
 
 ### Using the testbench
+The `pdf.sh` script allows you to load different `.mem` files depending on the user input. Each command automatically configures the data memory for the PDF testbench. Refer to the testbench documentation for further details. Use the following commands to specify the desired dataset:
 
 
 | Command                               | Explanation                           |
 | ------------------------------------- |-------------------------------------- |
-| `./doit.sh`                           | Test all.                             |
-| `./doit.sh verify.cpp`                | Test all instruction implemented      |
-| `./doit.sh TEST FILE NAME`            | Test the entire instruction testbench |
-| `./f1.sh test/TEST FILE NAME`         | Test the F1 lights testbench (stdout) |
-| `./f1.sh test/TEST FILE NAME`         | Test the F1 lights testbench (vBuddy) |
-
-
-* may add specifc command
-
-### Using `pdf.sh` Script
-The `pdf.sh` script allows you to load different `.mem` files depending on the user input. Use the following commands to specify the desired dataset:
-
-#### Relevant Commands
-| Command            | Explanation                           |
-|--------------------|---------------------------------------|
-| `./pdf.sh sine`    | Loads the `sine.mem` dataset.         |
-| `./pdf.sh triangle`| Loads the `triangle.mem` dataset.     |
+| `./doit.sh verify.cpp`        | Test all instruction implemented      |
+| `./doit.sh TEST FILE NAME`    | Test the entire instruction testbench |
+| `./f1.sh test/TEST FILE NAME` | Test the F1 lights testbench (vBuddy) |
 | `./pdf.sh gaussian`| Loads the `gaussian.mem` dataset.     |
 | `./pdf.sh noisy`   | Loads the `noisy.mem` dataset.        |
+| `./pdf.sh sine`    | Loads the `sine.mem` dataset.         |
+| `./pdf.sh triangle`| Loads the `triangle.mem` dataset.     |
 
-Each command automatically configures the data memory for the PDF testbench. Refer to the testbench documentation for further details.
-
-Gaussian:
-
-```bash
- Specific command
-```
-
-Noisy:
-
-```bash
- Specific command
-```
-
-Sine:
-
-```bash
- Specific command
-```
-
-Triangle:
-
-```bash
- Specific command
-```
-
-
-```bash
-# Must be ttyUSB0 - otherwise find and replace in vbuddy.cpp
-To be updated
-```
 
 ## Team Workflow
 
@@ -136,22 +84,24 @@ To be updated
 
 F1 lights
 
-**<video controls src="https://github.com/arlo-wang/Group-9-RISC-V/blob/9bec4edaada61815e805d215d8d00f31166c538f/images/TestEvidence/f1testingvid.mp4"></video>**
+# video need to be updated
+
+**<video controls src="./images/TestEvidence/f1testingvid.mp4"></video>**
 
 Gaussian
 
-**<video controls src="https://github.com/arlo-wang/Group-9-RISC-V/blob/66e9283f0160c8348bc2cc0caaa28a72f53757b4/images/TestEvidence/gaussian.mp4"></video>**
+**<video controls src="./images/TestEvidence/gaussian.mp4"></video>**
 
 Sine
 
-**![/root/Documents/Group-9-RISC-V/images/TestEvidence/sine.jpg](https://github.com/arlo-wang/Group-9-RISC-V/blob/66e9283f0160c8348bc2cc0caaa28a72f53757b4/images/TestEvidence/sine.jpg)**
+**![pdf_sine](./images/TestEvidence/sine.jpg)**
 
 Triangle
-**![/root/Documents/Group-9-RISC-V/images/TestEvidence/triangle.jpg](https://github.com/arlo-wang/Group-9-RISC-V/blob/66e9283f0160c8348bc2cc0caaa28a72f53757b4/images/TestEvidence/triangle.jpg)**
+**![pdf_triangle](./images/TestEvidence/triangle.jpg)**
 
 Noisy
 
-**<video control src="https://github.com/arlo-wang/Group-9-RISC-V/blob/66e9283f0160c8348bc2cc0caaa28a72f53757b4/images/TestEvidence/noisy.mp4"></video>**
+**<video control src="./images/TestEvidence/noisy.mp4"></video>**
 
 
 ## Team Contribution
@@ -160,30 +110,47 @@ Noisy
 - `*` (one star) refers to **minor contribution**
 - `**` (two stars) refers to **major contribution**
 
-|              |                               | Arlo (git name)    | Enxing  git name | Zecheng Zhu (Keven Zhu & Zecheng)| Zitong (git name) |
-| ------------ | ----------------------------- | ------------------ | ---------------- | -------------------------------- | ---------------- |
-| Lab 4        | Program Counter               |                  |                  |                          |                  |
-|              | ALU                           |                    |                  |                       |                  |
-|              | Register File                 |                    |                  |                       |                  |
-|              | Instruction Memory            |                    |                  |                          |              |
-|              | Control Unit main_decoder     |                    |                  |                          |               |
-|              | Control Unit alu_decoder      |                    |                  |                          |               |
-|              | Sign Extend                   |                    |                  |                          |              |
-|              | Testbench                     |                    |               |                          |                  |
-| FULL RISC    | Data Memory                   |                  |                  |                      |               |
-|              | Program Counter               |                    |               |                          |                  |
-|              | ALU                           |                    |               |                          |              |
-|              | Register File                 |                    |                  |                        |                  |
-|              | Instruction Memory            |                 |               |                          |                  |
-|              | Control Unit                  |                 |                |                       |             |
-|              | Sign Extend                   |                    |               |                          |                 |
-|              | Testbench                     |                    |               |                          |                  |
-| Pipeline     | Pipeline register             |                 |                |                          |                  |
-|              | Hazard unit                   |                |               |                          |                  |
-|              | Testbench                     |                    |               |                          |                  |
-| Cache        | Memory                        |                 |               |                          |                  |
-|              | Direct mapped cache           |                |               |                       |                |
-|              | Two-way set associative cache |                 |              |                       |                |
+|              |                                          | Arlo (arlo-wang)   | Enxing  git name | Zecheng Zhu (Keven Zhu & Zecheng)| Zitong (git name) |
+| ------------ | ---------------------------------------- | ------------------ | ---------------- | -------------------------------- | ---------------- |
+| Lab 4        | Program Counter                          |        **          |                  |                          |                  |
+|              | ALU                                      |                    |                  |                       |                  |
+|              | Register File                            |        **          |                  |                       |                  |
+|              | Instruction Memory                       |        **          |                  |                          |              |
+|              | Control Unit main_decoder                |                    |                  |                          |               |
+|              | Control Unit alu_decoder                 |                    |                  |                          |               |
+|              | Sign Extend                              |                    |                  |                          |              |
+|              | Top                                      |        **          |                  |                          |                  |
+|              | Testbench                                |        **          |                  |                          |                  |
+| Single cycle | Data Memory                              |        **          |                  |                      |               |
+|              | Program Counter (refactor)               |        **          |                  |                          |                  |
+|              | ALU                                      |                    |                  |                          |              |
+|              | Register File (refactor)                 |        **          |                  |                        |                  |
+|              | Instruction Memory (refactor)            |        **          |               |                          |                  |
+|              | Control Unit (refactor)                  |                    |                  |                       |             |
+|              | Sign Extend (refactor)                   |                    |               |                          |                 |
+|              | Unit Testbeches                          |        **          |               |                          |                  |
+|              | Top                                      |        **          |               |                          |                  |
+|              | F1 starting light program                |                    |               |                          |                  |
+| Pipeline     | Pipeline flip-flop stages                |                    |                |                          |                  |
+|              | Control unit (refactor)                  |                    |               |                          |                  |
+|              | Hazard unit                              |                    |               |                          |                  |
+|              | Top                                      |                    |               |                          |                  |
+|              | Testbench                                |                    |               |                          |                  |
+|              | PDF testing                              |                    |               |                          |                  |
+| Instr Cache  | Main instruction memory (refactor)       |        **          |               |                          |                  |
+|              | L1 four-way set associative instr_cache  |        **          |               |                       |                |
+|              | L2 four-way set associative instr_cache  |        **          |               |                       |                |
+|              | L3 eight-way set associative instr_cache |        **          |               |                       |                |
+|              | Instruction memory top                   |        **          |               |                       |                |
+| Data Cache   | Main instruction memory (refactor)       |        **          |               |                          |                  |
+|              | L1 four-way set associative data_cache   |        **          |               |                       |                |
+|              | L2 four-way set associative data_cache   |        **          |               |                       |                |
+|              | L3 eight-way set associative data_cache  |        **          |               |                       |                |
+|              | Data memory top                          |        **          |               |                       |                |
+| Shell scripts| pdf.sh                                   |        **          |               |                          |                  |
+|              | f1.sh                                    |        **          |               |                          |                  |
+| Other extended works| Full RISCV instructions testing   |                    |               |                          |                  |
+|              | FPGA                                     |        **          |               |                          |                  |
 
 As a team, we all agree that the above table and commits do not accurately 
 measure the contribution of team members due to the following reasons:
