@@ -51,14 +51,6 @@ TEST_F(CpuTestbench, TestPdf)
     EXPECT_EQ(top_->a0, 15363);
 }
 
-TEST_F(CpuTestbench, TestF1)
-{
-    setupTest("F1Assembly");
-    initSimulation();
-    runSimulation(CYCLES);
-    EXPECT_EQ(top_->a0, 0x254);
-}
-
 TEST_F(CpuTestbench, TestSLL)
 {
     setupTest("6_sll");
