@@ -48,17 +48,13 @@ The provided diagram includes color-coded annotations for clarity:
 Manages data and control hazards:
 - **Data Hazards**:
   - **Forward_a/b**: Selects the correct operand to to forward signals from each stage based on wr_en at m/w stages.
-
-  ```systemverilog
-        if (reg_wr_en_m_i && (wr_addr_m_i != 0) && (wr_addr_m_i == rd_addr1_e_i)) begin
-            forward_a_e_o = 2'b10;
-        end 
-        else if (reg_wr_en_w_i && (wr_addr_w_i != 0) && (wr_addr_w_i == rd_addr1_e_i)) begin
-            forward_a_e_o = 2'b01;
-        end 
-        else begin
-            forward_a_e_o = 2'b00;
-        end```
+    ```
+            // MUX for forward_b_e_o
+            // 00 : rd_addr2_e : same as no pipeline
+            // 01 : result_w : forwarding from W state after a MUX in lecture slides(after data memory)
+            // 10 : alu_result_m : forwarding from M state(after ALU)
+    ```
+  
 - **Control Hazards**:
   - Flushes: if branch occurs
   - stalls: if load instruction 's register overlap with register in execution stage
@@ -77,5 +73,5 @@ Manages data and control hazards:
         if ((load_flag_e_i == 1) && ((wr_addr_e_i == rd_addr1_d_i) || (wr_addr_e_i == rd_addr2_d_i))) begin
             stall_o = 1'b1;
 
- ```
+
 
