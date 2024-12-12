@@ -1,11 +1,9 @@
 # to do list:
 - update the branch link after we change the default branch
+- add a table for the team_statement
+- update team contribution table
 
 # Group-9-RISC-V Team Project
-
-## RISC-V RV32I Processor Pipeline
-
-![pipeline structure](/images/pipeline_structure.jpg)
 
 ## Joint statement
 
@@ -21,7 +19,7 @@ Our project is mainly organized into three branches, each representing a signifi
 
 2. [**pipeline branch**](https://github.com/arlo-wang/Group-9-RISC-V/tree/pipeline)：
    
-   This branch focuses on the pipeline implementation. It successfully integrates all RV32I instructions with hazard handling.
+   This branch focuses on the pipeline implementation. It successfully integrates all RV32I instructions with hazard handling. A conceptural [diagram](/images/pipeline_structure.jpg) is also provided for reference
 
 3. [**full-rv32i-design branch**]():
    
@@ -43,8 +41,9 @@ In addition to these main branches, you can also find other branches on our GitH
 
 ### Things to note before ANY test:
 
-- makes sure you are in **tb** folder
-- if u r testing with vbuddy, please configure vbuddy.cfg file and properly connect your vbuddy to your computer
+- Please makes sure that you are in the `tb` folder
+- If you are testing with vBuddy, ensure that the `vbuddy.cfg` file is correctly configured and that your vBuddy is properly connected to your computer.
+- For **Windows users**, you may need to run `./attach_usb.sh` to correctly set up the USB connection.
 
 ### Using the testbench
 
