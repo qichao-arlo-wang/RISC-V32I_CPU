@@ -83,6 +83,101 @@ This part of the project involve designing and testing a RISC-V processor that e
 
 ## Key Components
 
+### 1. PDF Program (`pdf.s`)
+The RISC-V assembly program calculates the PDF by:
+- Initializing a PDF array (`base_pdf`) at memory addresses `0x00000100` to `0x000001FF`.
+- Iterating through data stored at `0x00010000` to `0x0001FFFF`.
+- Incrementing frequency bins in the PDF array based on input data.
+- Displaying the PDF values via register `a0` in a loop for Vbuddy visualization.
+
+### 2. Data Memory (`data_mem.sv`)
+The memory system was designed to:
+- Use byte-addressed logic to simplify data handling.
+- Load `.mem` files with `$readmemh`, ensuring alignment with processor expectations (e.g., data at `0x00010000`).
+
+**Key Code:**
+```verilog
+logic [7:0] data_array [0:DATA_MEM_SIZE-1];
+initial begin
+    $readmemh("data.mem", data_array, 32'h00010000);
+end
+```
+
+### 3. Testbench (`pdf_tb.cpp`)
+The testbench simulates processor execution and interfaces with Vbuddy:
+- Monitors the program counter (`pc`) and instructions.
+- Waits for the processor to reach the display loop (`DISPLAY_LOOP_PC = 0x58`) before plotting results.
+- Plots `a0` values to Vbuddy after PDF calculation.
+
+**Key Code:**
+```cpp
+for (int i = 0; i < 1'000'000; ++i) {
+    runSimulation(1);
+    if (!pdf_build_done && (top->pc == DISPLAY_LOOP_PC)) {
+        pdf_build_done = true;
+        std::cout << "PDF build is complete. Starting to plot A0 values." << std::endl;
+    }
+    if (pdf_build_done && top->a0 != 0) {
+        vbdPlot(int(top->a0), 0, 255);
+    }
+}
+```
+
+### 4. Automation Script (`pdf.sh`)
+The script automates the build and simulation process:
+- Copies the appropriate `.mem` file based on the selected dataset (e.g., `triangle.mem`).
+- Compiles the Verilog code with Verilator.
+- Runs the simulation executable and processes the output.
+
+**Key Code:**
+```bash
+DATA_FILE="$1"
+MEM_FILE="${DATA_FILE}.mem"
+cp "${DATA_DIR}/${MEM_FILE}" "./data.mem"
+verilator -Wall --cc --trace $RTL_DIR/top.sv \
+          -y $RTL_DIR --exe $TB_DIR/pdf_tb.cpp
+make -j -C obj_dir -f Vdut.mk Vdut
+./obj_dir/Vdut
+```
+
+---
+
+## Challenges and Changes
+
+### Memory Addressing and Initialization
+**Issue:** Incorrect alignment between `.mem` files and processor memory caused invalid reads and writes.  
+**Solution:** Used `$readmemh` with starting addresses (`0x00010000`) to load data directly into the expected memory region.
+
+### Data Formatting
+**Issue:** Non-uniform formatting in `.mem` files caused parsing errors.  
+**Solution:** Standardized `.mem` files to use two-digit hex values for consistency (e.g., `00, FF`).
+
+### Control Flow Debugging
+**Issue:** The program counter (`pc`) did not align with expected instruction memory addresses.  
+**Solution:** Identified the display loop start (`_loop3`) and updated `DISPLAY_LOOP_PC` in the testbench to `0x58`, matching the processor's internal address calculation.
+
+### Simulation Efficiency
+**Issue:** Continuous plotting slowed down the simulation.  
+**Solution:** Delayed plotting until after the PDF was built, reducing simulation overhead.
+
+### Random Timing Variations
+**Issue:** Random delays were not noticeable due to a narrow range.  
+**Solution:** Increased the delay range in the `random_delay` subroutine to make variations more apparent.
+
+---
+
+## Results
+1. **Successful PDF Calculation:** The processor correctly calculated the frequency distribution for input data files (e.g., `triangle.mem`).
+2. **Efficient Visualization:** The testbench plotted results only after the PDF was built, improving performance.
+3. **Robust Automation:** The `pdf.sh` script streamlined the process, enabling easy testing with different datasets.
+
+---
+
+## Conclusion
+This project demonstrated the importance of aligning memory initialization, debugging assembly control flow, and optimizing simulation workflows. The system now reliably calculates and visualizes the PDF for various input datasets, providing a solid foundation for future enhancements.
+
+
+
 
 ---
 

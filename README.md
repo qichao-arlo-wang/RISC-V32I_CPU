@@ -136,7 +136,7 @@ Noisy
 | Testbench                |  *   |       |    *    |         |
 | Top                      |  *   |       |    *    |         |
 | Single Cycle:            |      |       |         |         |
-|--------------------------|------|-------|---------|---------|
+|-------------------------------------------------------------|
 | Data Memory              |  *   |       |         |         |
 | Program Counter (refactor)|  *  |   *   |    *    |         |
 | ALU (refactor)            |     |   *   |         |    *    |
@@ -149,32 +149,32 @@ Noisy
 | F1 Starting Light program |     |       |         |     *   |
 | PDF Testing               |     |       |         |     *   |
 | Pipeline:                 |     |       |         |         |
-|--------------------------|------|-------|---------|---------|
+|-------------------------------------------------------------|
 | Pipeline Flip-Flop Stages |     |   *   |    *    |         |
 | Control unit (refactor)   |     |   *   |    *    |         |
 | Hazard Unit               |     |   *   |    *    |         |
 | Top                       |     |   *   |    *    |         |
 | PDF Testing               |     |   *   |    *    |    *    |
 | Instruction Cache:        |      |      |         |          |
-|--------------------------|------|-------|---------|---------|
+|-------------------------------------------------------------|
 | Main Instruction memory (refactor)|  *  |    |    |    *    |
 | L1 Four-Way Set Associative|   *   |      |       |     *   |
 | L2 Four-Way Set Associative|   *   |      |       |    *    |
 | L3 Eight-Way Set Associative|  *   |      |       |    *    |
 | Instruction Memory Top      |   *  |      |       |     *   |
 | Data Cache:                |       |      |       |         |
-|--------------------------|------|-------|---------|---------|
+|-------------------------------------------------------------|
 | Main data memory (refactor)|  * |       |         |         |
 | L1 Four-Way Set Associative | * |       |         |         |
 | L2 Four-Way Set Associative | * |       |         |         |
 | L3 Eight-Way Set Associative| * |       |         |         |
 | Data Memory Top             | * |       |         |         |
 | Shell scripts:            |     |       |         |         |
-|---------------------------|-----|-------|---------|---------|
+|-------------------------------------------------------------|
 | `pdf.sh`                  |  *  |       |         |    *    |
 | `f1.sh`                   |     |       |         |    *    |
 | Extended Work:            |     |       |         |         |
-|---------------------------|-----|-------|---------|---------|
+|-------------------------------------------------------------|
 | Full RISC-V Instructions Testing|   |  * |     *  |         |
 | Instruction Cache         |      |       |        |   *     |
 | FPGA Implementation       |      |   *   |        |         |
