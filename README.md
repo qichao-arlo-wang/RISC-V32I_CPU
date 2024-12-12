@@ -12,7 +12,7 @@ Our team successfully completed a **full RV32I design**, implementing **all base
 | ---------------------------------------------------------------------------------------------------- |
 | [Lab4](https://github.com/arlo-wang/Group-9-RISC-V/blob/6446b802a61043c4c9276103159d4a91b70c46dc/team_statements/lab4.md.jpg)                                        | 
 | [Single-Cycle(full RISC Design)](https://github.com/arlo-wang/Group-9-RISC-V/blob/6446b802a61043c4c9276103159d4a91b70c46dc/team_statements/single_cycle.md) | 
-| [Pipeline](./personal_statements/team_statements/pipeline.md)                                | 
+| [Pipeline](./team_statements/pipeline.md)                                | 
 | [Cache](https://github.com/arlo-wang/Group-9-RISC-V/blob/6446b802a61043c4c9276103159d4a91b70c46dc/team_statements/cache.md)                                 |
 
 ## Personal statements
