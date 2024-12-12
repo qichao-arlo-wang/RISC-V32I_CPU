@@ -21,7 +21,20 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-PROGRAM_PATH=$(realpath "$TESTS_DIR/program.hex") # program.hex file path
+PROGRAM_PATH=$(realpath "$TEST_FOLDER/program.hex") # program.hex file path
+
+# Cleanup previous build files
+cd "$TESTS_DIR"
+rm -rf obj_dir
+cd "$SCRIPT_DIR"
+rm -f verilated.vcd program.hex data.mem
+
+# Copy instruction memory (program) hex file to current directory
+cp "$PROGRAM_PATH" ./program.hex
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to copy program.hex from $PROGRAM_PATH"
+    exit 1
+fi
 
 # Compile Verilog files with Verilator
 verilator -Wall --cc --trace $RTL_FOLDER/top.sv \
@@ -40,21 +53,21 @@ if [ ! -f obj_dir/Vdut ]; then
     exit 1
 fi
 
-# Copy instruction memory (program) hex file to current directory
-cp "$PROGRAM_PATH" ./program.hex
-if [ $? -ne 0 ]; then
-    echo "Error: Failed to copy program.hex from $PROGRAM_PATH"
-    exit 1
-fi
 
 # Copy the program.hex file to obj_dir
-if [ -f "$PROGRAM_PATH" ]; then
-    echo "Copying program.hex to obj_dir..."
-    cp "$PROGRAM_PATH" obj_dir/
-else
-    echo "Error: program.hex not found. Ensure it exists in $TEST_FOLDER."
-    exit 1
-fi
+# if [ -f "$PROGRAM_PATH" ]; then
+#     echo "Copying program.hex to obj_dir..."
+#     cp "$PROGRAM_PATH" obj_dir/
+# else
+#     echo "Error: program.hex not found. Ensure it exists in $TEST_FOLDER."
+#     exit 1
+# fi
+
 
 # Run the simulation
 ./obj_dir/Vdut
+
+cd "$TESTS_DIR"
+rm -f program.hex data.hex
+cd "$SCRIPT_DIR"
+rm -f program.hex data.hex
