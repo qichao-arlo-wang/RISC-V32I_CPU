@@ -1,24 +1,48 @@
 #!/bin/bash
 
-# Attach Vbuddy
-./attach_usb.sh
+# # Attach Vbuddy for windows user
+# ./attach_usb.sh
 
 # Cleanup previous build files
 rm -rf obj_dir
-rm -f verilated.vcd
+rm -f verilated.vcd program.hex data.mem
 
 # Set directories
-RTL_DIR="/root/Documents/Group-9-RISC-V/rtl"
-TB_DIR="/root/Documents/Group-9-RISC-V/tb/tests"
-HEX_FILE="/root/Documents/Group-9-RISC-V/tb/test_out/F1Assembly/program.hex"
+SCRIPT_DIR=$(dirname "$(realpath "$0")") # tb directory
+RTL_FOLDER=$(realpath "$SCRIPT_DIR/../rtl")
+TEST_FOLDER=$(realpath "$SCRIPT_DIR/tests")
+F1_FILE="${SCRIPT_DIR}/asm/F1Assembly.s"
+
+# Assemble the PDF file
+# Default path for generated program.hex is $TESTS_DIR/program.hex
+./assemble.sh "${F1_FILE}"
+if [ $? -ne 0 ]; then
+    echo "Error: assemble.sh failed to execute."
+    exit 1
+fi
+
+PROGRAM_PATH=$(realpath "$TEST_FOLDER/program.hex") # program.hex file path
+
+# Cleanup previous build files
+cd "$TESTS_DIR"
+rm -rf obj_dir
+cd "$SCRIPT_DIR"
+rm -f verilated.vcd program.hex data.mem
+
+# Copy instruction memory (program) hex file to current directory
+cp "$PROGRAM_PATH" ./program.hex
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to copy program.hex from $PROGRAM_PATH"
+    exit 1
+fi
 
 # Compile Verilog files with Verilator
-verilator -Wall --cc --trace $RTL_DIR/top.sv \
-          -y $RTL_DIR \
-          --exe $TB_DIR/f1_tb.cpp \
+verilator -Wall --cc --trace $RTL_FOLDER/top.sv \
+          -y $RTL_FOLDER \
+          --exe $TEST_FOLDER/f1_tb.cpp \
           --prefix Vdut \
-          -CFLAGS "-I/usr/include/gtest" \
-          -LDFLAGS "-L/usr/lib -lgtest -lgtest_main -lpthread"
+          -CFLAGS "-isystem /opt/homebrew/Cellar/googletest/1.15.2/include"\
+          -LDFLAGS "-L/opt/homebrew/Cellar/googletest/1.15.2/lib -lgtest -lgtest_main -lpthread" \
 
 # Build the simulation executable
 make -j -C obj_dir -f Vdut.mk Vdut
@@ -29,14 +53,21 @@ if [ ! -f obj_dir/Vdut ]; then
     exit 1
 fi
 
+
 # Copy the program.hex file to obj_dir
-if [ -f "$HEX_FILE" ]; then
-    echo "Copying program.hex to obj_dir..."
-    cp "$HEX_FILE" obj_dir/
-else
-    echo "Error: program.hex not found. Ensure it exists in $TB_DIR."
-    exit 1
-fi
+# if [ -f "$PROGRAM_PATH" ]; then
+#     echo "Copying program.hex to obj_dir..."
+#     cp "$PROGRAM_PATH" obj_dir/
+# else
+#     echo "Error: program.hex not found. Ensure it exists in $TEST_FOLDER."
+#     exit 1
+# fi
+
 
 # Run the simulation
 ./obj_dir/Vdut
+
+cd "$TESTS_DIR"
+rm -f program.hex data.hex
+cd "$SCRIPT_DIR"
+rm -f program.hex data.hex

@@ -1,8 +1,6 @@
 #include "testbench.h"
 #include "../vbuddy.cpp"
-#include <cstdlib>
-#include <ctime>
-#include <unistd.h> //unsleep()
+#include <unistd.h> //usleep()
 
 Vdut *top;
 VerilatedVcdC *tfp;
@@ -15,40 +13,29 @@ protected:
         top->rst = 1;  // Assert reset
         runSimulation(5);  // Run for 5 cycles
         top->rst = 0;  // De-assert reset
-        top->trigger = 1;  // Enable trigger
+        top->trigger = 1;  // Enable trigger just once at the start (if needed by your design)
     }
 };
 
 TEST_F(CpuTestBench, StartBuddy) {
     int max_cycles = 100000;
 
-    srand(time(0)); //generate random num
+    // No random seed needed here, as randomness is handled by assembly LFSR now.
 
     if (vbdOpen() != 1) {
         SUCCEED() << "Vbuddy not available.";
     }
     vbdHeader("F1_Lights");
 
-    bool light_on = false;
-    int random_off_timer = 0;
-
     for (int i = 0; i < max_cycles; ++i) {
-        if (!light_on){
-            top->trigger = 1; //lights on
-            light_on = true;
-            random_off_timer = rand() % 200 + 50; //random timer
-        } else if (light_on && random_off_timer > 0){
-            random_off_timer--;
-        } else { 
-            top->trigger = 0; //lights off
-            light_on = false;
-        }
-
+        // The CPU assembly code will control a0 (lights on/off) and handle delays.
+        // We just run the simulation and display the value of a0.
+        
         // Update Vbuddy bar with a0 value
         vbdBar(top->a0 & 0xFF);
+
         // Run a single simulation cycle
         runSimulation();
-        usleep(100000); //delay between each simulation
     }
     SUCCEED();
 }
@@ -58,4 +45,3 @@ int main(int argc, char **argv) {
     auto res = RUN_ALL_TESTS();
     return res;
 }
-
