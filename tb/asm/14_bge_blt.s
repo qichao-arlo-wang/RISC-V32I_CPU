@@ -13,7 +13,7 @@ main:
 no_branch:
     # Code if BLT branch not taken
     li t4, 0xDEAD    # t4 = 0xDEAD (not taken)
-    j check_bge      # Skip the BLT branch taken code
+    jal check_bge      # Skip the BLT branch taken code
 
 branch_less:
     # Code if BLT branch taken
@@ -26,7 +26,7 @@ check_bge:
 no_branch_ge:
     # Code if BGE branch not taken
     li t5, 0xCAFE    # t5 = 0xCAFE (not taken)
-    j end            # Skip the BGE branch taken code
+    jal end            # Skip the BGE branch taken code
 
 branch_ge:
     # Code if BGE branch taken

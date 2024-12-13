@@ -145,7 +145,7 @@ module main_decoder (
                 imm_src_o = 3'b010;
                 alu_src_o   = 0;
                 branch_o    = 1;
-                alu_op_o    = 2'b01; // default ADD
+                alu_op_o    = 2'b01;
                 byte_en_o = 4'b0000;
                 result_src_o = 0; // don't care
                 alu_src_a_sel_o = 0;

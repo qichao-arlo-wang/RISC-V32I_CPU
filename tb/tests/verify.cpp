@@ -136,7 +136,7 @@ TEST_F(CpuTestbench, TestBGEUBLTU)
     setupTest("15_bgeu_bltu");
     initSimulation();
     runSimulation(CYCLES);
-    EXPECT_EQ(top_->a0, 0xF124);
+    EXPECT_EQ(top_->a0, 0xACF0);
 }
 
 TEST_F(CpuTestbench, TestAUIPC)

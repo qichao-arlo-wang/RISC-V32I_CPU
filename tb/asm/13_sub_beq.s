@@ -14,7 +14,7 @@ main:
 
     # Code if branch not taken
     li t4, 0xDEAD    # t4 = 0xDEAD (not taken)
-    j end            # Skip the branch taken code
+    jal end            # Skip the branch taken code
 
 branch_equal:
     # Code if branch taken

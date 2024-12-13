@@ -34,7 +34,13 @@ module alu_decoder (
             end
 
             2'b01: begin // B-type operations
-                alu_control_o = 4'h1;
+                case (funct3_i)
+                    //BLTU
+                    3'h6: alu_control_o = 4'h4;
+                    //BGEU
+                    3'h7: alu_control_o = 4'h4;
+                    default: alu_control_o = 4'h1;
+                endcase
             end
 
             2'b10: begin // R-type operations
