@@ -25,7 +25,7 @@ main:
     # Test SLTUI (unsigned: t0 < immediate 10)
     sltiu t3, t0, 10   # t3 = t0 < 10 -> t3 = 10 < 10 = 0
 
-    # Validate results by adding them to a0 (sum all the results)
+    # Sum all the results in a0
     li a0, 0          # Initialize a0 = 0
     add a0, a0, t4    # a0 += t4 (1)
     add a0, a0, t5    # a0 += t5 (0)

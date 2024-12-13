@@ -8,6 +8,8 @@ The provided diagram includes color-coded annotations for clarity:
 - **Red**: additional mux signals for execution stage
 - **Green**: add-on signals to writeback stage.
 
+Code from single cycle stage was built on in the pipeline branch. After it has been tested vigorously, further work such as cache was done on top of it.
+
 ## 5 stage
 
 ### 1. Fetch

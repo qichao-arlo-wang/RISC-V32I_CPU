@@ -35,9 +35,9 @@ branch_ge:
 end:
     # Validate results by summing into a0
     li a0, 0         # Initialize a0 = 0
-    add a0, a0, t4   # a0 += t4 (result of BLT)
-    add a0, a0, t5   # a0 += t5 (result of BGE)
+    add a0, a0, t4   # a0 += t4 (result of BLT) = 0xBEEF
+    add a0, a0, t5   # a0 += t5 (result of BGE) = 0xF00D
 
     # Infinite loop to finish program
-finish:     # expected result is 0x1AEFC
+finish:     # expected result is 0x1AEFC = 0xBEEF + 0xF00D
     bne     a0, zero, finish     # loop forever
