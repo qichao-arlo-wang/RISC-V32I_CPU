@@ -27,7 +27,7 @@ Our project is mainly organized into three branches, each representing a signifi
 
 2. [**pipeline branch**](https://github.com/arlo-wang/Group-9-RISC-V/tree/pipeline)：
    
-   This branch focuses on the pipeline implementation. It successfully integrates all RV32I instructions with hazard handling. A conceptural [diagram](/images/pipeline_structure.jpg) is also provided for reference
+   This branch focuses on the pipeline implementation. It successfully integrates all RV32I instructions with hazard handling. A conceptual [diagram](/images/pipeline_structure.jpg) is also provided for reference
 
 3. [**full-rv32i-design branch**]():
    
@@ -115,13 +115,12 @@ The `pdf.sh` script allows you to load different `.mem` files depending on the u
 |              | Control Unit main_decoder (refactor)     |                    |       **        |                **                |                |
 |              | Control Unit alu_decoder (refactor)      |                    |       **        |                **                |                |
 |              | Sign Extend (refactor)                   |                    |                 |                **                |                |
-|              | Unit Testbences                          |        **          |                 |                                  |        *       |
+|              | Unit Testbenches                         |        **          |                 |                                  |        *       |
 |              | Top                                      |        **          |       **        |                                  |                |
 | Pipeline     | Pipeline flip-flop stages                |                    |       *         |                **                |                |
 |              | Control unit (refactor)                  |                    |       **        |                                  |                |
 |              | Hazard unit                              |                    |       **        |                **                |                |
 |              | Top                                      |                    |       **        |                **                |                |
-|              | Unit Testbenches                         |                    |       **        |                                  |                |
 | Instr Cache  | Main instruction memory (refactor)       |        **          |                 |                                  |       **       |
 |              | L1 four-way set associative instr_cache  |        **          |                 |                                  |       **       |
 |              | L2 four-way set associative instr_cache  |        **          |                 |                                  |       **       |
@@ -135,8 +134,7 @@ The `pdf.sh` script allows you to load different `.mem` files depending on the u
 | Shell scripts| pdf.sh                                   |        **          |                 |                *                 |       **       |
 |              | f1.sh                                    |        **          |                 |                *                 |       **       |
 |              | Makefile                                 |        **          |                 |                                  |                |
-| Others       | Full RISCV instructions testing          |                    |        **       |                *                 |                |
-|              | Full instructions assembly testing file  |                    |        **       |                                  |                |
+| Others       | Full RISCV instructions testing          |                    |        **       |                                  |                |
 |              | F1 starting light program                |                    |                 |                **                |       **       |
 |              | PDF testing                              |        **          |        **       |                **                |       **       |
 |              | FPGA                                     |        **          |                 |                **                |                |
@@ -180,8 +178,10 @@ The `pdf.sh` script allows you to load different `.mem` files depending on the u
 
 As a team, we all agree that the above table and commits do not accurately measure the contribution of team members due to the following reasons:
 
-  1. When working together in Library / Student hub / meeting on Google Meet (online), some of us may working one of the laptops, so some commits made by team members are often a combined effort of two or more members.
+  1. When working together online or in person, some of us may be working together on one of the laptops, so some commits made by team members are often a combined effort of two or more members.
 
-  1. The effort revolving around debugging is often highly overlooked - commits with simple fixes often took hours / days of effort from two or more members to debug a small mistake.
+  2. The effort revolving around debugging is often highly overlooked - commits with simple fixes took hours / days of effort, sometimes from more than one member.
 
-  1. Testbench building and writing played a huge role in streamlining our process, and multiple tests were written to specifically do debugging and isolate problematic parts / instructions.
+  3. Testbench building and writing played a huge role in streamlining our process, and multiple tests were written to specifically do debugging and isolate problematic parts / instructions.
+
+  4. Writing bash scripts were a tedious process, as the members used a mix of Windows laptops and Macbooks so there were a multitude of system issues. Some programs could not be run successfully on some members' laptops.

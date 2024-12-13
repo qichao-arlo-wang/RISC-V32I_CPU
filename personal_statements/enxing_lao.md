@@ -193,6 +193,41 @@ A fix is not implemented on this abnormality because it seems to be a flaw of sy
 ![waveform of SLTU test](/images/personal_statements_images/enxing_lao_images/SLTUwaveform.png)
 As seen in this image, at the second clock cycle, a0 remains = 0x1 as the output is 0 because the unsigned comparison of 10 and -10 is such that -10 is larger. Thus, there is no addition. At the third clock cycle, a0 increases by 1. This is the opposite of the SLT waveform.
 
+### BLTU and BGEU
+These instructions involved comparing which values were bigger, when these values are unsigned.
+However, when the usual branch instruction is taken involving subtraction, there is an error. This is because the subtraction is automatically signed. 
+
+For example, when rs1 = 3 = 0x00000003 and rs2 = -5 = 0xFFFFFFFB, alu_result = rs1 - rs2 = 0x00000008 = 8 > 0 hence a jump occurs. Hence, I realised that using the alu_operation subtraction for all branches will not work. Hence, for BLTU and BGEU, the alu operation is changed to SLTU instead. This ensures that the unsigned values are compared, and if the comparison is correct, then the branch is taken.
+
+This is the change in the alu_decoder.sv
+```systemverilog
+2'b01: begin // B-type operations
+    case (funct3_i)
+        //BLTU
+        3'h6: alu_control_o = 4'h4;
+        //BGEU
+        3'h7: alu_control_o = 4'h4;
+        default: alu_control_o = 4'h1;
+    endcase
+end
+```
+In the control unit, this is the change.
+```systemverilog
+always_comb begin
+    case (funct3_i)
+        3'b000: branch_condition = zero_i;                      // beq: branch if zero is set
+        3'b001: branch_condition = ~zero_i;                     // bne: branch if zero is not set
+        3'b100: branch_condition = ($signed(alu_result_i) < 0);          // blt
+        3'b101: branch_condition = zero_i | ($signed(alu_result_i) > 0); // bge
+        3'b110: branch_condition = alu_result_i == 32'd1;           //bltu 
+        3'b111: branch_condition = zero_i | alu_result_i == 32'd0;  //bgeu
+        default: branch_condition = 1'b0;                       // Other branch types not implemented here
+    endcase
+end
+```
+
+This change is also made in the pipelined processor.
+
 # Good practices
 1. Add comments on code that I had just grasped so that I would not have to relearn it.
 2. Comment out code that I wanted to remove, verify that it works, then remove.
