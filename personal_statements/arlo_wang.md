@@ -2,27 +2,25 @@
 
 ## Table of Contents
 
-- [Personal Statement - Arlo Wang](#personal-statement---arlo-wang)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Contributions](#contributions)
-    - [Instruction \& data memory](#instruction--data-memory)
-      - [Challenge \& Reflections](#challenge--reflections)
-    - [Multilevel caches](#multilevel-caches)
+- [Introduction](#introduction)
+- [Contributions](#contributions)
+  - [Instruction \& data memory](#instruction--data-memory)
+    - [Challenge \& Reflections](#challenge--reflections)
+  - [Multilevel caches](#multilevel-caches)
     - [Data caches](#data-caches)
     - [Instruction caches](#instruction-caches)
-      - [Challenges \& Reflections](#challenges--reflections)
-    - [Shell scripts \& Makefile](#shell-scripts--makefile)
-    - [Integration](#integration)
-    - [FPGA Implementation](#fpga-implementation)
-    - [Overall reflections](#overall-reflections)
-    - [Acknowledgements](#acknowledgements)
+    - [Challenges \& Reflections](#challenges--reflections)
+  - [Shell scripts \& Makefile](#shell-scripts--makefile)
+  - [Integration](#integration)
+  - [FPGA Implementation](#fpga-implementation)
+- [Overall reflections](#overall-reflections)
+- [Acknowledgements](#acknowledgements)
 
 ## Introduction
 
-In this project, I implemented [instruction and data memory](#instruction--data-memory) based on the provided memory map, successfully designed [L1, L2, and L3 data caches](#data-caches) and [L1, L2 and L3 instruction caches](#instruction-caches). While building the L1 data cache, I used parameterized designs to ensure flexibility, allowing L2, L3 caches, and even parts of the instruction cache to be adapted with minimal modifications. Finally, I developed relevant [shell scripts & Make files](#shell-scripts--makefile) to enable direct testing of F1 light and PDF via Vbuddy.
+In this project, I implemented [instruction and data memory](#instruction--data-memory) and designed [L1, L2, and L3 data caches](#data-caches) and [L1, L2 and L3 instruction caches](#instruction-caches) using parameterized designs for flexibility. I integrated the single-cycle top layer, multilevel caches, and the pipelined RV32I processor into a unified system, ensuring seamless component communication. Additionally, I developed shell [scripts & Makefiles](#shell-scripts--makefile) to simplify testing with Vbuddy and attempted [FPGA](#fpga-implementation) implementation on the Terasic DE10-Lite board, gaining hands-on experience with hardware deployment.
 
-In this personal statement, I will not discuss the detailed design of individual modules; these details can be found in the [team_statements](../team_statements/) folder.
+In this personal statement, I will **NOT** discuss the detailed design of individual modules; these details can be found in the [team_statements](../team_statements/) folder.
 
 ## Contributions
 
@@ -54,8 +52,6 @@ Most of the data cache implementation was completed across two branches and deta
 
 - In **data-cache-multilevel branch**, I further completed and optimized the L1, L2, and L3 data caches, and developed the new data_mem_sys.sv module. Working evidence, such as cache hierarchy optimizations and parameterization for flexibility, is available in the [data-cache-multilevel branch commit history](https://github.com/arlo-wang/Group-9-RISC-V/commits/data-cache-multilevel/)
 
-------
-
 ### Instruction caches
 
 The overall structure is quite similar to the previously implemented data_cache with **L1, L2, L3 instruction caches**, thanks to the design of the data_cache, which provided a solid foundation for the instruction cache implementation. It is also relatively simpler, primarily due to two factors: the reduced number of write operations and the absence of the need to handle the lower two bits, as the lower two bits of RISC-V instructions are always 00. Specifically, the instruction caches were designed with the following configurations:
@@ -82,7 +78,7 @@ Through this part of the project, I gained a deeper understanding of how caches 
 
 ### Shell scripts & Makefile
 
-In this part, I primarily modified and debugged the**pdf.sh**, **f1.sh** and **doit.sh**, scripts by correcting the file paths and refining the compilation process. I added relevant commands to clean intermediate files, ensuring the repository remains more organized and concise. Additionally, I updated the Makefile to include support for f1.sh, simplifying the workflow for testing and execution.
+In this part, I primarily modified and debugged the **pdf.sh**, **f1.sh** and **doit.sh**, scripts by correcting the file paths and refining the compilation process. I added relevant commands to clean intermediate files, ensuring the repository remains more organized and concise. Additionally, I updated the Makefile to include support for f1.sh, simplifying the workflow for testing and execution.
 
 -------
 
@@ -94,7 +90,7 @@ In this part, I primarily focused on integrating the **single-cycle top layer** 
    
    I integrated all the single modules, including the instruction memory, data memory, and individual components, to create a unified top layer for the single-cycle version. This integration ensured that all individual components worked together seamlessly as a complete system. 
 
-   **Evidence can be found in the** [commit record](https://github.com/arlo-wang/Group-9-RISC-V/commit/ee74586b7e9335e03b3ddfbad1bc1f3cdc62ff05)
+   **Supporting evidence can be found in this** [commit](https://github.com/arlo-wang/Group-9-RISC-V/commit/ee74586b7e9335e03b3ddfbad1bc1f3cdc62ff05).
 
 2. **Full RV32I Design Integration:**
 
@@ -106,7 +102,7 @@ In this part, I primarily focused on integrating the **single-cycle top layer** 
 
 ### FPGA Implementation
 
-In this project, I attempted to deploy the design on the Terasic DE10-Lite FPGA board to gain hands-on experience with FPGA-based implementations. Although the integration and verification of the RV32I processor on the board were not fully completed, the process allowed me to deepen my understanding of FPGA concepts, hardware description languages, and resource constraints.
+In this project, I attempted to deploy the design on the **Terasic DE10-Lite FPGA board** to gain hands-on experience with FPGA-based implementations. Although the integration and verification of the RV32I processor on the board were not fully completed, the process allowed me to deepen my understanding of FPGA concepts, hardware description languages, and resource constraints.
 
 -------
 

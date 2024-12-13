@@ -17,9 +17,7 @@ Our team successfully completed a **full RV32I design**, implementing **all base
 
 Our project is mainly organized into three branches, each representing a significant milestone in our RISC-V processor design:
 
-**//////// update the branch link after we change the default branch //////////**
-
-1. [**main branch**]():
+1. [**main branch**](https://github.com/arlo-wang/Group-9-RISC-V/tree/main):
    
    This branch builds upon the foundation of Lab4. It implements a single-cycle version of the full RV32I design without including any pipelining and cache structures.
 
@@ -27,7 +25,7 @@ Our project is mainly organized into three branches, each representing a signifi
    
    This branch focuses on the pipeline implementation. It successfully integrates all RV32I instructions with hazard handling. A conceptual [diagram](/images/pipeline_structure.jpg) is also provided for reference
 
-3. [**full-rv32i-design branch**]():
+3. [**full-rv32i-design branch**](https://github.com/arlo-wang/Group-9-RISC-V/tree/full-rv32i-design):
    
    This branch contains the complete implementation of the full RV32I design, incorporating all the features mentioned above, including the pipeline with hazard handling, 4-way and 8-way L1, L2 and L3 instruction and data caches.
 
@@ -133,7 +131,7 @@ All of our testing & working evidence are in [`test evidence`](./images/TestEvid
 | Others       | Full RISCV instructions testing          |                    |        **       |                                  |                |
 |              | F1 starting light program                |                    |                 |                **                |       **       |
 |              | PDF testing                              |        **          |        **       |                **                |       **       |
-|              | FPGA                                     |        **          |                 |                **                |                |
+|              | FPGA                                     |         *          |                 |                **                |                |
 
 ## File structure
 
