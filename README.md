@@ -8,8 +8,6 @@
     - [Things to note before ANY test:](#things-to-note-before-any-test)
     - [Using the testbench](#using-the-testbench)
   - [Working Evidence](#working-evidence)
-    - [Test result evidence](#test-result-evidence)
-    - [PDF \& F1 videos](#pdf--f1-videos)
   - [Team Contribution Table](#team-contribution-table)
   - [File structure](#file-structure)
 
@@ -77,17 +75,13 @@ The `pdf.sh` script allows you to load different `.mem` files depending on the u
 
 ## Working Evidence
 
-### Test result evidence
-
-- [`test evidence`](./images/TestEvidence/)
-
-### PDF & F1 videos
+All of our testing & working evidence are in [`test evidence`](./images/TestEvidence/) folder. PDF & F1 light vbuddly tests can be found below also.
 
 | Dataset | Videos | Dataset | Videos |
 |-|-|-|-|
-| Gaussian | [gaussian_vbuddy](./images/TestEvidence/gaussian.mp4) | Sine | [sine_vbuddy](./images/TestEvidence/sine.jpg) |
-| Triangle | [triangle_vbuddy](./images/TestEvidence/triangle.jpg) | Noisy| [noisy_vbuddy](./images/TestEvidence/noisy.mp4) |
-| F1 light | [F1_vbuddy](./images/TestEvidence/f1_light.mp4)
+| Gaussian | [gaussian_vbuddy](./images/TestEvidence/f1_pdf_tests_evidence/gaussian.mp4) | Sine | [sine_vbuddy](./images/TestEvidence/f1_pdf_tests_evidence/sine.jpg) |
+| Triangle | [triangle_vbuddy](./images/TestEvidence/f1_pdf_tests_evidence/triangle.jpg) | Noisy| [noisy_vbuddy](./images/TestEvidence/f1_pdf_tests_evidence/noisy.mp4) |
+| F1 light | [F1_vbuddy](./images/TestEvidence/f1_pdf_tests_evidence/f1_light.mp4)
 
 
 ## Team Contribution Table
