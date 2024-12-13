@@ -1,9 +1,17 @@
-# to do list:
-- update the branch link after we change the default branch
-- add a table for the team_statement
-- update team contribution table
-
 # Group-9-RISC-V Team Project
+
+- [Group-9-RISC-V Team Project](#group-9-risc-v-team-project)
+  - [Joint statement](#joint-statement)
+  - [Personal statements](#personal-statements)
+  - [Team Statements Table](#team-statements-table)
+  - [Quick Start](#quick-start)
+    - [Things to note before ANY test:](#things-to-note-before-any-test)
+    - [Using the testbench](#using-the-testbench)
+  - [Working Evidence](#working-evidence)
+    - [Test result evidence](#test-result-evidence)
+    - [PDF \& F1 videos](#pdf--f1-videos)
+  - [Team Contribution Table](#team-contribution-table)
+  - [File structure](#file-structure)
 
 ## Joint statement
 
@@ -27,15 +35,23 @@ Our project is mainly organized into three branches, each representing a signifi
 
 In addition to these main branches, you can also find other branches on our GitHub repository, including [lab4](https://github.com/arlo-wang/Group-9-RISC-V/tree/lab4), [data_cache](https://github.com/arlo-wang/Group-9-RISC-V/tree/data_cache), [data-cache-multilevel](https://github.com/arlo-wang/Group-9-RISC-V/tree/data-cache-multilevel), [instr_cache](https://github.com/arlo-wang/Group-9-RISC-V/tree/instr_cache) and [instr-cache-multilevel](https://github.com/arlo-wang/Group-9-RISC-V/tree/instr_cache_multilevel). Each of these branches was created to implement specific functionalities, such as data and instruction caches or to track progress from earlier stages of development.
 
-
 ## Personal statements
 
-| Member    | Personal statement |
-|-----------|--------------------|
-| Arlo     | [Personal statement](./personal_statements/arlo_wang.md) |
-| Enxing   | [Personal statement](./personal_statements/enxing_lao.md) |
-| Zecheng  | [Personal statement](./personal_statements/zecheng_zhu.md) |
-| Zitong   | [Personal statement](./personal_statements/zitong_hon.md) |
+| Member    | Arlo | Enxing | Zecheng | Zitong |
+|-----------|------|--------|---------|--------|
+| Personal statement | [Personal statement](./personal_statements/arlo_wang.md) | [Personal statement](./personal_statements/enxing_lao.md) | [Personal statement](./personal_statements/zecheng_zhu.md) | [Personal statement](./personal_statements/zitong_hon.md) |
+
+## Team Statements Table
+
+| File Name                          | Description                           |
+|------------------------------------|---------------------------------------|
+| [cache.md](./team_statements/cache.md)          | Details about the cache implementation |
+| [pipeline.md](./team_statements/pipeline.md)    | Explanation of the pipeline design      |
+| [single_cycle.md](./team_statements/single_cycle.md) | Description of the single-cycle design |
+| [memory.md](./team_statements/memory.md)        | Explanation of the memory design        |
+| [control_unit.md](./team_statements/control_unit.md)        | Explanation of the control_unit design        |
+| [f1.md](./team_statements/f1.md)                | F1 testing details                      |
+
 
 ## Quick Start
 
@@ -82,45 +98,48 @@ The `pdf.sh` script allows you to load different `.mem` files depending on the u
 
 |              |                                          | Arlo (arlo-wang)   | Enxing (lex734) | Zecheng Zhu (Keven Zhu & Zecheng)| Zitong (zth2) |
 | ------------ | ---------------------------------------- | :----------------: | :-------------: | :------------------------------: | :------------: |
-| Lab 4        | Program Counter                          |        **          |                 |                                  |                |
-|              | ALU                                      |                    |       *         |                                  |                |
-|              | Register File                            |        **          |                 |                                  |                |
+| Lab 4        | Program Counter                          |        **          |                 |                *                 |                |
+|              | ALU                                      |                    |                 |                **                |        *       |
+|              | Register File                            |        **          |                 |                                  |        *       |
 |              | Instruction Memory                       |        **          |                 |                                  |                |
-|              | Control Unit main_decoder                |                    |       **        |                                  |                |
-|              | Control Unit alu_decoder                 |                    |       **        |                                  |                |
-|              | Sign Extend                              |                    |                 |                                  |                |
-|              | Top                                      |        **          |       **        |                                  |                |
-|              | Testbench                                |        **          |       **        |                                  |                |
-| Single cycle | Data Memory                              |        **          |                 |                                  |                |
-|              | Program Counter (refactor)               |        **          |       *         |                                  |                |
-|              | ALU                                      |                    |       **        |                                  |                |
-|              | Register File (refactor)                 |        **          |                 |                                  |                |
-|              | Instruction Memory (refactor)            |        **          |                 |                                  |                |
-|              | Control Unit (refactor)                  |                    |       **        |                                  |                |
-|              | Sign Extend (refactor)                   |                    |                 |                                  |                |
+|              | Control Unit main_decoder                |                    |                 |                **                |                |
+|              | Control Unit alu_decoder                 |                    |                 |                **                |                |
+|              | Sign Extend                              |                    |                 |                **                |                |
+|              | Top                                      |        **          |                 |                                  |                |
 |              | Unit Testbenches                         |        **          |                 |                                  |                |
-|              | Top                                      |        **          |       **        |                                  |                |
-|              | F1 starting light program                |                    |                 |                                  |                |
-| Pipeline     | Pipeline flip-flop stages                |                    |       *         |                                  |                |
-|              | Control unit (refactor)                  |                    |       **        |                                  |                |
-|              | Hazard unit                              |                    |       **        |                                  |                |
-|              | Top                                      |                    |       **        |                                  |                |
-|              | Testbench                                |                    |       **        |                                  |                |
-|              | PDF testing                              |                    |       **        |                                  |                |
-| Instr Cache  | Main instruction memory (refactor)       |        **          |                 |                                  |                |
-|              | L1 four-way set associative instr_cache  |        **          |                 |                                  |                |
-|              | L2 four-way set associative instr_cache  |        **          |                 |                                  |                |
-|              | L3 eight-way set associative instr_cache |        **          |                 |                                  |                |
-|              | Instruction memory top                   |        **          |                 |                                  |                |
+| Single cycle | Data Memory                              |        **          |                 |                                  |        *       |
+|              | Program Counter (refactor)               |        **          |                 |                *                 |                |
+|              | ALU                                      |                    |                 |                **                |        *       |
+|              | Register File (refactor)                 |        **          |                 |                                  |        *       |
+|              | Instruction Memory (refactor)            |        **          |                 |                                  |                |
+|              | Control Unit main_decoder (refactor)     |                    |                 |                **                |                |
+|              | Control Unit alu_decoder (refactor)      |                    |                 |                **                |                |
+|              | Sign Extend (refactor)                   |                    |                 |                **                |                |
+|              | Unit Testbeches                          |        **          |                 |                                  |        *       |
+|              | Top                                      |        **          |                 |                                  |                |
+| Pipeline     | Pipeline flip-flop stages                |                    |                 |                **                |                |
+|              | Control unit (refactor)                  |                    |        **       |                                  |                |
+|              | Hazard unit                              |                    |        **       |                **                |                |
+|              | Top                                      |                    |        **       |                **                |                |
+|              | Unit Testbenches                         |                    |        **       |                                  |                |
+| Instr Cache  | Main instruction memory (refactor)       |        **          |                 |                                  |       **       |
+|              | L1 four-way set associative instr_cache  |        **          |                 |                                  |       **       |
+|              | L2 four-way set associative instr_cache  |        **          |                 |                                  |       **       |
+|              | L3 eight-way set associative instr_cache |        **          |                 |                                  |       **       |
+|              | Instruction memory top                   |        **          |                 |                                  |       **       |
 | Data Cache   | Main instruction memory (refactor)       |        **          |                 |                                  |                |
 |              | L1 four-way set associative data_cache   |        **          |                 |                                  |                |
 |              | L2 four-way set associative data_cache   |        **          |                 |                                  |                |
 |              | L3 eight-way set associative data_cache  |        **          |                 |                                  |                |
 |              | Data memory top                          |        **          |                 |                                  |                |
-| Shell scripts| pdf.sh                                   |        **          |                 |                                  |                |
-|              | f1.sh                                    |        **          |                 |                                  |                |
-| Other extended works| Full RISCV instructions testing   |                    |       **        |                                  |                |
-|              | FPGA                                     |        **          |                 |                                  |                |
+| Shell scripts| pdf.sh                                   |        **          |                 |                *                 |       **       |
+|              | f1.sh                                    |        **          |                 |                *                 |       **       |
+|              | Makefile                                 |        **          |                 |                                  |                |
+| Others       | Full RISCV instructions testing          |                    |        **       |                *                 |                |
+|              | Full instructions assembly testing file  |                    |        **       |                                  |                |
+|              | F1 starting light program                |                    |                 |                **                |       **       |
+|              | PDF testing                              |        **          |        **       |                **                |       **       |
+|              | FPGA                                     |        **          |                 |                **                |                |
 
 ## File structure
 
