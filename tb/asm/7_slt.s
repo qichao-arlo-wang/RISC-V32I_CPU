@@ -25,7 +25,7 @@ main:
     # Test SLTI (signed: t0 < immediate -5)
     slti t3, t0, -5   # t3 = t0 < -5 -> t3 = 10 < -5 = 0
     
-    # Validate results by adding them to a0 (sum all the results)
+    # Sum all the results in a0
     li a0, 0          # Initialize a0 = 0
     add a0, a0, t4    # a0 += t4 (1)
     add a0, a0, t5    # a0 += t5 (1)

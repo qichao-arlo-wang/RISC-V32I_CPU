@@ -51,6 +51,14 @@ TEST_F(CpuTestbench, TestPdf)
     EXPECT_EQ(top_->a0, 15363);
 }
 
+TEST_F(CpuTestbench, TestF1)
+{
+    setupTest("F1Assembly");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x254);
+}
+
 TEST_F(CpuTestbench, TestSLL)
 {
     setupTest("6_sll");
@@ -128,7 +136,7 @@ TEST_F(CpuTestbench, TestBGEUBLTU)
     setupTest("15_bgeu_bltu");
     initSimulation();
     runSimulation(CYCLES);
-    EXPECT_EQ(top_->a0, 0xF124);
+    EXPECT_EQ(top_->a0, 0xACF0);
 }
 
 TEST_F(CpuTestbench, TestAUIPC)

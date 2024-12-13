@@ -2,7 +2,7 @@
 .globl main
 main:
     # Initialize registers with test values
-    li t0, 10         # t0 = 10 (binary: 00000000000000000000000000001010)
+    li t0, 10         # t0 = 10
 
     # Test SLL (t0 << 3)
     li t1, 3          # t1 = 3 (shift amount)

@@ -13,7 +13,7 @@ main:
 no_branch:
     # Code if BLT branch not taken
     li t4, 0xDEAD    # t4 = 0xDEAD (not taken)
-    j check_bge      # Skip the BLT branch taken code
+    jal check_bge      # Skip the BLT branch taken code
 
 branch_less:
     # Code if BLT branch taken
@@ -26,7 +26,7 @@ check_bge:
 no_branch_ge:
     # Code if BGE branch not taken
     li t5, 0xCAFE    # t5 = 0xCAFE (not taken)
-    j end            # Skip the BGE branch taken code
+    jal end            # Skip the BGE branch taken code
 
 branch_ge:
     # Code if BGE branch taken
@@ -35,9 +35,9 @@ branch_ge:
 end:
     # Validate results by summing into a0
     li a0, 0         # Initialize a0 = 0
-    add a0, a0, t4   # a0 += t4 (result of BLT)
-    add a0, a0, t5   # a0 += t5 (result of BGE)
+    add a0, a0, t4   # a0 += t4 (result of BLT) = 0xBEEF
+    add a0, a0, t5   # a0 += t5 (result of BGE) = 0xF00D
 
     # Infinite loop to finish program
-finish:     # expected result is 0x1AEFC
+finish:     # expected result is 0x1AEFC = 0xBEEF + 0xF00D
     bne     a0, zero, finish     # loop forever
