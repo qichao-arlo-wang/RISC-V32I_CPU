@@ -2,7 +2,7 @@
 
 ## Introduction
 
-As part of our team project, we integrated cache memory into the system to improve performance by leveraging the concepts of **temporal locality** and **spatial locality**. These optimizations significantly reduce memory access time by prioritizing frequently or recently accessed data.
+Cache memory was also implmented into the system to improve performance by leveraging the concepts of **temporal locality** and **spatial locality**. These optimisations reduce memory access time by prioritising frequently or recently accessed data.
 
 ---
 
@@ -24,7 +24,7 @@ The direct-mapped cache uses a 32-bit memory address and is divided as follows:
 
 | # of Bits | Part          | Purpose                                                |
 |-----------|---------------|--------------------------------------------------------|
-| 24        | `TAG`         | Identifies the data stored in the cache.              |
+| 22        | `TAG`         | Identifies the data stored in the cache.              |
 | 8         | `SET INDEX`   | Determines the specific cache set.                    |
 | 2         | `BYTE OFFSET` | Specifies the exact byte in the cache line.           |
 
@@ -119,16 +119,16 @@ The instruction cache is designed to handle frequent instruction fetches with hi
 
 ### Multi-Level Cache (L1, L2, L3)
 
-To further enhance memory access speed, we implemented multi-level caches for both data and instructions. This includes:
+To futher challenge ourselves, we decided to expand memory hierarchy to multiple levels of caches: Instruction and Data memory caches.
 
-1. **L1 Cache**: Small, fast, and directly accessible by the processor.
-2. **L2 Cache**: Larger than L1, shared among cores, and moderately fast.
-3. **L3 Cache**: Largest and slowest, shared across the system.
+1. **Level 1 Cache**: Small, fast, and directly accessible by the processor.
+2. **Level 2 Cache**: Larger than L1, shared among cores, and moderately fast.
+3. **Level 3 Cache**: Largest and slowest, shared across the system.
 
-These multi-level caches improve performance by reducing main memory access frequency.
+These multi-level caches improve performance by reducing main memory access frequency. In this case, if there is a miss in L1, then data is fetched from L2 (which is larger and have slower access time). If there is a miss at L2, then main memory is accessed.
 
 ---
 
 ## Conclusion
 
-Our cache implementation, including direct-mapped, two-way set associative, and instruction caches, significantly enhances memory performance. Additionally, the inclusion of multi-level caches (L1, L2, L3) demonstrates the potential of hierarchical caching in real-world applications.
+Our cache implementation, including direct-mapped, two-way set associative, and instruction caches, significantly enhances memory performance. Additionally, the inclusion of multi-level caches (L1, L2, L3) demonstrates the potential of hierarchical caching in real-world applications. It is important to notice that our data memory design is already very fast due to it being a single-cycle memory. This results in slower or not as fast data memory after the implementation of cache memory. Whereas in real designs, where data memory is slow, implementation of cache memory will boots the performance.
