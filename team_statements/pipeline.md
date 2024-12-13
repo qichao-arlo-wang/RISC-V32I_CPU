@@ -52,7 +52,7 @@ From top.sv in pipeline branch,
 
 
 ### 5.Write Back
-- In pipelining, to prevent data hazards, write backs to registers occur at the falling edge of the clock cycle instead of the rising edge.
+- In pipelining, to prevent conflicts with other instructions, write backs to registers occur at the falling edge of the clock cycle instead of the rising edge.
 
 
 ## Pipeline Control and Hazards
