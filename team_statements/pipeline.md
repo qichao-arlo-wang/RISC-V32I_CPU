@@ -8,6 +8,8 @@ The provided diagram includes color-coded annotations for clarity:
 - **Red**: additional mux signals for execution stage
 - **Green**: add-on signals to writeback stage.
 
+Code from single cycle stage was built on in the pipeline branch. After it has been tested vigorously, further work such as cache was done on top of it.
+
 ## 5 stage
 
 ### 1. Fetch
@@ -52,7 +54,7 @@ From top.sv in pipeline branch,
 
 
 ### 5.Write Back
-- In pipelining, to prevent data hazards, write backs to registers occur at the falling edge of the clock cycle instead of the rising edge.
+- In pipelining, to prevent conflicts with other instructions, write backs to registers occur at the falling edge of the clock cycle instead of the rising edge.
 
 
 ## Pipeline Control and Hazards
