@@ -52,8 +52,6 @@ Most of the data cache implementation was completed across two branches and deta
 
 - In **data-cache-multilevel branch**, I further completed and optimized the L1, L2, and L3 data caches, and developed the new data_mem_sys.sv module. Working evidence, such as cache hierarchy optimizations and parameterization for flexibility, is available in the [data-cache-multilevel branch commit history](https://github.com/arlo-wang/Group-9-RISC-V/commits/data-cache-multilevel/)
 
-------
-
 ### Instruction caches
 
 The overall structure is quite similar to the previously implemented data_cache with **L1, L2, L3 instruction caches**, thanks to the design of the data_cache, which provided a solid foundation for the instruction cache implementation. It is also relatively simpler, primarily due to two factors: the reduced number of write operations and the absence of the need to handle the lower two bits, as the lower two bits of RISC-V instructions are always 00. Specifically, the instruction caches were designed with the following configurations:
