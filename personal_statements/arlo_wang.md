@@ -2,21 +2,19 @@
 
 ## Table of Contents
 
-- [Personal Statement - Arlo Wang](#personal-statement---arlo-wang)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Contributions](#contributions)
-    - [Instruction \& data memory](#instruction--data-memory)
-      - [Challenge \& Reflections](#challenge--reflections)
-    - [Multilevel caches](#multilevel-caches)
+- [Introduction](#introduction)
+- [Contributions](#contributions)
+  - [Instruction \& data memory](#instruction--data-memory)
+    - [Challenge \& Reflections](#challenge--reflections)
+  - [Multilevel caches](#multilevel-caches)
     - [Data caches](#data-caches)
     - [Instruction caches](#instruction-caches)
-      - [Challenges \& Reflections](#challenges--reflections)
-    - [Shell scripts \& Makefile](#shell-scripts--makefile)
-    - [Integration](#integration)
-    - [FPGA Implementation](#fpga-implementation)
-    - [Overall reflections](#overall-reflections)
-    - [Acknowledgements](#acknowledgements)
+    - [Challenges \& Reflections](#challenges--reflections)
+  - [Shell scripts \& Makefile](#shell-scripts--makefile)
+  - [Integration](#integration)
+  - [FPGA Implementation](#fpga-implementation)
+- [Overall reflections](#overall-reflections)
+- [Acknowledgements](#acknowledgements)
 
 ## Introduction
 
@@ -82,7 +80,7 @@ Through this part of the project, I gained a deeper understanding of how caches 
 
 ### Shell scripts & Makefile
 
-In this part, I primarily modified and debugged the**pdf.sh**, **f1.sh** and **doit.sh**, scripts by correcting the file paths and refining the compilation process. I added relevant commands to clean intermediate files, ensuring the repository remains more organized and concise. Additionally, I updated the Makefile to include support for f1.sh, simplifying the workflow for testing and execution.
+In this part, I primarily modified and debugged the **pdf.sh**, **f1.sh** and **doit.sh**, scripts by correcting the file paths and refining the compilation process. I added relevant commands to clean intermediate files, ensuring the repository remains more organized and concise. Additionally, I updated the Makefile to include support for f1.sh, simplifying the workflow for testing and execution.
 
 -------
 
@@ -94,7 +92,7 @@ In this part, I primarily focused on integrating the **single-cycle top layer** 
    
    I integrated all the single modules, including the instruction memory, data memory, and individual components, to create a unified top layer for the single-cycle version. This integration ensured that all individual components worked together seamlessly as a complete system. 
 
-   **Evidence can be found in the** [commit record](https://github.com/arlo-wang/Group-9-RISC-V/commit/ee74586b7e9335e03b3ddfbad1bc1f3cdc62ff05)
+   **Supporting evidence can be found in this** [commit](https://github.com/arlo-wang/Group-9-RISC-V/commit/ee74586b7e9335e03b3ddfbad1bc1f3cdc62ff05).
 
 2. **Full RV32I Design Integration:**
 
@@ -106,7 +104,7 @@ In this part, I primarily focused on integrating the **single-cycle top layer** 
 
 ### FPGA Implementation
 
-In this project, I attempted to deploy the design on the Terasic DE10-Lite FPGA board to gain hands-on experience with FPGA-based implementations. Although the integration and verification of the RV32I processor on the board were not fully completed, the process allowed me to deepen my understanding of FPGA concepts, hardware description languages, and resource constraints.
+In this project, I attempted to deploy the design on the **Terasic DE10-Lite FPGA board** to gain hands-on experience with FPGA-based implementations. Although the integration and verification of the RV32I processor on the board were not fully completed, the process allowed me to deepen my understanding of FPGA concepts, hardware description languages, and resource constraints.
 
 -------
 
