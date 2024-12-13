@@ -115,6 +115,7 @@ All of our testing & working evidence are in [`test evidence`](./images/TestEvid
 |              | Control unit (refactor)                  |                    |       **        |                                  |                |
 |              | Hazard unit                              |                    |       **        |                **                |                |
 |              | Top                                      |                    |       **        |                **                |                |
+|              | PC Register                              |                    |       **        |                **                |                |
 |              | Unit Testbenches                         |                    |       **        |                                  |                |
 | Instr Cache  | Main instruction memory (refactor)       |        **          |                 |                                  |       **       |
 |              | L1 four-way set associative instr_cache  |        **          |                 |                                  |       **       |
