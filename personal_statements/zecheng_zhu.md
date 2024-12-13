@@ -17,7 +17,8 @@
 - [Pipeline](#pipeline)  
   - [Registers](#registers) (4 flip flop & original register negedge)  
   - [Hazard Unit](#harzard-unit)
-  - [top.sv](#top.sv)   
+  - [top.sv](#top.sv)
+  - [Testing](#tesing)   
 - [F1 Program](#f1-program)  
   - [Assembly Program](#assembly-program)  
   - [LFSR Logic Random Delay](#lfsr-logic-random-delay)  
@@ -33,13 +34,13 @@ I made this module for both lab4 and our full single cycle RISC, this module is 
 ![Instruction_Map](images/personal_statements_images/zecheng_zhu_image/sign_exten.png)
 | ImmSrc | Instruction Type |
 |--------|------------------|
-| 000    | I tyoe       |
-| 001    | S type          |
+| 000    | I tyoe           |
+| 001    | S type           |
 | 010    | B type           |
-| 011    | U type            |
-| 100    | J type  |
-| 101    | SLLI, SRLI, SRAI  |
-| default| 0  |
+| 011    | U type           |
+| 100    | J type           |
+| 101    | SLLI, SRLI, SRAI |
+| default| 0                |
 
 
 ---
@@ -62,8 +63,24 @@ This module is also straightforward, I set the result equals to different operat
 ---
 
 ### Pipeline  
-I wrote all 4 pipeline flip-flops, register file, hazard unit and also implement the pipeline version of top.sv from our test-passed single cycle full RISC processor
+I wrote all 4 pipeline flip-flops, register file, hazard unit and also implement the pipeline version of top.sv from our test-passed single cycle full RISC processor, then I test this with enxing for instructions and pdf
 
+#### Registers
+- Stage Fetch to Decoder 
+- Stage Decoder to Execution
+- Stage Execution to Memory and Memory to Writeback
+- Register File
+
+#### Hazard Unit
+- Forwarding
+- Flush
+- Stall
+
+#### Top.sv
+- adding mux and signal for pipeline
+
+#### Top.sv
+- 
 ---
 
 ### F1 Program  
