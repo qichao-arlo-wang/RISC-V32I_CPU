@@ -3,7 +3,7 @@
 ## Personal Statement of Contributions  
 *Zecheng Zhu*  
 - I have serval git commit name to upload to repo: zecheng, zzczjh9, or Keven Zhu due to serval device I used
-- Also some of commits are collaborating together with team mates and uploaded using their laptop
+- Also some of commits are collaborating together with team mates and uploaded using their laptops
 - In this project, my major contributions include designing the **Sign Extension Unit**, which handles instruction decoding for immediate values, and developing key components of the **Control Unit**, including the **Main Decoder** and **ALU Decoder**, to manage control signal generation. I also worked on the **ALU** to ensure accurate arithmetic and logical operations. In addition, I wrote the **Pipeline** of our processor by implementing **Registers**, a **Hazard Unit**, and the **top.sv** module for overall system integration with testing. Additionally, wrote the final version **F1 Program**  with a random time delay and tried implemented the design on an **FPGA**.
 
 ---
@@ -34,8 +34,7 @@ To check detailed implemention
 - access **F1 Program** at [F1 Program statement](../team_statements/f1.md)
 
 ### Sign Extension Unit  
-I made this module for both lab4 and our full single cycle RISC, this module is clear based on follwing picture and implemented by setting `imm_src` for each type of instructinos
-![Instruction_Map](images/personal_statements_images/zecheng_zhu_image/sign_exten.png)
+I made this module for both lab4 and our full single cycle RISC, this module is clear based on Instruction map in the lecture and implemented by setting `imm_src` for each type of instructinos
 | ImmSrc | Instruction Type |
 |--------|------------------|
 | 000    | I tyoe           |
@@ -170,11 +169,24 @@ After completing the RTL design and verification stages, I proceeded to implemen
    [Compile](../images/TestEvidence/fpga_compile.png)
 
 
-### Challenge,and Reflection
+### Challenge and Reflection
 1. When testing with LBU and SB instructions in pipeline, we initially failed test and finally found out the stall signal set to high both during LBU and SB instruction after checking multiple times with `gtkwave`. That is because I havn't look carefully into the module data_mem.sv written by arlo, and assumed mem_byte_en is used for load instructions but it supposed set the number of bits used both load and store, so i add a `load_flag` in the decode stage and learned to carefully cheking any needed information writtem by my teammates before I write any code to avoid this issue.
 
-2. After `load_flag` implemention, lbu_sb test was passed but pdf test still fail for pipeline. After checking waveform for hundreds of cycle carefully and compare supposed signal with actual one for more than 2 hour, we find out the problem. After stall set to high, no matter pause/clear control and datapath signal in `decode-execute register`, the pc and instruction for next instruction will always be flushed and disappear. Our final solution is to modify the `pc_register` to let it pause and not update when there is a stall. This issue taught me even my module looks really theoretically correct, test it step by step carefully is the best way to solve any issue.
+2. After `load_flag` implementation, lbu_sb test was passed but pdf test still fail for pipeline. After checking waveform for hundreds of cycle carefully and compare supposed signal with actual one for more than 2 hour, we find out the problem. After stall set to high, no matter pause/clear control and datapath signal in `decode-execute register`, the pc and instruction for next instruction will always be flushed and disappear. Our final solution is to modify the `pc_register` to let it pause and not update when there is a stall. This issue taught me even my module looks really theoretically correct, test it step by step carefully is the best way to solve any issue.
 
-3. Initially the F1 Program's random delay is implemented in `f1_tb.cpp` file using random and sleep functions. After implementing totally with hardware assembly language where the `f1_tb.cpp` only update vbuddyBar with a0, the LEDs will immediately turn off after the last light on. To solve this issue, i modify the logic to enter `turn_off` loop. Initially it is  parallel with subroutine in the main loop, now it is placed directly after the last LED on inside the subroutine. Throughout this I have a deeper understanding about assembly language logic and how loop, subrouting works.
+3. Initially the F1 Program's random delay is implemented in `f1_tb.cpp` file using random and sleep functions. After implementing totally with hardware assembly language where the `f1_tb.cpp` only update vbuddyBar with a0, the LEDs will immediately turn off after the last light on. To solve this issue, i modify the logic to enter `turn_off` loop. Initially it is  parallel with subroutine in the main loop, now it is placed directly after the last LED on inside the subroutine. Throughout this I have a deeper understanding about assembly language logic and how loop and subrouting works.
+
+4. When tring to map the rtl to FPGA, the Quartus Prime Lite cannot recognize out data_mem and instruction memory with hour .hex files, then I tried use its IP for these data and the connect signal with the top.(using a python script to conver .hex to .mif might also be useful)
+
+### Learning
+1. Keep a clear and meaningful codeing style with teammates
+1. Add breif comments on code with its usage, meaning and logic to let teamates can easily read and understand
+3. Preview what is supposed to happen before and during test, write these out and compare with test outputs if there is any error.
+4. Take care to all parts tests. The pipelined processor fail on the pdf test but coincedently passed lbu test instruction. This resulted in us not being able to identify the problem in the stall logic earlier. So it is better to check gtkwave even if test passes.
+
+### Acknowledgements
+This project has been a challenging experience, and I am deeply grateful for support and cooperation with all my teammates
+
+First of all, I would like to express my sincere gratitude to **Professor Cheuang** for excellent and engaging lectures, which provided a solid foundation for our Systemverilof understanding and this project. I am also thankful to the **Teaching Assistants** for their patience and support during the lab sessions. Lastly,  I want to appreciate all **my teammates** for their efforts and contributions in our project.
 
 *Date: 2024-12-13*
