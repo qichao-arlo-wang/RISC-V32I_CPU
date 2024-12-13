@@ -35,7 +35,7 @@ In this project, I implemented the instruction and data memory and subsequently 
   
 - While implementing instr_mem, I initially designed both read and write operations as synchronous and added bypass write logic to optimize it. However, this significantly increased the complexity of the pipeline and cache design, making it unmanageable within the given timeframe. Therefore, I opted to simplify the design by changing read to asynchronous, which reduced complexity and ensured smooth integration.
 
-----
+------
 
 ### Multilevel caches
 
@@ -47,7 +47,7 @@ I independently implemented the **L1, L2, and L3 data caches**, ensuring they ar
 - L2 data cache: 4-way set-associative, 4KB size
 - L3 data cache: 8-way set-associative, 8KB size
 
-Most of the data cache implementation was completed across two branches and detailed design of the data caches can be found in the [memory.md](../team_statements/memory.md) document:
+Most of the data cache implementation was completed across two branches and detailed design of the data caches can be found in the [cache.md](../team_statements/cache.md) document:
 
 - In **data_cache branch**, I implemented the L1 data cache, with supporting evidence available [data_cache branch commits history](https://github.com/arlo-wang/Group-9-RISC-V/commits/data_cache/), including the implementation of the L1 cache logic and LRU mechanism.
 
@@ -63,7 +63,7 @@ The overall structure is quite similar to the previously implemented data_cache 
 - L2 instruction cache: 4-way set-associative, 4KB size
 - L3 instruction cache: 8-way set-associative, 8KB size
 
-Most of the instruction cache implementation was completed across two branches:
+Most of the instruction cache implementation was completed across two branches and detailed design of the data caches can be found in the [cache.md](../team_statements/cache.md) document:
 
 - In **instr_cache branch**, I implemented the L1 instruction cache, with supporting evidence available [instr_cache branch commits history](https://github.com/arlo-wang/Group-9-RISC-V/commits/instr_cache/), including the implementation of the L1 instruction cache logic and LRU mechanism.
 
@@ -81,7 +81,7 @@ Through this part of the project, I gained a deeper understanding of how caches 
 
 ### Shell scripts & Makefile
 
-In this part, I primarily modified and debugged the **doit.sh**, **pdf.sh**, and **f1.sh** scripts by correcting the file paths and refining the compilation process. I added relevant commands to clean intermediate files, ensuring the repository remains more organized and concise. Additionally, I updated the Makefile to include support for f1.sh, simplifying the workflow for testing and execution.
+In this part, I primarily modified and debugged the**pdf.sh**, **f1.sh** and **doit.sh**, scripts by correcting the file paths and refining the compilation process. I added relevant commands to clean intermediate files, ensuring the repository remains more organized and concise. Additionally, I updated the Makefile to include support for f1.sh, simplifying the workflow for testing and execution.
 
 -------
 
@@ -93,17 +93,20 @@ In this part, I primarily focused on integrating the **single-cycle top layer** 
    
    I integrated all the single modules, including the instruction memory, data memory, and individual components, to create a unified top layer for the single-cycle version. This integration ensured that all individual components worked together seamlessly as a complete system. 
 
-   **Evidence can be found in the** [commit history](https://github.com/arlo-wang/Group-9-RISC-V/commit/ee74586b7e9335e03b3ddfbad1bc1f3cdc62ff05)
+   **Evidence can be found in the** [commit record](https://github.com/arlo-wang/Group-9-RISC-V/commit/ee74586b7e9335e03b3ddfbad1bc1f3cdc62ff05)
 
 2. **Full RV32I Design Integration:**
 
     In this part, I integrated the L1, L2, and L3 data caches, the L1, L2, and L3 instruction caches, and the pipelined version of the RV32I processor. This integration required careful coordination between the cache hierarchy, pipeline logic, and memory modules to ensure correct operation.
 
-    **Supporting evidence for this integration can be found in the following commit history**:
+    **Supporting evidence for this integration can be found in the following commit history**: [instr_multilevel_cache integration evidence](https://github.com/arlo-wang/Group-9-RISC-V/commit/26d74a6fa6221ccf05383a7d75d100d2540011bf), [data_multilevel_cache integration commit evidence](https://github.com/arlo-wang/Group-9-RISC-V/commit/528e4b2555e2385585a7c0d6fea677241ab0a29d#diff-45eb9b4cd219e5c97cdb7a12b6a96969c88d674174aa42e35ed354e9d273f480).
 
 -------
 
 ### Overall reflections
+
+- Through this project, I learned the importance of **teamwork** and **communication**. It is crucial for everyone to focus on their specific tasks to avoid redundant work. Establishing consistent **naming conventions** and **clear commenting guidelines** helped keep the code organized and easy to understand. This experience showed me that effective collaboration and standardized practices are key to the success of a team project.
+- In addition, when writing code, it is essential to think **comprehensively**—not only about the part you are responsible for but also about how your implementation can make it easier for teammates to write their code and debug in the future.
 
 -------
 
@@ -111,4 +114,4 @@ In this part, I primarily focused on integrating the **single-cycle top layer** 
 
 This project has been a challenging yet rewarding experience, and I am deeply grateful for the support and guidance I received from many individuals throughout this period.
 
-First and foremost, I would like to extend my sincere gratitude to Professor Cheuang for delivering insightful and engaging lectures, which provided a solid foundation for this project. I am also thankful to the Teaching Assistants for their patience and support during the lab sessions. Finally, I want to express my appreciation to my teammates for their dedicated efforts and contributions. This project would not have been possible without their efforts and contributions!
+First and foremost, I would like to extend my sincere gratitude to **Professor Cheuang** for delivering insightful and engaging lectures, which provided a solid foundation for this project. I am also thankful to the **Teaching Assistants** for their patience and support during the lab sessions. Finally, I want to express my appreciation to **my teammates** for their dedicated efforts and contributions. This project would not have been possible without their efforts and contributions!
