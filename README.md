@@ -27,15 +27,23 @@ Our project is mainly organized into three branches, each representing a signifi
 
 In addition to these main branches, you can also find other branches on our GitHub repository, including [lab4](https://github.com/arlo-wang/Group-9-RISC-V/tree/lab4), [data_cache](https://github.com/arlo-wang/Group-9-RISC-V/tree/data_cache), [data-cache-multilevel](https://github.com/arlo-wang/Group-9-RISC-V/tree/data-cache-multilevel), [instr_cache](https://github.com/arlo-wang/Group-9-RISC-V/tree/instr_cache) and [instr-cache-multilevel](https://github.com/arlo-wang/Group-9-RISC-V/tree/instr_cache_multilevel). Each of these branches was created to implement specific functionalities, such as data and instruction caches or to track progress from earlier stages of development.
 
-
 ## Personal statements
 
-| Member    | Personal statement |
-|-----------|--------------------|
-| Arlo     | [Personal statement](./personal_statements/arlo_wang.md) |
-| Enxing   | [Personal statement](./personal_statements/enxing_lao.md) |
-| Zecheng  | [Personal statement](./personal_statements/zecheng_zhu.md) |
-| Zitong   | [Personal statement](./personal_statements/zitong_hon.md) |
+| Member    | Arlo | Enxing | Zecheng | Zitong |
+|-----------|------|--------|---------|--------|
+| Personal statement | [Personal statement](./personal_statements/arlo_wang.md) | [Personal statement](./personal_statements/enxing_lao.md) | [Personal statement](./personal_statements/zecheng_zhu.md) | [Personal statement](./personal_statements/zitong_hon.md) |
+
+## Team Statements Table
+
+| File Name                          | Description                           |
+|------------------------------------|---------------------------------------|
+| [cache.md](./team_statements/cache.md)          | Details about the cache implementation |
+| [pipeline.md](./team_statements/pipeline.md)    | Explanation of the pipeline design      |
+| [single_cycle.md](./team_statements/single_cycle.md) | Description of the single-cycle design |
+| [memory.md](./team_statements/memory.md)        | Explanation of the memory design        |
+| [control_unit.md](./team_statements/control_unit.md)        | Explanation of the control_unit design        |
+| [f1.md](./team_statements/f1.md)                | F1 testing details                      |
+
 
 ## Quick Start
 
