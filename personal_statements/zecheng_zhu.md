@@ -19,10 +19,12 @@
   - [Registers](#registers) 
   - [Hazard Unit](#harzard-unit)
   - [top.sv](#top.sv)
-  - [Testing](#tesing)   
+  - [Testing](#testing)   
 - [F1 Program](#f1-program)   
 - [FPGA Implementation](#fpga-implementation)
-- [Challenge and Reflection](#challenge-and-reflection)   
+- [Challenge and Reflection](#challenge-and-reflection)
+- [Learning](#learning) 
+- [Acknowledgement](#acknowledgements) 
 
 
 ---
