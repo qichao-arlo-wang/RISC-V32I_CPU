@@ -14,12 +14,13 @@
       - [Challenges \& Reflections](#challenges--reflections)
     - [Shell scripts \& Makefile](#shell-scripts--makefile)
     - [Integration](#integration)
+    - [FPGA Implementation](#fpga-implementation)
     - [Overall reflections](#overall-reflections)
     - [Acknowledgements](#acknowledgements)
 
 ## Introduction
 
-In this project, I implemented [instruction and data memory](#instruction--data-memory) based on the provided memory map, successfully designed [L1, L2, and L3 data caches](#data-caches) and [L1, L2 and L3 instruction caches](#instruction-caches). While building the L1 data cache, I used parameterized designs to ensure flexibility, allowing L2, L3 caches, and even parts of the instruction cache to be adapted with minimal modifications. Finally, I developed relevant [shell scripts & Make files](#shell-scripts--makefile) to enable direct testing of F1 light and pdf via vbuddy.
+In this project, I implemented [instruction and data memory](#instruction--data-memory) based on the provided memory map, successfully designed [L1, L2, and L3 data caches](#data-caches) and [L1, L2 and L3 instruction caches](#instruction-caches). While building the L1 data cache, I used parameterized designs to ensure flexibility, allowing L2, L3 caches, and even parts of the instruction cache to be adapted with minimal modifications. Finally, I developed relevant [shell scripts & Make files](#shell-scripts--makefile) to enable direct testing of F1 light and PDF via Vbuddy.
 
 In this personal statement, I will not discuss the detailed design of individual modules; these details can be found in the [team_statements](../team_statements/) folder.
 
@@ -27,7 +28,7 @@ In this personal statement, I will not discuss the detailed design of individual
 
 ### Instruction & data memory
 
-In this project, I implemented the instruction and data memory and subsequently made modifications and optimizations while working on the cache components. The detailed design can be found at the [memory.md](../team_statements/memory.md). Final data_mem commit can be found [here](https://github.com/arlo-wang/Group-9-RISC-V/commit/4f32ed7df8a7603b5adbb3edb4d536253bae9f51). Final instr_mem commit can be found [here](https://github.com/arlo-wang/Group-9-RISC-V/commit/776af3a42230b57cfc7f65bfe9d4eb8e858cdcaa#diff-e7d99d33aee3f3f3423144fc4b3f8b18007793ac9e0701e37d065acd4d649f47).
+In this project, I implemented the instruction and data memory and subsequently made modifications and optimizations while working on the cache components. The detailed design can be found at the [memory.md](../team_statements/memory.md). The final data_mem commit can be found [here](https://github.com/arlo-wang/Group-9-RISC-V/commit/4f32ed7df8a7603b5adbb3edb4d536253bae9f51). The final instr_mem commit can be found [here](https://github.com/arlo-wang/Group-9-RISC-V/commit/776af3a42230b57cfc7f65bfe9d4eb8e858cdcaa#diff-e7d99d33aee3f3f3423144fc4b3f8b18007793ac9e0701e37d065acd4d649f47).
 
 #### Challenge & Reflections
 
@@ -51,13 +52,13 @@ Most of the data cache implementation was completed across two branches and deta
 
 - In **data_cache branch**, I implemented the L1 data cache, with supporting evidence available [data_cache branch commits history](https://github.com/arlo-wang/Group-9-RISC-V/commits/data_cache/), including the implementation of the L1 cache logic and LRU mechanism.
 
-- In **data-cache-multilevel branch**, I further completed and optimized the L1, L2, and L3 data caches, and developed the new data_mem_sys.sv modulem. Working evidence, such as cache hierarchy optimizations and parameterization for flexibility, is available in the [data-cache-multilevel branch commit history](https://github.com/arlo-wang/Group-9-RISC-V/commits/data-cache-multilevel/)
+- In **data-cache-multilevel branch**, I further completed and optimized the L1, L2, and L3 data caches, and developed the new data_mem_sys.sv module. Working evidence, such as cache hierarchy optimizations and parameterization for flexibility, is available in the [data-cache-multilevel branch commit history](https://github.com/arlo-wang/Group-9-RISC-V/commits/data-cache-multilevel/)
 
 ------
 
 ### Instruction caches
 
-The overall structure is quite similar to the previously implemented data_cache with **L1, L2, L3 instruction caches**, thanks to the design of the data_cache, which provided a solid foundation for the instruction cache implementation. It is also relatively simpler, primarily due to two factors: the reduced number of write operations and the absence of the need to handle the lower two bits, as the lower two bits of risc-v instructions are always 00. Specifically, the instruction caches were designed with the following configurations:
+The overall structure is quite similar to the previously implemented data_cache with **L1, L2, L3 instruction caches**, thanks to the design of the data_cache, which provided a solid foundation for the instruction cache implementation. It is also relatively simpler, primarily due to two factors: the reduced number of write operations and the absence of the need to handle the lower two bits, as the lower two bits of RISC-V instructions are always 00. Specifically, the instruction caches were designed with the following configurations:
 
 - L1 instruction cache: 4-way set-associative, 4KB size
 - L2 instruction cache: 4-way set-associative, 4KB size
@@ -67,7 +68,7 @@ Most of the instruction cache implementation was completed across two branches a
 
 - In **instr_cache branch**, I implemented the L1 instruction cache, with supporting evidence available [instr_cache branch commits history](https://github.com/arlo-wang/Group-9-RISC-V/commits/instr_cache/), including the implementation of the L1 instruction cache logic and LRU mechanism.
 
-- In **instr_cache_multilevel branch**, I further completed and optimized the L1, L2, and L3 instruction caches, and developed the new instr_mem_sys.sv modulem. Working evidence is available in the [instr_cache_multilevel branch commit history](https://github.com/arlo-wang/Group-9-RISC-V/commits/instr_cache_multilevel)
+- In **instr_cache_multilevel branch**, I further completed and optimized the L1, L2, and L3 instruction caches, and developed the new instr_mem_sys.sv module. Working evidence is available in the [instr_cache_multilevel branch commit history](https://github.com/arlo-wang/Group-9-RISC-V/commits/instr_cache_multilevel)
 
 #### Challenges & Reflections
 
@@ -100,6 +101,12 @@ In this part, I primarily focused on integrating the **single-cycle top layer** 
     In this part, I integrated the L1, L2, and L3 data caches, the L1, L2, and L3 instruction caches, and the pipelined version of the RV32I processor. This integration required careful coordination between the cache hierarchy, pipeline logic, and memory modules to ensure correct operation.
 
     **Supporting evidence for this integration can be found in the following commit history**: [instr_multilevel_cache integration evidence](https://github.com/arlo-wang/Group-9-RISC-V/commit/26d74a6fa6221ccf05383a7d75d100d2540011bf), [data_multilevel_cache integration commit evidence](https://github.com/arlo-wang/Group-9-RISC-V/commit/528e4b2555e2385585a7c0d6fea677241ab0a29d#diff-45eb9b4cd219e5c97cdb7a12b6a96969c88d674174aa42e35ed354e9d273f480).
+
+-------
+
+### FPGA Implementation
+
+In this project, I attempted to deploy the design on the Terasic DE10-Lite FPGA board to gain hands-on experience with FPGA-based implementations. Although the integration and verification of the RV32I processor on the board were not fully completed, the process allowed me to deepen my understanding of FPGA concepts, hardware description languages, and resource constraints.
 
 -------
 
