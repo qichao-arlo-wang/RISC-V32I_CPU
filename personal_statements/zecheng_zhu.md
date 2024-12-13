@@ -28,7 +28,10 @@
 ---
 
 ## Contributions  
-
+To check detailed implemention
+- access Sign Extension Unit, Control Unit, ALU at [sincle cycle statement](./team_statements/single_cycle.md)
+- access Pipeline at [Pipeline statement](./team_statements/pipeline.md)
+- access F1 Program at [F1 Program statement](./team_statements/f1.md)
 ### Sign Extension Unit  
 I made this module for both lab4 and our full single cycle RISC, this module is clear based on follwing picture and implemented by setting `imm_src` for each type of instructinos
 ![Instruction_Map](images/personal_statements_images/zecheng_zhu_image/sign_exten.png)
@@ -63,7 +66,8 @@ This module is also straightforward, I set the result equals to different operat
 ---
 
 ### Pipeline  
-I wrote all 4 pipeline flip-flops, register file, hazard unit and also implement the pipeline version of top.sv from our test-passed single cycle full RISC processor, then I test this with enxing for instructions and pdf
+I wrote all 4 pipeline flip-flops, register file, hazard unit and also implement the pipeline version of top.sv from our test-passed single cycle full RISC processor, then I test this with enxing for instructions and pdf.
+Our full implemention of pipeline can be see at [Pipeline statement](./team_statements/pipeline.md)
 
 #### Registers
 - Stage Fetch to Decoder 
