@@ -90,7 +90,7 @@ The `pdf.sh` script allows you to load different `.mem` files depending on the u
 |              | Control Unit alu_decoder                 |                    |                 |                **                |                |
 |              | Sign Extend                              |                    |                 |                **                |                |
 |              | Top                                      |        **          |                 |                                  |                |
-|              | Testbench                                |        **          |                 |                                  |                |
+|              | Unit Testbenches                         |        **          |                 |                                  |                |
 | Single cycle | Data Memory                              |        **          |                 |                                  |        *       |
 |              | Program Counter (refactor)               |        **          |                 |                *                 |                |
 |              | ALU                                      |                    |                 |                **                |        *       |
@@ -101,13 +101,11 @@ The `pdf.sh` script allows you to load different `.mem` files depending on the u
 |              | Sign Extend (refactor)                   |                    |                 |                **                |                |
 |              | Unit Testbeches                          |        **          |                 |                                  |        *       |
 |              | Top                                      |        **          |                 |                                  |                |
-|              | F1 starting light program                |                    |                 |                **                |       **       |
 | Pipeline     | Pipeline flip-flop stages                |                    |                 |                **                |                |
 |              | Control unit (refactor)                  |                    |        **       |                                  |                |
 |              | Hazard unit                              |                    |        **       |                **                |                |
 |              | Top                                      |                    |        **       |                **                |                |
-|              | Testbench                                |                    |        **       |                                  |                |
-|              | PDF testing                              |                    |        **       |                **                |       **       |
+|              | Unit Testbenches                         |                    |        **       |                                  |                |
 | Instr Cache  | Main instruction memory (refactor)       |        **          |                 |                                  |       **       |
 |              | L1 four-way set associative instr_cache  |        **          |                 |                                  |       **       |
 |              | L2 four-way set associative instr_cache  |        **          |                 |                                  |       **       |
@@ -120,7 +118,11 @@ The `pdf.sh` script allows you to load different `.mem` files depending on the u
 |              | Data memory top                          |        **          |                 |                                  |                |
 | Shell scripts| pdf.sh                                   |        **          |                 |                *                 |       **       |
 |              | f1.sh                                    |        **          |                 |                *                 |       **       |
-| Other extended works| Full RISCV instructions testing   |                    |                 |                *                 |                |
+|              | Makefile                                 |        **          |                 |                                  |                |
+| Others       | Full RISCV instructions testing          |                    |        **       |                *                 |                |
+|              | Full instructions assembly testing file  |                    |        **       |                                  |                |
+|              | F1 starting light program                |                    |                 |                **                |       **       |
+|              | PDF testing                              |        **          |        **       |                **                |       **       |
 |              | FPGA                                     |        **          |                 |                **                |                |
 
 ## File structure
