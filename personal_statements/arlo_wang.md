@@ -18,9 +18,9 @@
 
 ## Introduction
 
-In this project, I implemented [instruction and data memory](#instruction--data-memory) based on the provided memory map, successfully designed [L1, L2, and L3 data caches](#data-caches) and [L1, L2 and L3 instruction caches](#instruction-caches). While building the L1 data cache, I used parameterized designs to ensure flexibility, allowing L2, L3 caches, and even parts of the instruction cache to be adapted with minimal modifications. Finally, I developed relevant [shell scripts & Make files](#shell-scripts--makefile) to enable direct testing of F1 light and PDF via Vbuddy.
+In this project, I implemented [instruction and data memory](#instruction--data-memory) and designed [L1, L2, and L3 data caches](#data-caches) and [L1, L2 and L3 instruction caches](#instruction-caches) using parameterized designs for flexibility. I integrated the single-cycle top layer, multilevel caches, and the pipelined RV32I processor into a unified system, ensuring seamless component communication. Additionally, I developed shell [scripts & Makefiles](#shell-scripts--makefile) to simplify testing with Vbuddy and attempted [FPGA](#fpga-implementation) implementation on the Terasic DE10-Lite board, gaining hands-on experience with hardware deployment.
 
-In this personal statement, I will not discuss the detailed design of individual modules; these details can be found in the [team_statements](../team_statements/) folder.
+In this personal statement, I will **NOT** discuss the detailed design of individual modules; these details can be found in the [team_statements](../team_statements/) folder.
 
 ## Contributions
 
