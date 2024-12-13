@@ -1,9 +1,17 @@
-# to do list:
-- update the branch link after we change the default branch
-- add a table for the team_statement
-- update team contribution table
-
 # Group-9-RISC-V Team Project
+
+- [Group-9-RISC-V Team Project](#group-9-risc-v-team-project)
+  - [Joint statement](#joint-statement)
+  - [Personal statements](#personal-statements)
+  - [Team Statements Table](#team-statements-table)
+  - [Quick Start](#quick-start)
+    - [Things to note before ANY test:](#things-to-note-before-any-test)
+    - [Using the testbench](#using-the-testbench)
+  - [Working Evidence](#working-evidence)
+    - [Test result evidence](#test-result-evidence)
+    - [PDF \& F1 videos](#pdf--f1-videos)
+  - [Team Contribution Table](#team-contribution-table)
+  - [File structure](#file-structure)
 
 ## Joint statement
 
