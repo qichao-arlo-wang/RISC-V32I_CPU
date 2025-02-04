@@ -17,7 +17,7 @@ Our team successfully completed a **full RV32I design**, implementing **all base
 
 Our project is mainly organized into three branches, each representing a significant milestone in our RISC-V processor design:
 
-1. [**main branch**](https://github.com/arlo-wang/Group-9-RISC-V/tree/main):
+1. [**full-rv32i-design-single-cycle**](https://github.com/arlo-wang/Group-9-RISC-V/tree/full-rv32i-design-single-cycle):
    
    This branch builds upon the foundation of Lab4. It implements a single-cycle version of the full RV32I design without including any pipelining and cache structures.
 
